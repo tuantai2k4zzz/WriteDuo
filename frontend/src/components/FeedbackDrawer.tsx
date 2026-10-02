@@ -336,7 +336,7 @@ export const FeedbackDrawer: React.FC = () => {
           )}
 
           {/* ── AI CONCISE SUMMARY (ACTIONABLE & DIRECT) ── */}
-          <div className="rounded-2xl p-4 bg-gradient-to-br from-cyan-50/70 via-white to-blue-50/50 dark:from-cyan-950/20 dark:via-slate-900/90 dark:to-blue-950/20 border border-cyan-200 dark:border-cyan-800/60 shadow-xs">
+          <div className="rounded-2xl p-4 bg-cyan-50/50 dark:bg-slate-900/90 border border-cyan-200 dark:border-cyan-800/60 shadow-xs">
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
               <h4 className="text-xs font-black uppercase tracking-wider text-cyan-700 dark:text-cyan-300 font-mono">

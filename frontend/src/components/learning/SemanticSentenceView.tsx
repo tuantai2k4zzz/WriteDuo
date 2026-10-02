@@ -254,28 +254,34 @@ export const SemanticSentenceView: React.FC<SemanticSentenceViewProps> = ({
       {/* ── DEDICATED LANGUAGE NOTE / ALTERNATIVE CARD (called ≈ named) ── */}
       {alternatives.length > 0 && (
         <div
-          className="rounded-2xl p-4 my-2 bg-gradient-to-br from-cyan-50/90 via-white to-blue-50/70 dark:from-[#020b18]/95 dark:to-[#04152e]/95 border border-cyan-200 dark:border-cyan-500/35 shadow-xs dark:shadow-[0_0_20px_rgba(6,182,212,0.08)]"
+          className="rounded-2xl p-4 my-2.5 bg-cyan-50/90 dark:bg-[#031329] border border-cyan-300 dark:border-cyan-500/40 shadow-xs dark:shadow-[0_0_25px_rgba(6,182,212,0.12)]"
         >
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-cyan-600 dark:text-cyan-400 font-black">✦</span>
-            <h4 className="text-xs font-mono font-black text-cyan-700 dark:text-cyan-300 tracking-wider uppercase">
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="text-cyan-600 dark:text-cyan-400 font-black text-sm">✦</span>
+            <h4 className="text-xs font-mono font-black text-cyan-800 dark:text-cyan-300 tracking-wider uppercase">
               LANGUAGE NOTE: {alternatives.map((a) => a.relationship).join(' · ')}
             </h4>
           </div>
 
-          <div className="space-y-2 text-xs font-semibold text-slate-700 dark:text-slate-200 leading-relaxed">
+          <div className="space-y-2.5">
             {alternatives.map((alt, idx) => (
-              <div key={idx} className="space-y-1">
-                <p className="text-emerald-700 dark:text-emerald-300 font-bold">
-                  ✓ Ý nghĩa hoàn toàn đúng · Diễn đạt tự nhiên.
-                </p>
-                <p className="text-slate-700 dark:text-slate-300">
+              <div key={idx} className="space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-emerald-100 dark:bg-emerald-500/15 border border-emerald-300 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300">
+                  <span>✓</span>
+                  <span>Ý nghĩa hoàn toàn đúng · Diễn đạt tự nhiên.</span>
+                </div>
+
+                <p className="text-xs font-semibold text-slate-800 dark:text-slate-100 leading-relaxed pl-0.5">
                   {alt.noteVi}
                 </p>
+
                 {alt.contextDifference && (
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                    💡 Sắc thái: {alt.contextDifference}
-                  </p>
+                  <div className="rounded-xl p-2.5 bg-white/90 dark:bg-[#020b17] border border-cyan-200 dark:border-cyan-500/25 flex items-start gap-2 text-xs font-mono">
+                    <span className="text-amber-600 dark:text-amber-400 font-bold shrink-0">💡 Sắc thái:</span>
+                    <span className="text-slate-700 dark:text-cyan-100/90 font-medium leading-relaxed">
+                      {alt.contextDifference}
+                    </span>
+                  </div>
                 )}
               </div>
             ))}
