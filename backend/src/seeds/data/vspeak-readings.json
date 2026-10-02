@@ -1,0 +1,2964 @@
+[
+  {
+    "order": 1,
+    "slug": "my-pet-dog",
+    "title": "My Pet Dog",
+    "topic": "Daily Life",
+    "level": "A1",
+    "category": "beginner",
+    "wordCount": 162,
+    "totalSentences": 20,
+    "paragraphs": [
+      "I have a dog named Max. He is three years old and has brown and white fur. Max is very friendly and loves to play. Every morning, he wakes me up by licking my face. It is funny but sometimes annoying.",
+      "I take Max for a walk every day after school. We usually go to the park near our house. He runs very fast and loves to chase birds. He never catches them, but he tries very hard every time.",
+      "Max eats twice a day. He has a special bowl with his name on it. His favorite food is chicken, but I also give him special dog biscuits as a treat. He always finishes his food very quickly.",
+      "At night, Max sleeps beside my bed. He feels like a member of our family. When I am sad, he comes and sits next to me. He seems to understand my feelings.",
+      "Having a pet teaches me responsibility. I have to feed him, clean him, and take him to the vet regularly. It is a lot of work, but Max makes every day happier."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "I have a dog named Max."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "He is three years old and has brown and white fur."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "Max is very friendly and loves to play."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 3,
+        "textEn": "Every morning, he wakes me up by licking my face."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 4,
+        "textEn": "It is funny but sometimes annoying."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "I take Max for a walk every day after school."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "We usually go to the park near our house."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "He runs very fast and loves to chase birds."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "He never catches them, but he tries very hard every time."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Max eats twice a day."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "He has a special bowl with his name on it."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "His favorite food is chicken, but I also give him special dog biscuits as a treat."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "He always finishes his food very quickly."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "At night, Max sleeps beside my bed."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "He feels like a member of our family."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "When I am sad, he comes and sits next to me."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 3,
+        "textEn": "He seems to understand my feelings."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Having a pet teaches me responsibility."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "I have to feed him, clean him, and take him to the vet regularly."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "It is a lot of work, but Max makes every day happier."
+      }
+    ]
+  },
+  {
+    "order": 2,
+    "slug": "learning-english",
+    "title": "Learning English",
+    "topic": "Education",
+    "level": "A1",
+    "category": "beginner",
+    "wordCount": 170,
+    "totalSentences": 20,
+    "paragraphs": [
+      "I started learning English when I was eight years old. At first, it was very difficult for me. I did not understand many words, and I was afraid to speak in class. But my teacher was very patient and helpful.",
+      "Every day, I studied new vocabulary and practiced writing sentences. I also watched English cartoons on television. This helped me learn new words in a fun way. Little by little, my English improved.",
+      "Now, I can speak English much better. I like reading English books and listening to English songs. I also practice by chatting with friends online. Sometimes I make mistakes, but I am not afraid anymore. Mistakes help me learn.",
+      "My favorite way to practice is watching movies with English subtitles. I learn new expressions and pronunciation this way. I try to imitate the characters when I speak.",
+      "My goal is to be fluent in English one day. I believe that with practice and patience, I can achieve this. English opens many doors to new opportunities and friendships around the world. I will keep studying every day."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "I started learning English when I was eight years old."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "At first, it was very difficult for me."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "I did not understand many words, and I was afraid to speak in class."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 3,
+        "textEn": "But my teacher was very patient and helpful."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Every day, I studied new vocabulary and practiced writing sentences."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "I also watched English cartoons on television."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "This helped me learn new words in a fun way."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "Little by little, my English improved."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Now, I can speak English much better."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "I like reading English books and listening to English songs."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "I also practice by chatting with friends online."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "Sometimes I make mistakes, but I am not afraid anymore."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 4,
+        "textEn": "Mistakes help me learn."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "My favorite way to practice is watching movies with English subtitles."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "I learn new expressions and pronunciation this way."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "I try to imitate the characters when I speak."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "My goal is to be fluent in English one day."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "I believe that with practice and patience, I can achieve this."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "English opens many doors to new opportunities and friendships around the world."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 3,
+        "textEn": "I will keep studying every day."
+      }
+    ]
+  },
+  {
+    "order": 3,
+    "slug": "a-visit-to-the-zoo",
+    "title": "A Visit to the Zoo",
+    "topic": "Animals",
+    "level": "A1",
+    "category": "beginner",
+    "wordCount": 168,
+    "totalSentences": 19,
+    "paragraphs": [
+      "Last weekend, my family visited the city zoo. It was an exciting day full of new experiences. We arrived early in the morning before the zoo became too crowded. The weather was perfect — sunny but not too hot.",
+      "The first animals we saw were the elephants. They were very large and moved slowly. One elephant was spraying water on itself to cool down. It looked very happy. My little sister was a little scared, but she enjoyed watching them from a safe distance.",
+      "My favorite part was the lion enclosure. The lions were resting under a big tree. They looked strong and majestic, but also very relaxed. The zookeeper told us that lions sleep up to sixteen hours a day.",
+      "We also saw giraffes, zebras, and colorful parrots. The parrot section was very noisy because the birds were talking and copying words from visitors. It made everyone laugh.",
+      "Before leaving, we ate ice cream and bought small souvenirs. It was one of the best days of my life. I want to visit again with my school friends next time."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Last weekend, my family visited the city zoo."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "It was an exciting day full of new experiences."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "We arrived early in the morning before the zoo became too crowded."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 3,
+        "textEn": "The weather was perfect — sunny but not too hot."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "The first animals we saw were the elephants."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "They were very large and moved slowly."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "One elephant was spraying water on itself to cool down."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "It looked very happy."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 4,
+        "textEn": "My little sister was a little scared, but she enjoyed watching them from a safe distance."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "My favorite part was the lion enclosure."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "The lions were resting under a big tree."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "They looked strong and majestic, but also very relaxed."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "The zookeeper told us that lions sleep up to sixteen hours a day."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "We also saw giraffes, zebras, and colorful parrots."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "The parrot section was very noisy because the birds were talking and copying words from visitors."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "It made everyone laugh."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Before leaving, we ate ice cream and bought small souvenirs."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "It was one of the best days of my life."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "I want to visit again with my school friends next time."
+      }
+    ]
+  },
+  {
+    "order": 4,
+    "slug": "my-favorite-season",
+    "title": "My Favorite Season",
+    "topic": "Nature",
+    "level": "A1",
+    "category": "beginner",
+    "wordCount": 158,
+    "totalSentences": 16,
+    "paragraphs": [
+      "My favorite season is autumn. I love the way the leaves change color from green to red, orange, and yellow. The trees look very beautiful, and the air feels cool and fresh. It is the most beautiful time of the year.",
+      "In autumn, the weather is not too hot and not too cold. I can wear comfortable clothes and go outside without feeling uncomfortable. I love taking walks in the park and hearing the leaves crunch under my feet.",
+      "Autumn also means the start of the school year. I enjoy seeing my friends again after the long summer holiday. We share stories about our vacations and look forward to new classes.",
+      "My family has a tradition of making apple pie every autumn. We pick apples from a nearby farm and bake together in the kitchen. The smell of cinnamon and warm apples fills the whole house.",
+      "I also enjoy Halloween, which happens in late October. We dress in costumes and knock on neighbors' doors for candy. It is always a fun and exciting night that I look forward to every year."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "My favorite season is autumn."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "I love the way the leaves change color from green to red, orange, and yellow."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "The trees look very beautiful, and the air feels cool and fresh."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 3,
+        "textEn": "It is the most beautiful time of the year."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "In autumn, the weather is not too hot and not too cold."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "I can wear comfortable clothes and go outside without feeling uncomfortable."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "I love taking walks in the park and hearing the leaves crunch under my feet."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Autumn also means the start of the school year."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "I enjoy seeing my friends again after the long summer holiday."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "We share stories about our vacations and look forward to new classes."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "My family has a tradition of making apple pie every autumn."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "We pick apples from a nearby farm and bake together in the kitchen."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "The smell of cinnamon and warm apples fills the whole house."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "I also enjoy Halloween, which happens in late October."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "We dress in costumes and knock on neighbors' doors for candy."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "It is always a fun and exciting night that I look forward to every year."
+      }
+    ]
+  },
+  {
+    "order": 5,
+    "slug": "healthy-eating-habits",
+    "title": "Healthy Eating Habits",
+    "topic": "Health",
+    "level": "A1",
+    "category": "beginner",
+    "wordCount": 160,
+    "totalSentences": 16,
+    "paragraphs": [
+      "Eating healthy food is very important for our bodies and minds. When we eat well, we have more energy, feel happier, and get sick less often. Good food helps us grow and think clearly at school and work.",
+      "Fruits and vegetables are the best foods we can eat. They contain vitamins and minerals that keep us strong. Doctors recommend eating at least five portions of fruit and vegetables every day. Apples, bananas, carrots, and spinach are great choices.",
+      "We should also drink plenty of water. Many people drink soda and juice instead of water, but these drinks contain a lot of sugar. Water keeps our bodies hydrated and helps our organs work properly. Drinking eight glasses a day is a good habit.",
+      "It is important to avoid eating too much fast food. Burgers, fried chicken, and chips taste good but contain unhealthy fats and salt. Eating too much junk food can cause weight gain and health problems.",
+      "Starting healthy habits when we are young is much easier than changing habits when we are older. Small changes, like eating one more piece of fruit a day, can make a big difference over time."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Eating healthy food is very important for our bodies and minds."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "When we eat well, we have more energy, feel happier, and get sick less often."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "Good food helps us grow and think clearly at school and work."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Fruits and vegetables are the best foods we can eat."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "They contain vitamins and minerals that keep us strong."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "Doctors recommend eating at least five portions of fruit and vegetables every day."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "Apples, bananas, carrots, and spinach are great choices."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "We should also drink plenty of water."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "Many people drink soda and juice instead of water, but these drinks contain a lot of sugar."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "Water keeps our bodies hydrated and helps our organs work properly."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "Drinking eight glasses a day is a good habit."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "It is important to avoid eating too much fast food."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Burgers, fried chicken, and chips taste good but contain unhealthy fats and salt."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Eating too much junk food can cause weight gain and health problems."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Starting healthy habits when we are young is much easier than changing habits when we are older."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "Small changes, like eating one more piece of fruit a day, can make a big difference over time."
+      }
+    ]
+  },
+  {
+    "order": 6,
+    "slug": "social-media-and-young-people",
+    "title": "Social Media and Young People",
+    "topic": "Technology",
+    "level": "B1",
+    "category": "intermediate",
+    "wordCount": 295,
+    "totalSentences": 17,
+    "paragraphs": [
+      "Social media has become an inseparable part of daily life for millions of young people around the world. Platforms like Instagram, TikTok, and YouTube are not just entertainment tools but spaces where identity is formed, communities are built, and news is consumed. For today's teenagers, a life without social media is almost unimaginable.",
+      "Proponents argue that social media provides young people with valuable opportunities. They can express themselves creatively, connect with peers globally, and access educational content from experts in any field. Many students use platforms to collaborate on projects and stay informed about current events. For those in remote areas, social media can be a vital link to opportunities unavailable locally.",
+      "However, concerns about the negative impact on mental health are growing. Studies have found a correlation between heavy social media use and increased rates of anxiety, depression, and low self-esteem among teenagers. The constant comparison with curated, idealized versions of others' lives can erode confidence and create unrealistic expectations. The addictive nature of notification systems keeps users engaged far beyond what is healthy.",
+      "Parents and educators face the challenge of guiding young people toward responsible use without eliminating the genuine benefits. Digital literacy — the ability to critically evaluate online content, manage screen time, and understand privacy issues — has become an essential skill. Schools are increasingly incorporating media literacy programs into their curricula.",
+      "The relationship between young people and social media will continue to evolve rapidly. Technology companies, families, and policymakers all have roles to play in shaping an environment where digital tools support human wellbeing rather than undermine it. Achieving this balance requires honest, ongoing conversation between all parties involved."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Social media has become an inseparable part of daily life for millions of young people around the world."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "Platforms like Instagram, TikTok, and YouTube are not just entertainment tools but spaces where identity is formed, communities are built, and news is consumed."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "For today's teenagers, a life without social media is almost unimaginable."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Proponents argue that social media provides young people with valuable opportunities."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "They can express themselves creatively, connect with peers globally, and access educational content from experts in any field."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "Many students use platforms to collaborate on projects and stay informed about current events."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "For those in remote areas, social media can be a vital link to opportunities unavailable locally."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "However, concerns about the negative impact on mental health are growing."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "Studies have found a correlation between heavy social media use and increased rates of anxiety, depression, and low self-esteem among teenagers."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "The constant comparison with curated, idealized versions of others' lives can erode confidence and create unrealistic expectations."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "The addictive nature of notification systems keeps users engaged far beyond what is healthy."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Parents and educators face the challenge of guiding young people toward responsible use without eliminating the genuine benefits."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Digital literacy — the ability to critically evaluate online content, manage screen time, and understand privacy issues — has become an essential skill."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Schools are increasingly incorporating media literacy programs into their curricula."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "The relationship between young people and social media will continue to evolve rapidly."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "Technology companies, families, and policymakers all have roles to play in shaping an environment where digital tools support human wellbeing rather than undermine it."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "Achieving this balance requires honest, ongoing conversation between all parties involved."
+      }
+    ]
+  },
+  {
+    "order": 7,
+    "slug": "the-benefits-of-regular-exercise",
+    "title": "The Benefits of Regular Exercise",
+    "topic": "Health",
+    "level": "B1",
+    "category": "intermediate",
+    "wordCount": 285,
+    "totalSentences": 18,
+    "paragraphs": [
+      "Regular physical exercise is one of the most effective things a person can do to improve their overall health and quality of life. Despite widespread awareness of its benefits, many people still struggle to maintain a consistent routine. Understanding why exercise matters so much may help motivate more people to make it a priority.",
+      "The physical benefits are well documented. Regular activity strengthens the heart and cardiovascular system, reduces the risk of chronic diseases such as diabetes and hypertension, and helps maintain a healthy body weight. Weight-bearing exercises like walking and running strengthen bones, reducing the risk of osteoporosis later in life. Flexibility exercises such as yoga can prevent injuries and improve mobility as we age.",
+      "Beyond physical health, exercise has profound effects on mental wellbeing. When you exercise, your brain releases endorphins — chemicals that produce feelings of happiness and reduce stress. Studies consistently show that regular physical activity reduces symptoms of depression and anxiety. Many people report that a workout session clears their mind and helps them think more clearly throughout the day.",
+      "Exercise also improves sleep quality significantly. People who exercise regularly tend to fall asleep faster and experience deeper, more restorative sleep. Good sleep, in turn, supports cognitive function, emotional regulation, and immune health in a positive feedback cycle.",
+      "Starting an exercise routine does not require expensive gym memberships or elaborate equipment. A daily thirty-minute walk, a home yoga session, or a bicycle ride through the neighborhood can provide significant benefits. The key is consistency rather than intensity. Small, regular efforts produce lasting results, making exercise one of the most accessible and powerful investments in long-term health and happiness."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Regular physical exercise is one of the most effective things a person can do to improve their overall health and quality of life."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "Despite widespread awareness of its benefits, many people still struggle to maintain a consistent routine."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "Understanding why exercise matters so much may help motivate more people to make it a priority."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "The physical benefits are well documented."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Regular activity strengthens the heart and cardiovascular system, reduces the risk of chronic diseases such as diabetes and hypertension, and helps maintain a healthy body weight."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "Weight-bearing exercises like walking and running strengthen bones, reducing the risk of osteoporosis later in life."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "Flexibility exercises such as yoga can prevent injuries and improve mobility as we age."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Beyond physical health, exercise has profound effects on mental wellbeing."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "When you exercise, your brain releases endorphins — chemicals that produce feelings of happiness and reduce stress."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "Studies consistently show that regular physical activity reduces symptoms of depression and anxiety."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "Many people report that a workout session clears their mind and helps them think more clearly throughout the day."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Exercise also improves sleep quality significantly."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "People who exercise regularly tend to fall asleep faster and experience deeper, more restorative sleep."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Good sleep, in turn, supports cognitive function, emotional regulation, and immune health in a positive feedback cycle."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Starting an exercise routine does not require expensive gym memberships or elaborate equipment."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "A daily thirty-minute walk, a home yoga session, or a bicycle ride through the neighborhood can provide significant benefits."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "The key is consistency rather than intensity."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 3,
+        "textEn": "Small, regular efforts produce lasting results, making exercise one of the most accessible and powerful investments in long-term health and happiness."
+      }
+    ]
+  },
+  {
+    "order": 8,
+    "slug": "the-rise-of-online-shopping",
+    "title": "The Rise of Online Shopping",
+    "topic": "Commerce",
+    "level": "B1",
+    "category": "intermediate",
+    "wordCount": 292,
+    "totalSentences": 17,
+    "paragraphs": [
+      "The way people shop has changed dramatically over the past two decades. The rise of e-commerce has shifted consumer behavior from visiting physical stores to browsing virtual shelves from the comfort of home. Today, from groceries to electronics to luxury fashion, almost anything can be ordered online and delivered within days or even hours.",
+      "The convenience of online shopping is its most obvious advantage. Consumers can compare prices across multiple retailers instantly, read reviews from other buyers, and find products unavailable in local stores. Shopping is available around the clock, eliminating the constraints of store opening hours. For busy professionals and parents, this time-saving aspect is particularly valuable.",
+      "However, the growth of e-commerce has not come without consequences. Traditional brick-and-mortar retailers have faced enormous pressure, with many long-established stores closing permanently. City centers and shopping malls that once thrived as social hubs have seen declining foot traffic. The human interactions that characterize physical shopping — advice from knowledgeable staff, the experience of seeing and touching products — are largely absent online.",
+      "Environmental concerns are also growing. The increase in packaging materials and last-mile delivery emissions from individual orders creates a larger carbon footprint than consolidated retail shopping trips. The ease of returning unwanted items results in complex reverse logistics that generate additional environmental costs.",
+      "Despite these concerns, online shopping continues to grow. Retailers are responding by developing more sustainable packaging and creating hybrid models that combine the convenience of online ordering with the experience of physical stores. The future of retail will likely blend both worlds in creative ways that serve diverse consumer preferences."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "The way people shop has changed dramatically over the past two decades."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "The rise of e-commerce has shifted consumer behavior from visiting physical stores to browsing virtual shelves from the comfort of home."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "Today, from groceries to electronics to luxury fashion, almost anything can be ordered online and delivered within days or even hours."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "The convenience of online shopping is its most obvious advantage."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Consumers can compare prices across multiple retailers instantly, read reviews from other buyers, and find products unavailable in local stores."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "Shopping is available around the clock, eliminating the constraints of store opening hours."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "For busy professionals and parents, this time-saving aspect is particularly valuable."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "However, the growth of e-commerce has not come without consequences."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "Traditional brick-and-mortar retailers have faced enormous pressure, with many long-established stores closing permanently."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "City centers and shopping malls that once thrived as social hubs have seen declining foot traffic."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "The human interactions that characterize physical shopping — advice from knowledgeable staff, the experience of seeing and touching products — are largely absent online."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Environmental concerns are also growing."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "The increase in packaging materials and last-mile delivery emissions from individual orders creates a larger carbon footprint than consolidated retail shopping trips."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "The ease of returning unwanted items results in complex reverse logistics that generate additional environmental costs."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Despite these concerns, online shopping continues to grow."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "Retailers are responding by developing more sustainable packaging and creating hybrid models that combine the convenience of online ordering with the experience of physical stores."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "The future of retail will likely blend both worlds in creative ways that serve diverse consumer preferences."
+      }
+    ]
+  },
+  {
+    "order": 9,
+    "slug": "city-living-vs-country-living",
+    "title": "City Living vs. Country Living",
+    "topic": "Lifestyle",
+    "level": "B1",
+    "category": "intermediate",
+    "wordCount": 290,
+    "totalSentences": 18,
+    "paragraphs": [
+      "The debate between city living and country living has continued for generations, with passionate advocates on both sides. The choice between urban and rural life involves trade-offs that depend on personal values, family circumstances, and life priorities. Neither option is universally superior — the ideal environment depends on the individual.",
+      "Life in a big city offers unmatched opportunities and convenience. Cities concentrate job markets, cultural institutions, educational facilities, and entertainment options within accessible distances. Public transportation reduces the need for car ownership, and a vast network of services is typically available around the clock. For ambitious professionals, cities provide networking opportunities and career pathways that smaller communities cannot replicate.",
+      "However, urban life comes with significant challenges. The high cost of living, particularly housing, is a major burden for many city residents. Noise, pollution, traffic congestion, and overcrowding can affect quality of life and physical health. Green spaces are limited, and the anonymity of dense urban environments can lead to social isolation despite the surrounding crowds.",
+      "Country living offers a different set of advantages. Clean air, natural landscapes, and quieter surroundings contribute significantly to physical and mental wellbeing. Housing is more affordable, communities tend to be closer-knit, and the pace of life is generally less stressful. Children grow up with more outdoor space and a deeper connection to nature.",
+      "The downsides include limited job opportunities, fewer educational and healthcare facilities, and reduced access to cultural events. Transportation requires personal vehicles, adding cost and time. Increasingly, people are finding middle-ground solutions — smaller cities or suburbs that offer urban amenities while preserving a more relaxed, affordable quality of life."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "The debate between city living and country living has continued for generations, with passionate advocates on both sides."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "The choice between urban and rural life involves trade-offs that depend on personal values, family circumstances, and life priorities."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "Neither option is universally superior — the ideal environment depends on the individual."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Life in a big city offers unmatched opportunities and convenience."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Cities concentrate job markets, cultural institutions, educational facilities, and entertainment options within accessible distances."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "Public transportation reduces the need for car ownership, and a vast network of services is typically available around the clock."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "For ambitious professionals, cities provide networking opportunities and career pathways that smaller communities cannot replicate."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "However, urban life comes with significant challenges."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "The high cost of living, particularly housing, is a major burden for many city residents."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "Noise, pollution, traffic congestion, and overcrowding can affect quality of life and physical health."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "Green spaces are limited, and the anonymity of dense urban environments can lead to social isolation despite the surrounding crowds."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Country living offers a different set of advantages."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Clean air, natural landscapes, and quieter surroundings contribute significantly to physical and mental wellbeing."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Housing is more affordable, communities tend to be closer-knit, and the pace of life is generally less stressful."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 3,
+        "textEn": "Children grow up with more outdoor space and a deeper connection to nature."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "The downsides include limited job opportunities, fewer educational and healthcare facilities, and reduced access to cultural events."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "Transportation requires personal vehicles, adding cost and time."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "Increasingly, people are finding middle-ground solutions — smaller cities or suburbs that offer urban amenities while preserving a more relaxed, affordable quality of life."
+      }
+    ]
+  },
+  {
+    "order": 10,
+    "slug": "the-psychology-of-habit-formation",
+    "title": "The Psychology of Habit Formation",
+    "topic": "Psychology",
+    "level": "C1",
+    "category": "advanced",
+    "wordCount": 430,
+    "totalSentences": 21,
+    "paragraphs": [
+      "Habits form the invisible architecture of our daily lives. Researchers estimate that approximately forty percent of the actions people perform each day are habits rather than deliberate decisions. This remarkable efficiency — allowing the brain to conserve cognitive energy for genuinely novel challenges — has deep evolutionary roots. Understanding how habits form and how they can be changed has become a central concern of behavioral psychology and neuroscience.",
+      "The neurological process underlying habit formation involves a structure in the brain called the basal ganglia. When a behavior is repeated consistently under similar conditions, the brain gradually encodes it as a routine, shifting control from the prefrontal cortex — the seat of conscious decision-making — to these deeper, more automatic neural pathways. This process, known as chunking, means that once a habit is established, it can be triggered and executed with minimal conscious input.",
+      "The habit loop describes the three-component structure that underlies most habitual behaviors: a cue, a routine, and a reward. The cue is a trigger that initiates the behavior — it might be a time of day, an emotional state, a location, or the presence of other people. The routine is the behavior itself. The reward is the positive reinforcement that makes the brain value and remember the loop. Over time, the brain begins to anticipate the reward even before the routine begins, creating craving that drives the behavior.",
+      "This framework has important implications for behavior change. Simply trying to eliminate a bad habit through willpower tends to fail because the neurological pattern remains encoded. More effective strategies involve identifying the cue, keeping the reward, but substituting a different routine. This is the foundation of cognitive-behavioral therapy and many successful behavior change programs.",
+      "Context plays a critical role. Research shows that habits are more easily changed during major life transitions — moving to a new home, changing jobs, starting university — because the environmental cues associated with old habits are temporarily disrupted. This window of instability creates an unusual opportunity to establish new patterns before automatic behavior reasserts itself.",
+      "The practical implications of habit science extend well beyond personal productivity into organizational design, public health policy, and product development. Understanding the mechanisms by which behavior becomes automatic allows for more sophisticated and humane approaches to human change — recognizing that willpower alone is rarely sufficient, and that environment, context, and reward structure are far more powerful levers for lasting behavioral transformation."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Habits form the invisible architecture of our daily lives."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "Researchers estimate that approximately forty percent of the actions people perform each day are habits rather than deliberate decisions."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "This remarkable efficiency — allowing the brain to conserve cognitive energy for genuinely novel challenges — has deep evolutionary roots."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 3,
+        "textEn": "Understanding how habits form and how they can be changed has become a central concern of behavioral psychology and neuroscience."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "The neurological process underlying habit formation involves a structure in the brain called the basal ganglia."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "When a behavior is repeated consistently under similar conditions, the brain gradually encodes it as a routine, shifting control from the prefrontal cortex — the seat of conscious decision-making — to these deeper, more automatic neural pathways."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "This process, known as chunking, means that once a habit is established, it can be triggered and executed with minimal conscious input."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "The habit loop describes the three-component structure that underlies most habitual behaviors: a cue, a routine, and a reward."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "The cue is a trigger that initiates the behavior — it might be a time of day, an emotional state, a location, or the presence of other people."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "The routine is the behavior itself."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "The reward is the positive reinforcement that makes the brain value and remember the loop."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 4,
+        "textEn": "Over time, the brain begins to anticipate the reward even before the routine begins, creating craving that drives the behavior."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "This framework has important implications for behavior change."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Simply trying to eliminate a bad habit through willpower tends to fail because the neurological pattern remains encoded."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "More effective strategies involve identifying the cue, keeping the reward, but substituting a different routine."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 3,
+        "textEn": "This is the foundation of cognitive-behavioral therapy and many successful behavior change programs."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Context plays a critical role."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "Research shows that habits are more easily changed during major life transitions — moving to a new home, changing jobs, starting university — because the environmental cues associated with old habits are temporarily disrupted."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "This window of instability creates an unusual opportunity to establish new patterns before automatic behavior reasserts itself."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 0,
+        "textEn": "The practical implications of habit science extend well beyond personal productivity into organizational design, public health policy, and product development."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 1,
+        "textEn": "Understanding the mechanisms by which behavior becomes automatic allows for more sophisticated and humane approaches to human change — recognizing that willpower alone is rarely sufficient, and that environment, context, and reward structure are far more powerful levers for lasting behavioral transformation."
+      }
+    ]
+  },
+  {
+    "order": 11,
+    "slug": "artificial-intelligence-and-the-future-of-work",
+    "title": "Artificial Intelligence and the Future of Work",
+    "topic": "Technology",
+    "level": "C1",
+    "category": "advanced",
+    "wordCount": 420,
+    "totalSentences": 17,
+    "paragraphs": [
+      "Few technological developments have generated as much anticipation and intellectual debate as artificial intelligence. As machine learning systems grow increasingly capable of performing cognitive tasks once considered the exclusive province of human intelligence, fundamental questions about the nature and future of work demand serious consideration. The historical pattern of technological disruption offers partial guidance, but the scale and pace of AI advancement may represent something qualitatively different from previous industrial transitions.",
+      "Historical economic transitions driven by technology — from agricultural mechanization to industrial automation — ultimately created more jobs than they eliminated, though the process was rarely painless for those whose skills were rendered obsolete. The introduction of ATMs, for instance, paradoxically increased the number of bank teller jobs by reducing the cost of operating branches and enabling their expansion into new markets. This complementarity between technology and human labor has been the dominant pattern of technological progress.",
+      "However, AI differs from previous technologies in a critical respect: it performs cognitive rather than merely physical work. Earlier waves of automation primarily displaced routine manual tasks while augmenting demand for analytical and creative skills. AI is increasingly capable of performing routine analytical work — legal research, medical diagnosis, financial analysis, code generation — at a level competitive with trained professionals. This threatens a far broader segment of the workforce, including highly educated knowledge workers who previously assumed their positions were secure.",
+      "The distributional consequences are also concerning. While AI may increase aggregate productivity and create new categories of employment, the benefits and disruptions will not be evenly distributed. Workers with the skills and resources to adapt will likely capture a disproportionate share of the gains. Those in lower-wage, routine cognitive occupations may face displacement without adequate alternatives.",
+      "Policy responses being considered include investment in worker retraining programs, reform of educational systems to prioritize adaptable skills, expansion of social safety nets to manage transition periods, and proposals around taxation of automated production. None of these approaches is straightforward or uncontroversial.",
+      "What seems clear is that navigating the AI transition successfully will require proactive, coordinated engagement from employers, governments, educational institutions, and individuals — a shared recognition that technological capability, without careful human governance, does not automatically translate into broader human flourishing."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Few technological developments have generated as much anticipation and intellectual debate as artificial intelligence."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "As machine learning systems grow increasingly capable of performing cognitive tasks once considered the exclusive province of human intelligence, fundamental questions about the nature and future of work demand serious consideration."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "The historical pattern of technological disruption offers partial guidance, but the scale and pace of AI advancement may represent something qualitatively different from previous industrial transitions."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Historical economic transitions driven by technology — from agricultural mechanization to industrial automation — ultimately created more jobs than they eliminated, though the process was rarely painless for those whose skills were rendered obsolete."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "The introduction of ATMs, for instance, paradoxically increased the number of bank teller jobs by reducing the cost of operating branches and enabling their expansion into new markets."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "This complementarity between technology and human labor has been the dominant pattern of technological progress."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "However, AI differs from previous technologies in a critical respect: it performs cognitive rather than merely physical work."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "Earlier waves of automation primarily displaced routine manual tasks while augmenting demand for analytical and creative skills."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "AI is increasingly capable of performing routine analytical work — legal research, medical diagnosis, financial analysis, code generation — at a level competitive with trained professionals."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "This threatens a far broader segment of the workforce, including highly educated knowledge workers who previously assumed their positions were secure."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "The distributional consequences are also concerning."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "While AI may increase aggregate productivity and create new categories of employment, the benefits and disruptions will not be evenly distributed."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Workers with the skills and resources to adapt will likely capture a disproportionate share of the gains."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 3,
+        "textEn": "Those in lower-wage, routine cognitive occupations may face displacement without adequate alternatives."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Policy responses being considered include investment in worker retraining programs, reform of educational systems to prioritize adaptable skills, expansion of social safety nets to manage transition periods, and proposals around taxation of automated production."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "None of these approaches is straightforward or uncontroversial."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 0,
+        "textEn": "What seems clear is that navigating the AI transition successfully will require proactive, coordinated engagement from employers, governments, educational institutions, and individuals — a shared recognition that technological capability, without careful human governance, does not automatically translate into broader human flourishing."
+      }
+    ]
+  },
+  {
+    "order": 12,
+    "slug": "the-philosophy-of-personal-identity",
+    "title": "The Philosophy of Personal Identity",
+    "topic": "Philosophy",
+    "level": "C1",
+    "category": "advanced",
+    "wordCount": 415,
+    "totalSentences": 22,
+    "paragraphs": [
+      "What makes you the same person you were ten years ago? The cells of your body have largely been replaced. Your beliefs, values, and personality may have changed substantially. Your memories of childhood are fragmentary and unreliable. If almost everything about you has changed, in what sense do you remain the same individual? This question — the problem of personal identity — has occupied philosophers for centuries and continues to generate genuine disagreement.",
+      "John Locke, writing in the seventeenth century, proposed that personal identity consists in continuity of consciousness, particularly memory. What makes you the same person over time is the chain of memories that links your present experience to your past. This view captures something important — we do feel our identity is tied to our memories and psychological continuity — but it faces serious objections. Memory is notoriously unreliable and selective. We cannot remember being infants, yet we consider ourselves continuous with those early selves.",
+      "Derek Parfit's influential work challenged the very coherence of the question of whether personal identity persists through change. For Parfit, what matters is not identity per se but rather psychological connectedness — the degree to which a future person shares memories, beliefs, intentions, and character traits with a present person. This connectedness can be stronger or weaker and can hold between persons other than yourself. The sharp boundary of the self, Parfit argued, is a useful fiction rather than a metaphysical reality.",
+      "Buddhist philosophy offers a strikingly convergent perspective, though reached through different means. The doctrine of anatta (non-self) holds that the self is not a fixed, enduring entity but a continuously changing process. The experience of persistent identity is a cognitive construction — a narrative the mind weaves from the raw material of changing sensations and experiences. Far from being a cause for distress, recognizing the constructed nature of the self can, in this tradition, be deeply liberating.",
+      "These philosophical perspectives have practical consequences. How we think about personal identity affects how we reason about moral responsibility, the rationality of long-term planning, the ethics of punishment and reward, and our attitudes toward our own future selves. Whether the self is a continuous substance, a connected process, or a useful fiction matters — not merely as abstract philosophy, but as a framework through which we navigate the challenges and commitments of an entire human life."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "What makes you the same person you were ten years ago?"
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "The cells of your body have largely been replaced."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "Your beliefs, values, and personality may have changed substantially."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 3,
+        "textEn": "Your memories of childhood are fragmentary and unreliable."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 4,
+        "textEn": "If almost everything about you has changed, in what sense do you remain the same individual?"
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 5,
+        "textEn": "This question — the problem of personal identity — has occupied philosophers for centuries and continues to generate genuine disagreement."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "John Locke, writing in the seventeenth century, proposed that personal identity consists in continuity of consciousness, particularly memory."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "What makes you the same person over time is the chain of memories that links your present experience to your past."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "This view captures something important — we do feel our identity is tied to our memories and psychological continuity — but it faces serious objections."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "Memory is notoriously unreliable and selective."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 4,
+        "textEn": "We cannot remember being infants, yet we consider ourselves continuous with those early selves."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Derek Parfit's influential work challenged the very coherence of the question of whether personal identity persists through change."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "For Parfit, what matters is not identity per se but rather psychological connectedness — the degree to which a future person shares memories, beliefs, intentions, and character traits with a present person."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "This connectedness can be stronger or weaker and can hold between persons other than yourself."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "The sharp boundary of the self, Parfit argued, is a useful fiction rather than a metaphysical reality."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Buddhist philosophy offers a strikingly convergent perspective, though reached through different means."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "The doctrine of anatta (non-self) holds that the self is not a fixed, enduring entity but a continuously changing process."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "The experience of persistent identity is a cognitive construction — a narrative the mind weaves from the raw material of changing sensations and experiences."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 3,
+        "textEn": "Far from being a cause for distress, recognizing the constructed nature of the self can, in this tradition, be deeply liberating."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "These philosophical perspectives have practical consequences."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "How we think about personal identity affects how we reason about moral responsibility, the rationality of long-term planning, the ethics of punishment and reward, and our attitudes toward our own future selves."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "Whether the self is a continuous substance, a connected process, or a useful fiction matters — not merely as abstract philosophy, but as a framework through which we navigate the challenges and commitments of an entire human life."
+      }
+    ]
+  },
+  {
+    "order": 13,
+    "slug": "the-paradox-of-choice",
+    "title": "The Paradox of Choice",
+    "topic": "Psychology / Society",
+    "level": "B2",
+    "category": "ielts",
+    "wordCount": 590,
+    "totalSentences": 27,
+    "paragraphs": [
+      "In contemporary consumer societies, the abundance of options available to individuals has reached unprecedented levels. Supermarkets offer hundreds of varieties of the same product; streaming services provide access to millions of hours of content; dating platforms present thousands of potential partners. The underlying assumption driving this expansion has been that more choice is inherently better — that freedom of selection is synonymous with individual empowerment and satisfaction. Mounting psychological research, however, suggests a more complicated and counterintuitive reality.",
+      "Psychologist Barry Schwartz coined the term \"paradox of choice\" to describe the phenomenon whereby an increase in available options produces not greater satisfaction but rather increased anxiety, decision paralysis, and post-decision regret. When options are limited, choosing is relatively straightforward: you select the best available option and move forward. When options proliferate, however, the cognitive demands of evaluation multiply exponentially, and the opportunity cost of each choice — what you forgo by not selecting the alternatives — becomes more psychologically salient.",
+      "Research by Iyengar and Lepper demonstrated this effect in a now-classic experiment conducted in a supermarket. When customers encountered a display featuring six varieties of jam, thirty percent made a purchase. When the display featured twenty-four varieties, only three percent purchased. Despite the more limited selection, shoppers in the smaller-choice condition made decisions more readily and reported higher satisfaction with their choices. The abundance of options in the larger display created cognitive overload that discouraged action entirely.",
+      "The consequences extend beyond consumer behavior. Schwartz identifies two distinct orientations toward choice: maximizers, who feel compelled to identify the objectively best option in any situation, and satisficers, who select the first option that meets an acceptable standard. Maximizers consistently report lower happiness and greater regret than satisficers, despite often making objectively superior choices by external metrics. The relentless pursuit of the optimal option comes at a significant psychological cost.",
+      "Social comparison amplifies these effects in the context of modern media. When available options are visible to others, choices become subject to public judgment, raising the emotional stakes of every decision. Social media platforms, in particular, create environments where lifestyle choices are continuously displayed and evaluated by peers. This heightens the pressure on decision-makers and intensifies the regret associated with paths not taken.",
+      "Several practical strategies have been proposed to counteract the negative effects of excessive choice. Voluntary simplification — deliberately limiting one's options in advance — can reduce decision fatigue without sacrificing quality of outcome. Satisficing rather than maximizing, learning to identify when a choice is \"good enough\" rather than seeking the optimum, is consistently associated with greater subjective wellbeing. Cultivating gratitude for available options, rather than fixating on unchosen alternatives, redirects cognitive attention in psychologically beneficial directions.",
+      "The paradox of choice does not argue for eliminating options or restricting freedom. Rather, it suggests that the design of environments — whether in retail, digital platforms, or public institutions — has psychological consequences not captured by simple models of rational preference satisfaction. Creating conditions for genuine human flourishing may sometimes require offering less rather than more."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "In contemporary consumer societies, the abundance of options available to individuals has reached unprecedented levels."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "Supermarkets offer hundreds of varieties of the same product; streaming services provide access to millions of hours of content; dating platforms present thousands of potential partners."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "The underlying assumption driving this expansion has been that more choice is inherently better — that freedom of selection is synonymous with individual empowerment and satisfaction."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 3,
+        "textEn": "Mounting psychological research, however, suggests a more complicated and counterintuitive reality."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Psychologist Barry Schwartz coined the term \"paradox of choice\" to describe the phenomenon whereby an increase in available options produces not greater satisfaction but rather increased anxiety, decision paralysis, and post-decision regret."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "When options are limited, choosing is relatively straightforward: you select the best available option and move forward."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "When options proliferate, however, the cognitive demands of evaluation multiply exponentially, and the opportunity cost of each choice — what you forgo by not selecting the alternatives — becomes more psychologically salient."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Research by Iyengar and Lepper demonstrated this effect in a now-classic experiment conducted in a supermarket."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "When customers encountered a display featuring six varieties of jam, thirty percent made a purchase."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "When the display featured twenty-four varieties, only three percent purchased."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "Despite the more limited selection, shoppers in the smaller-choice condition made decisions more readily and reported higher satisfaction with their choices."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 4,
+        "textEn": "The abundance of options in the larger display created cognitive overload that discouraged action entirely."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "The consequences extend beyond consumer behavior."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Schwartz identifies two distinct orientations toward choice: maximizers, who feel compelled to identify the objectively best option in any situation, and satisficers, who select the first option that meets an acceptable standard."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Maximizers consistently report lower happiness and greater regret than satisficers, despite often making objectively superior choices by external metrics."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 3,
+        "textEn": "The relentless pursuit of the optimal option comes at a significant psychological cost."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Social comparison amplifies these effects in the context of modern media."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "When available options are visible to others, choices become subject to public judgment, raising the emotional stakes of every decision."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "Social media platforms, in particular, create environments where lifestyle choices are continuously displayed and evaluated by peers."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 3,
+        "textEn": "This heightens the pressure on decision-makers and intensifies the regret associated with paths not taken."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 0,
+        "textEn": "Several practical strategies have been proposed to counteract the negative effects of excessive choice."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 1,
+        "textEn": "Voluntary simplification — deliberately limiting one's options in advance — can reduce decision fatigue without sacrificing quality of outcome."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 2,
+        "textEn": "Satisficing rather than maximizing, learning to identify when a choice is \"good enough\" rather than seeking the optimum, is consistently associated with greater subjective wellbeing."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 3,
+        "textEn": "Cultivating gratitude for available options, rather than fixating on unchosen alternatives, redirects cognitive attention in psychologically beneficial directions."
+      },
+      {
+        "paragraphIndex": 6,
+        "sentenceIndex": 0,
+        "textEn": "The paradox of choice does not argue for eliminating options or restricting freedom."
+      },
+      {
+        "paragraphIndex": 6,
+        "sentenceIndex": 1,
+        "textEn": "Rather, it suggests that the design of environments — whether in retail, digital platforms, or public institutions — has psychological consequences not captured by simple models of rational preference satisfaction."
+      },
+      {
+        "paragraphIndex": 6,
+        "sentenceIndex": 2,
+        "textEn": "Creating conditions for genuine human flourishing may sometimes require offering less rather than more."
+      }
+    ]
+  },
+  {
+    "order": 14,
+    "slug": "marine-plastic-pollution",
+    "title": "Marine Plastic Pollution",
+    "topic": "Environment",
+    "level": "B2",
+    "category": "ielts",
+    "wordCount": 575,
+    "totalSentences": 23,
+    "paragraphs": [
+      "The accumulation of plastic waste in the world's oceans has emerged as one of the most significant environmental crises of the twenty-first century. Since the mid-twentieth century, plastic production has grown exponentially, reaching over four hundred million tonnes annually. A substantial proportion of this material eventually enters marine environments through river systems, coastal dumping, and atmospheric transport, with consequences that researchers are only beginning to fully understand.",
+      "Plastic does not biodegrade in the conventional sense. Instead, through the combined effects of ultraviolet radiation, mechanical abrasion, and biological activity, large plastic objects fragment progressively into smaller particles. Objects smaller than five millimetres in diameter are categorized as microplastics; those smaller than one micrometre as nanoplastics. These particles have been detected in virtually every marine environment studied, from shallow coastal waters to deep ocean trenches and Arctic sea ice. Their ubiquity reflects both the scale of plastic contamination and the limitations of current waste management systems.",
+      "The ecological impacts of marine plastic pollution operate at multiple levels of biological organization. At the organism level, large marine animals — sea turtles, seabirds, whales, and dolphins — suffer entanglement in discarded fishing gear and ingestion of macro-plastic items mistaken for prey. Documented cases include sea turtles trapped in abandoned nets and seabirds feeding plastic fragments to their chicks. At the cellular level, studies suggest that microplastic ingestion can cause physical damage to digestive tissues, impair reproductive function, and facilitate the transfer of absorbed chemical pollutants into body tissues.",
+      "Marine food webs are affected because plastic particles are consumed by organisms at the base of the food chain, including zooplankton and filter-feeding bivalves. Since energy and matter are transferred up food webs, there is potential for bioaccumulation of both plastic particles and associated chemical loads at higher trophic levels. Whether this results in meaningful harm to human consumers of seafood remains a subject of active scientific investigation.",
+      "Policy responses to marine plastic pollution have developed on several fronts. International agreements including the Basel Convention and emerging negotiations for a global plastics treaty aim to coordinate national actions on plastic production, waste management, and transboundary pollution. At the national level, measures including extended producer responsibility schemes, bans on single-use plastics, and investment in waste management infrastructure in high-leakage countries have been implemented with varying degrees of effectiveness.",
+      "Technological innovation is also being explored. Chemical recycling processes, improved bio-based and biodegradable materials, and advanced filtration systems for capturing microplastics in wastewater treatment are among the approaches receiving research and investment attention. Ocean cleanup technologies — large-scale systems designed to collect floating plastic from ocean surface waters — have attracted public attention, though researchers debate their effectiveness relative to upstream prevention measures.",
+      "The evidence overwhelmingly indicates that addressing marine plastic pollution will require a systemic approach combining reduction in plastic production, radical improvement in waste management globally, international regulatory cooperation, and changes in consumer behavior. Technological fixes alone are insufficient to address a problem whose roots lie in the structure of a global economic system built around disposable materials."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "The accumulation of plastic waste in the world's oceans has emerged as one of the most significant environmental crises of the twenty-first century."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "Since the mid-twentieth century, plastic production has grown exponentially, reaching over four hundred million tonnes annually."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "A substantial proportion of this material eventually enters marine environments through river systems, coastal dumping, and atmospheric transport, with consequences that researchers are only beginning to fully understand."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Plastic does not biodegrade in the conventional sense."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Instead, through the combined effects of ultraviolet radiation, mechanical abrasion, and biological activity, large plastic objects fragment progressively into smaller particles."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "Objects smaller than five millimetres in diameter are categorized as microplastics; those smaller than one micrometre as nanoplastics."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "These particles have been detected in virtually every marine environment studied, from shallow coastal waters to deep ocean trenches and Arctic sea ice."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 4,
+        "textEn": "Their ubiquity reflects both the scale of plastic contamination and the limitations of current waste management systems."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "The ecological impacts of marine plastic pollution operate at multiple levels of biological organization."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "At the organism level, large marine animals — sea turtles, seabirds, whales, and dolphins — suffer entanglement in discarded fishing gear and ingestion of macro-plastic items mistaken for prey."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "Documented cases include sea turtles trapped in abandoned nets and seabirds feeding plastic fragments to their chicks."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "At the cellular level, studies suggest that microplastic ingestion can cause physical damage to digestive tissues, impair reproductive function, and facilitate the transfer of absorbed chemical pollutants into body tissues."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Marine food webs are affected because plastic particles are consumed by organisms at the base of the food chain, including zooplankton and filter-feeding bivalves."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Since energy and matter are transferred up food webs, there is potential for bioaccumulation of both plastic particles and associated chemical loads at higher trophic levels."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Whether this results in meaningful harm to human consumers of seafood remains a subject of active scientific investigation."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Policy responses to marine plastic pollution have developed on several fronts."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "International agreements including the Basel Convention and emerging negotiations for a global plastics treaty aim to coordinate national actions on plastic production, waste management, and transboundary pollution."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "At the national level, measures including extended producer responsibility schemes, bans on single-use plastics, and investment in waste management infrastructure in high-leakage countries have been implemented with varying degrees of effectiveness."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 0,
+        "textEn": "Technological innovation is also being explored."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 1,
+        "textEn": "Chemical recycling processes, improved bio-based and biodegradable materials, and advanced filtration systems for capturing microplastics in wastewater treatment are among the approaches receiving research and investment attention."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 2,
+        "textEn": "Ocean cleanup technologies — large-scale systems designed to collect floating plastic from ocean surface waters — have attracted public attention, though researchers debate their effectiveness relative to upstream prevention measures."
+      },
+      {
+        "paragraphIndex": 6,
+        "sentenceIndex": 0,
+        "textEn": "The evidence overwhelmingly indicates that addressing marine plastic pollution will require a systemic approach combining reduction in plastic production, radical improvement in waste management globally, international regulatory cooperation, and changes in consumer behavior."
+      },
+      {
+        "paragraphIndex": 6,
+        "sentenceIndex": 1,
+        "textEn": "Technological fixes alone are insufficient to address a problem whose roots lie in the structure of a global economic system built around disposable materials."
+      }
+    ]
+  },
+  {
+    "order": 15,
+    "slug": "the-evolution-of-urban-transportation",
+    "title": "The Evolution of Urban Transportation",
+    "topic": "Urban Studies",
+    "level": "B2",
+    "category": "ielts",
+    "wordCount": 560,
+    "totalSentences": 19,
+    "paragraphs": [
+      "Cities have always been defined by their systems of movement. The form that transportation takes — from the walking city of antiquity to the railway city of the industrial age to the automobile city of the twentieth century — shapes not only physical infrastructure but the spatial organization of urban life, patterns of social interaction, and the distribution of economic opportunity. The transportation systems now being developed and deployed will similarly reshape cities in the decades ahead.",
+      "The automobile's dominance in twentieth-century urban design had profound and often underappreciated consequences. Cities expanded to accommodate car infrastructure — roads, highways, parking structures — at the expense of other land uses, particularly affordable housing and public space. Low-density suburban development, enabled by mass car ownership, dispersed urban populations across vast areas, creating patterns of land use that are inherently energy-intensive and resistant to public transportation. In many metropolitan areas, the result was a self-reinforcing cycle: because destinations were far apart and public transportation inadequate, car ownership became a practical necessity, which in turn justified continued investment in car infrastructure and further suburban development.",
+      "Growing awareness of the environmental and social costs of car-centric urbanism has driven renewed interest in alternatives. Investment in public transportation — metro systems, light rail, bus rapid transit — reduces per-capita emissions, improves air quality, and typically increases urban density and economic activity along served corridors. Cities including Copenhagen, Amsterdam, and Tokyo demonstrate that high-quality public transit combined with effective cycling infrastructure can produce urban environments that are more livable, equitable, and environmentally sustainable than car-dominated counterparts.",
+      "The emergence of ride-hailing services, electric vehicles, micro-mobility options including e-scooters and bike-sharing, and the anticipated arrival of autonomous vehicles has introduced new complexity into transportation planning. Initial evidence suggests that ride-hailing services have increased total vehicle miles traveled and congestion in major cities rather than reducing them — in part by drawing passengers away from public transit. Autonomous vehicles hold potential safety benefits and could improve road use efficiency, but also pose risks of further urban sprawl if deployed without appropriate regulatory frameworks.",
+      "Data and digital technology are transforming transportation system management. Real-time monitoring of traffic flows, predictive demand modeling, and dynamic pricing of road access and parking enable more efficient use of existing infrastructure. Many cities are developing integrated mobility platforms — digital systems that allow users to plan and pay for journeys across multiple transportation modes through a single interface — making sustainable transportation choices more convenient and encouraging modal shift away from private car use.",
+      "The central challenge for urban transportation planners is not primarily technological but political and institutional. The interests of different groups — car owners, public transit users, cyclists, residents concerned about congestion and air quality, real estate developers — conflict in ways that technical optimization alone cannot resolve. Designing equitable transportation systems requires deliberate attention to who benefits and who bears the costs of infrastructure choices, and governance structures capable of making and implementing those decisions over the long time horizons that infrastructure investment demands."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Cities have always been defined by their systems of movement."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "The form that transportation takes — from the walking city of antiquity to the railway city of the industrial age to the automobile city of the twentieth century — shapes not only physical infrastructure but the spatial organization of urban life, patterns of social interaction, and the distribution of economic opportunity."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "The transportation systems now being developed and deployed will similarly reshape cities in the decades ahead."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "The automobile's dominance in twentieth-century urban design had profound and often underappreciated consequences."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Cities expanded to accommodate car infrastructure — roads, highways, parking structures — at the expense of other land uses, particularly affordable housing and public space."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "Low-density suburban development, enabled by mass car ownership, dispersed urban populations across vast areas, creating patterns of land use that are inherently energy-intensive and resistant to public transportation."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "In many metropolitan areas, the result was a self-reinforcing cycle: because destinations were far apart and public transportation inadequate, car ownership became a practical necessity, which in turn justified continued investment in car infrastructure and further suburban development."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Growing awareness of the environmental and social costs of car-centric urbanism has driven renewed interest in alternatives."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "Investment in public transportation — metro systems, light rail, bus rapid transit — reduces per-capita emissions, improves air quality, and typically increases urban density and economic activity along served corridors."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "Cities including Copenhagen, Amsterdam, and Tokyo demonstrate that high-quality public transit combined with effective cycling infrastructure can produce urban environments that are more livable, equitable, and environmentally sustainable than car-dominated counterparts."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "The emergence of ride-hailing services, electric vehicles, micro-mobility options including e-scooters and bike-sharing, and the anticipated arrival of autonomous vehicles has introduced new complexity into transportation planning."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Initial evidence suggests that ride-hailing services have increased total vehicle miles traveled and congestion in major cities rather than reducing them — in part by drawing passengers away from public transit."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Autonomous vehicles hold potential safety benefits and could improve road use efficiency, but also pose risks of further urban sprawl if deployed without appropriate regulatory frameworks."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Data and digital technology are transforming transportation system management."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "Real-time monitoring of traffic flows, predictive demand modeling, and dynamic pricing of road access and parking enable more efficient use of existing infrastructure."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "Many cities are developing integrated mobility platforms — digital systems that allow users to plan and pay for journeys across multiple transportation modes through a single interface — making sustainable transportation choices more convenient and encouraging modal shift away from private car use."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 0,
+        "textEn": "The central challenge for urban transportation planners is not primarily technological but political and institutional."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 1,
+        "textEn": "The interests of different groups — car owners, public transit users, cyclists, residents concerned about congestion and air quality, real estate developers — conflict in ways that technical optimization alone cannot resolve."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 2,
+        "textEn": "Designing equitable transportation systems requires deliberate attention to who benefits and who bears the costs of infrastructure choices, and governance structures capable of making and implementing those decisions over the long time horizons that infrastructure investment demands."
+      }
+    ]
+  },
+  {
+    "order": 16,
+    "slug": "cognitive-load-and-learning",
+    "title": "Cognitive Load and Learning",
+    "topic": "Education / Cognitive Science",
+    "level": "B2",
+    "category": "ielts",
+    "wordCount": 565,
+    "totalSentences": 20,
+    "paragraphs": [
+      "Cognitive load theory, originally developed by educational psychologist John Sweller in the 1980s, has become one of the most influential frameworks in instructional design. The theory holds that the human brain's working memory — the mental workspace in which conscious thought occurs — has severely limited capacity. Understanding this limitation and designing instruction accordingly has significant implications for how information should be presented, structured, and sequenced to maximize learning.",
+      "The theory distinguishes between three types of cognitive load. Intrinsic load refers to the inherent complexity of the material being learned — the number of interacting elements that must be simultaneously held in mind for comprehension. Some material, such as basic vocabulary, involves few interacting elements and low intrinsic load; other material, such as solving complex mathematical problems, requires the simultaneous coordination of many elements and imposes high intrinsic load. Intrinsic load cannot be eliminated, but it can be managed by sequencing learning from simple to complex and building prerequisite knowledge before introducing complex integrated tasks.",
+      "Extraneous load refers to cognitive effort generated not by the learning content itself but by the way it is presented. Poorly designed instructional materials, confusing layout, redundant information presented in multiple formats simultaneously, and unclear explanations all impose extraneous load that competes for working memory resources without contributing to learning. Reducing extraneous load is one of the most reliable ways to improve instruction — not by simplifying content but by removing unnecessary cognitive obstacles from the path to understanding.",
+      "Germane load refers to the effortful cognitive processing that directly contributes to the formation of schemas — organized mental frameworks that allow information to be stored and retrieved efficiently from long-term memory. Contrary to what one might expect, some degree of effortful cognitive processing is desirable in learning. Activities that require learners to actively connect new information to existing knowledge, explain concepts in their own words, or apply principles to new problems generate germane load that supports durable learning. The art of instructional design lies in minimizing extraneous load while creating appropriate conditions for germane processing.",
+      "Several evidence-based principles follow from cognitive load theory. The worked example effect demonstrates that novice learners acquire skills more efficiently by studying worked examples than by attempting independent problem-solving — the latter imposes high extraneous load before sufficient schema development. The expertise reversal effect shows that instructional techniques effective for novices can become counterproductive for more advanced learners, who possess the schemas to benefit from problem-solving practice that would overwhelm beginners. Split-attention effects occur when learners must mentally integrate information from separate sources — a diagram and its explanation presented in separate locations — imposing unnecessary extraneous load that is eliminated when the information is physically integrated.",
+      "The practical implications of cognitive load theory extend across formal education, professional training, software user experience design, and public communication. In each domain, the fundamental challenge is the same: matching the demands placed on human cognitive architecture to its actual capacities, rather than designing for an idealized learner with unlimited mental resources."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Cognitive load theory, originally developed by educational psychologist John Sweller in the 1980s, has become one of the most influential frameworks in instructional design."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "The theory holds that the human brain's working memory — the mental workspace in which conscious thought occurs — has severely limited capacity."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "Understanding this limitation and designing instruction accordingly has significant implications for how information should be presented, structured, and sequenced to maximize learning."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "The theory distinguishes between three types of cognitive load."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Intrinsic load refers to the inherent complexity of the material being learned — the number of interacting elements that must be simultaneously held in mind for comprehension."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "Some material, such as basic vocabulary, involves few interacting elements and low intrinsic load; other material, such as solving complex mathematical problems, requires the simultaneous coordination of many elements and imposes high intrinsic load."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "Intrinsic load cannot be eliminated, but it can be managed by sequencing learning from simple to complex and building prerequisite knowledge before introducing complex integrated tasks."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Extraneous load refers to cognitive effort generated not by the learning content itself but by the way it is presented."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "Poorly designed instructional materials, confusing layout, redundant information presented in multiple formats simultaneously, and unclear explanations all impose extraneous load that competes for working memory resources without contributing to learning."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "Reducing extraneous load is one of the most reliable ways to improve instruction — not by simplifying content but by removing unnecessary cognitive obstacles from the path to understanding."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Germane load refers to the effortful cognitive processing that directly contributes to the formation of schemas — organized mental frameworks that allow information to be stored and retrieved efficiently from long-term memory."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Contrary to what one might expect, some degree of effortful cognitive processing is desirable in learning."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Activities that require learners to actively connect new information to existing knowledge, explain concepts in their own words, or apply principles to new problems generate germane load that supports durable learning."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 3,
+        "textEn": "The art of instructional design lies in minimizing extraneous load while creating appropriate conditions for germane processing."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Several evidence-based principles follow from cognitive load theory."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "The worked example effect demonstrates that novice learners acquire skills more efficiently by studying worked examples than by attempting independent problem-solving — the latter imposes high extraneous load before sufficient schema development."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "The expertise reversal effect shows that instructional techniques effective for novices can become counterproductive for more advanced learners, who possess the schemas to benefit from problem-solving practice that would overwhelm beginners."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 3,
+        "textEn": "Split-attention effects occur when learners must mentally integrate information from separate sources — a diagram and its explanation presented in separate locations — imposing unnecessary extraneous load that is eliminated when the information is physically integrated."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 0,
+        "textEn": "The practical implications of cognitive load theory extend across formal education, professional training, software user experience design, and public communication."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 1,
+        "textEn": "In each domain, the fundamental challenge is the same: matching the demands placed on human cognitive architecture to its actual capacities, rather than designing for an idealized learner with unlimited mental resources."
+      }
+    ]
+  },
+  {
+    "order": 17,
+    "slug": "effective-business-email-communication",
+    "title": "Effective Business Email Communication",
+    "topic": "Business Communication",
+    "level": "B1",
+    "category": "toeic",
+    "wordCount": 310,
+    "totalSentences": 16,
+    "paragraphs": [
+      "In today's fast-paced professional environment, email remains the primary medium of business communication. Despite the rise of instant messaging platforms and collaboration tools, the formal business email continues to set the tone for professional relationships and plays a critical role in how individuals and organizations are perceived by clients, partners, and colleagues. Mastering effective email communication is, therefore, an essential professional competency.",
+      "Clarity and brevity are the cornerstones of effective business email. Recipients in professional settings receive dozens or hundreds of messages daily; long, poorly organized emails are frequently skimmed or deferred. The most effective business emails state their purpose in the opening sentence, present supporting information concisely, and close with a clear call to action or next step. Subject lines should be specific and informative, accurately reflecting the email's content rather than providing generic descriptions.",
+      "Tone represents a frequent point of difficulty. Business emails should strike a balance between professionalism and approachability. Overly formal language can create distance and slow communication; overly casual language may undermine credibility, particularly in communications with senior colleagues, clients, or external partners. Writers should calibrate tone to the relationship, the subject matter, and the organizational culture.",
+      "Response time is an important dimension of professional communication. Most workplace norms expect responses to emails within one business day, and to urgent messages within a few hours. When a complete response is not immediately possible, a brief acknowledgment confirming receipt and indicating when a full reply can be expected demonstrates reliability and respect for the sender's time.",
+      "Common errors to avoid include overuse of reply-all, failing to include relevant information in initial messages — thereby generating unnecessary follow-up exchanges — and writing emails while emotionally reactive. A brief review before sending can prevent many communication failures and protect important professional relationships."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "In today's fast-paced professional environment, email remains the primary medium of business communication."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "Despite the rise of instant messaging platforms and collaboration tools, the formal business email continues to set the tone for professional relationships and plays a critical role in how individuals and organizations are perceived by clients, partners, and colleagues."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "Mastering effective email communication is, therefore, an essential professional competency."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Clarity and brevity are the cornerstones of effective business email."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Recipients in professional settings receive dozens or hundreds of messages daily; long, poorly organized emails are frequently skimmed or deferred."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "The most effective business emails state their purpose in the opening sentence, present supporting information concisely, and close with a clear call to action or next step."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "Subject lines should be specific and informative, accurately reflecting the email's content rather than providing generic descriptions."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Tone represents a frequent point of difficulty."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "Business emails should strike a balance between professionalism and approachability."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "Overly formal language can create distance and slow communication; overly casual language may undermine credibility, particularly in communications with senior colleagues, clients, or external partners."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "Writers should calibrate tone to the relationship, the subject matter, and the organizational culture."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Response time is an important dimension of professional communication."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Most workplace norms expect responses to emails within one business day, and to urgent messages within a few hours."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "When a complete response is not immediately possible, a brief acknowledgment confirming receipt and indicating when a full reply can be expected demonstrates reliability and respect for the sender's time."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Common errors to avoid include overuse of reply-all, failing to include relevant information in initial messages — thereby generating unnecessary follow-up exchanges — and writing emails while emotionally reactive."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "A brief review before sending can prevent many communication failures and protect important professional relationships."
+      }
+    ]
+  },
+  {
+    "order": 18,
+    "slug": "remote-work-productivity-strategies",
+    "title": "Remote Work Productivity Strategies",
+    "topic": "Workplace Management",
+    "level": "B1",
+    "category": "toeic",
+    "wordCount": 325,
+    "totalSentences": 14,
+    "paragraphs": [
+      "The widespread adoption of remote work has required both employees and organizations to fundamentally reconsider how productivity is defined, measured, and supported. In traditional office environments, physical presence served as a proxy for productivity — a shortcut that remote work renders entirely inadequate. Effective remote work requires more deliberate management of time, communication, and the work environment itself.",
+      "Creating a dedicated workspace is one of the most consistently recommended strategies for remote employees. Separating the physical space associated with work from spaces associated with rest and leisure supports the psychological boundary between professional and personal time that the absence of a daily commute tends to disrupt. Even in limited living spaces, a designated desk or corner used exclusively for work can significantly improve focus and help signal to other household members when one is not to be interrupted.",
+      "Time management techniques take on heightened importance without the structure imposed by office routines. The Pomodoro technique — working in focused twenty-five minute intervals separated by short breaks — helps maintain concentration and prevents the fatigue associated with extended, uninterrupted screen time. Time-blocking, the practice of scheduling specific tasks for defined periods in the calendar, reduces decision overhead and protects time for deep work against the persistent encroachment of meetings and administrative tasks.",
+      "Communication practices must be highly intentional in remote settings. The informal information exchange that occurs naturally in office environments through brief conversations and visible availability signals does not transfer automatically to distributed teams. Remote workers benefit from proactively communicating their availability, progress, and any obstacles they are encountering, using asynchronous written communication for non-urgent matters while reserving video calls for discussions requiring real-time interaction and nuance.",
+      "Organizations have a responsibility to create systems and cultures that support remote worker wellbeing and performance. Clear expectations about availability, output standards, and communication norms, combined with regular structured check-ins and investment in effective collaboration tools, provide the foundation on which individual productivity strategies can succeed."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "The widespread adoption of remote work has required both employees and organizations to fundamentally reconsider how productivity is defined, measured, and supported."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "In traditional office environments, physical presence served as a proxy for productivity — a shortcut that remote work renders entirely inadequate."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "Effective remote work requires more deliberate management of time, communication, and the work environment itself."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Creating a dedicated workspace is one of the most consistently recommended strategies for remote employees."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Separating the physical space associated with work from spaces associated with rest and leisure supports the psychological boundary between professional and personal time that the absence of a daily commute tends to disrupt."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "Even in limited living spaces, a designated desk or corner used exclusively for work can significantly improve focus and help signal to other household members when one is not to be interrupted."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Time management techniques take on heightened importance without the structure imposed by office routines."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "The Pomodoro technique — working in focused twenty-five minute intervals separated by short breaks — helps maintain concentration and prevents the fatigue associated with extended, uninterrupted screen time."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "Time-blocking, the practice of scheduling specific tasks for defined periods in the calendar, reduces decision overhead and protects time for deep work against the persistent encroachment of meetings and administrative tasks."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Communication practices must be highly intentional in remote settings."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "The informal information exchange that occurs naturally in office environments through brief conversations and visible availability signals does not transfer automatically to distributed teams."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Remote workers benefit from proactively communicating their availability, progress, and any obstacles they are encountering, using asynchronous written communication for non-urgent matters while reserving video calls for discussions requiring real-time interaction and nuance."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Organizations have a responsibility to create systems and cultures that support remote worker wellbeing and performance."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "Clear expectations about availability, output standards, and communication norms, combined with regular structured check-ins and investment in effective collaboration tools, provide the foundation on which individual productivity strategies can succeed."
+      }
+    ]
+  },
+  {
+    "order": 19,
+    "slug": "customer-service-excellence",
+    "title": "Customer Service Excellence",
+    "topic": "Business Operations",
+    "level": "B1",
+    "category": "toeic",
+    "wordCount": 300,
+    "totalSentences": 12,
+    "paragraphs": [
+      "In an era when consumers have more choices than ever before and social media can amplify a single customer experience to thousands of potential buyers, customer service quality has become a critical competitive differentiator. Research consistently demonstrates that customers are willing to pay premium prices for reliably excellent service and that poor service is a primary driver of customer attrition and damaging word-of-mouth.",
+      "The foundation of excellent customer service is a genuine orientation toward customer needs rather than transactional efficiency. Frontline service staff who are empowered to solve problems, exercise judgment, and make reasonable exceptions to policy without requiring managerial escalation for every non-standard situation typically generate higher customer satisfaction than those constrained by rigid, inflexible rules. This empowerment requires both appropriate training and a management culture that treats reasonable employee initiative as an asset rather than a risk.",
+      "Active listening is among the most valuable skills in any customer service interaction. Customers who contact service channels are frequently frustrated; their primary need, before any practical resolution can be addressed, is to feel genuinely heard and acknowledged. Service representatives who demonstrate authentic attention and avoid prematurely jumping to solutions consistently produce better outcomes than those focused primarily on resolving issues as quickly as possible.",
+      "Service recovery — the organizational response to service failures — presents both a risk and a significant opportunity. Research on the service recovery paradox suggests that customers who experience a failure that is subsequently resolved with speed, fairness, and genuine concern may develop stronger loyalty than customers who never experienced a problem at all. This underscores the importance of empowering service staff to make meaningful remediation decisions promptly.",
+      "Building a culture of genuine customer-centricity requires leadership commitment, appropriate incentive systems, and continuous measurement of customer experience metrics alongside traditional operational efficiency measures."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "In an era when consumers have more choices than ever before and social media can amplify a single customer experience to thousands of potential buyers, customer service quality has become a critical competitive differentiator."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "Research consistently demonstrates that customers are willing to pay premium prices for reliably excellent service and that poor service is a primary driver of customer attrition and damaging word-of-mouth."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "The foundation of excellent customer service is a genuine orientation toward customer needs rather than transactional efficiency."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Frontline service staff who are empowered to solve problems, exercise judgment, and make reasonable exceptions to policy without requiring managerial escalation for every non-standard situation typically generate higher customer satisfaction than those constrained by rigid, inflexible rules."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "This empowerment requires both appropriate training and a management culture that treats reasonable employee initiative as an asset rather than a risk."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Active listening is among the most valuable skills in any customer service interaction."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "Customers who contact service channels are frequently frustrated; their primary need, before any practical resolution can be addressed, is to feel genuinely heard and acknowledged."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "Service representatives who demonstrate authentic attention and avoid prematurely jumping to solutions consistently produce better outcomes than those focused primarily on resolving issues as quickly as possible."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Service recovery — the organizational response to service failures — presents both a risk and a significant opportunity."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Research on the service recovery paradox suggests that customers who experience a failure that is subsequently resolved with speed, fairness, and genuine concern may develop stronger loyalty than customers who never experienced a problem at all."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "This underscores the importance of empowering service staff to make meaningful remediation decisions promptly."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Building a culture of genuine customer-centricity requires leadership commitment, appropriate incentive systems, and continuous measurement of customer experience metrics alongside traditional operational efficiency measures."
+      }
+    ]
+  },
+  {
+    "order": 20,
+    "slug": "managing-workplace-conflict",
+    "title": "Managing Workplace Conflict",
+    "topic": "Human Resources",
+    "level": "B1",
+    "category": "toeic",
+    "wordCount": 315,
+    "totalSentences": 15,
+    "paragraphs": [
+      "Conflict is an inevitable feature of any workplace where people with different backgrounds, communication styles, priorities, and professional interests work together toward shared goals. The critical variable is not whether conflict occurs but how it is recognized and managed. Handled poorly, workplace conflict reduces productivity, damages relationships, increases staff turnover, and can expose organizations to legal liability. Managed effectively, it can surface important problems, generate creative solutions, and ultimately strengthen team cohesion.",
+      "Conflict typically escalates when left unaddressed. What begins as a minor disagreement about work processes can, through repeated friction and accumulated resentment, develop into entrenched interpersonal antagonism that broadly disrupts team dynamics. Early, low-stakes intervention is therefore generally far more effective than waiting until a conflict has escalated to the point where formal action becomes necessary. Managers and team leaders play a particularly important role in identifying early signs of tension and creating conditions for prompt, informal resolution.",
+      "Effective conflict resolution begins with separating positions from interests. In most workplace conflicts, the stated position — for example, \"I want this project managed differently\" — reflects an underlying interest, such as concerns about quality, recognition, workload, or professional growth, that is more amenable to negotiation. Facilitating a conversation in which both parties articulate their underlying interests rather than defending fixed positions often reveals potential solutions that neither party had initially considered.",
+      "Human resources departments provide a range of formal and informal mechanisms for conflict resolution, including mediation, facilitated dialogue, and formal grievance procedures. Mediation — a structured process in which a neutral third party helps disputing parties communicate and identify mutually acceptable solutions — is often highly effective for interpersonal conflicts that have resisted informal resolution. Unlike adjudication, mediation preserves the parties' agency in determining the outcome, making agreements more durable and genuinely owned by all involved.",
+      "Organizations that invest in conflict resolution training, establish clear behavioral norms, and create accessible reporting channels build meaningful resilience against the most destructive forms of workplace conflict."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Conflict is an inevitable feature of any workplace where people with different backgrounds, communication styles, priorities, and professional interests work together toward shared goals."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "The critical variable is not whether conflict occurs but how it is recognized and managed."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 2,
+        "textEn": "Handled poorly, workplace conflict reduces productivity, damages relationships, increases staff turnover, and can expose organizations to legal liability."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 3,
+        "textEn": "Managed effectively, it can surface important problems, generate creative solutions, and ultimately strengthen team cohesion."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Conflict typically escalates when left unaddressed."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "What begins as a minor disagreement about work processes can, through repeated friction and accumulated resentment, develop into entrenched interpersonal antagonism that broadly disrupts team dynamics."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "Early, low-stakes intervention is therefore generally far more effective than waiting until a conflict has escalated to the point where formal action becomes necessary."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "Managers and team leaders play a particularly important role in identifying early signs of tension and creating conditions for prompt, informal resolution."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Effective conflict resolution begins with separating positions from interests."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "In most workplace conflicts, the stated position — for example, \"I want this project managed differently\" — reflects an underlying interest, such as concerns about quality, recognition, workload, or professional growth, that is more amenable to negotiation."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "Facilitating a conversation in which both parties articulate their underlying interests rather than defending fixed positions often reveals potential solutions that neither party had initially considered."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Human resources departments provide a range of formal and informal mechanisms for conflict resolution, including mediation, facilitated dialogue, and formal grievance procedures."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Mediation — a structured process in which a neutral third party helps disputing parties communicate and identify mutually acceptable solutions — is often highly effective for interpersonal conflicts that have resisted informal resolution."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "Unlike adjudication, mediation preserves the parties' agency in determining the outcome, making agreements more durable and genuinely owned by all involved."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Organizations that invest in conflict resolution training, establish clear behavioral norms, and create accessible reporting channels build meaningful resilience against the most destructive forms of workplace conflict."
+      }
+    ]
+  },
+  {
+    "order": 21,
+    "slug": "at-the-coffee-shop",
+    "title": "At the Coffee Shop",
+    "topic": "Daily Life",
+    "level": "A2",
+    "category": "conversation",
+    "wordCount": 178,
+    "totalSentences": 32,
+    "paragraphs": [
+      "Lisa walks into a small coffee shop near her office. A barista greets her warmly.",
+      "Barista: \"Good morning! Welcome to Brew & Bean. What can I get for you today?\"",
+      "Lisa: \"Hi! Could I get a medium latte, please? Not too sweet.\"",
+      "Barista: \"Sure! Would you like oat milk or regular milk?\"",
+      "Lisa: \"Oat milk, please. Oh, and do you have any muffins left?\"",
+      "Barista: \"We have blueberry and chocolate chip. The blueberry ones just came out of the oven.\"",
+      "Lisa: \"Perfect. I'll take one blueberry muffin as well.\"",
+      "Barista: \"Great choice. Can I get your name for the order?\"",
+      "Lisa: \"It's Lisa.\"",
+      "Barista: \"Got it. That'll be six fifty, please.\"",
+      "Lisa pays and waits by the counter. A few minutes later, the barista calls her name.",
+      "Barista: \"Lisa! One oat milk latte and a blueberry muffin for you.\"",
+      "Lisa: \"Thank you so much. It smells amazing!\"",
+      "Barista: \"Enjoy! Have a great day.\"",
+      "Lisa: \"You too. See you tomorrow!\"",
+      "She smiles, picks up her order, and heads to work feeling ready to start the day."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Lisa walks into a small coffee shop near her office."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "A barista greets her warmly."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Barista: \"Good morning!"
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Welcome to Brew & Bean."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Lisa: \"Hi!"
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "Could I get a medium latte, please?"
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Barista: \"Sure!"
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Lisa: \"Oat milk, please."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 0,
+        "textEn": "Barista: \"We have blueberry and chocolate chip."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 6,
+        "sentenceIndex": 0,
+        "textEn": "Lisa: \"Perfect."
+      },
+      {
+        "paragraphIndex": 6,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 7,
+        "sentenceIndex": 0,
+        "textEn": "Barista: \"Great choice."
+      },
+      {
+        "paragraphIndex": 7,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 8,
+        "sentenceIndex": 0,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 9,
+        "sentenceIndex": 0,
+        "textEn": "Barista: \"Got it."
+      },
+      {
+        "paragraphIndex": 9,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 10,
+        "sentenceIndex": 0,
+        "textEn": "Lisa pays and waits by the counter."
+      },
+      {
+        "paragraphIndex": 10,
+        "sentenceIndex": 1,
+        "textEn": "A few minutes later, the barista calls her name."
+      },
+      {
+        "paragraphIndex": 11,
+        "sentenceIndex": 0,
+        "textEn": "Barista: \"Lisa!"
+      },
+      {
+        "paragraphIndex": 11,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 12,
+        "sentenceIndex": 0,
+        "textEn": "Lisa: \"Thank you so much."
+      },
+      {
+        "paragraphIndex": 12,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 13,
+        "sentenceIndex": 0,
+        "textEn": "Barista: \"Enjoy!"
+      },
+      {
+        "paragraphIndex": 13,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 14,
+        "sentenceIndex": 0,
+        "textEn": "Lisa: \"You too."
+      },
+      {
+        "paragraphIndex": 14,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 15,
+        "sentenceIndex": 0,
+        "textEn": "She smiles, picks up her order, and heads to work feeling ready to start the day."
+      }
+    ]
+  },
+  {
+    "order": 22,
+    "slug": "planning-a-weekend-trip",
+    "title": "Planning a Weekend Trip",
+    "topic": "Travel",
+    "level": "A2",
+    "category": "conversation",
+    "wordCount": 192,
+    "totalSentences": 29,
+    "paragraphs": [
+      "Tom and Jenny are classmates. They are chatting during their lunch break about what to do this weekend.",
+      "Tom: \"Hey Jenny, do you have any plans for the weekend?\"",
+      "Jenny: \"Not yet. I was thinking about going somewhere, but I haven't decided. What about you?\"",
+      "Tom: \"I was thinking we could go to Da Lat. It's only a few hours by bus, and the weather should be nice this time of year.\"",
+      "Jenny: \"Oh, I've always wanted to go there! I heard the flower gardens are beautiful.\"",
+      "Tom: \"Exactly. And the food is amazing — hot corn, strawberry jam, avocado ice cream...\"",
+      "Jenny: \"Stop, you're making me hungry! Okay, I'm in. When should we leave?\"",
+      "Tom: \"Saturday morning. If we take the early bus, we'll arrive by noon and have the whole day to explore.\"",
+      "Jenny: \"That sounds perfect. Should we book a hostel or a hotel?\"",
+      "Tom: \"A hostel would be cheaper. I know a good one near the city center. I'll send you the link.\"",
+      "Jenny: \"Great. I'll check if Anna wants to come too. The more, the merrier!\"",
+      "Tom: \"Sure! Let's finalize everything by Thursday so we can book early.\"",
+      "Jenny: \"Deal. This is going to be so much fun!\""
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Tom and Jenny are classmates."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "They are chatting during their lunch break about what to do this weekend."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Jenny: \"Not yet."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "I was thinking about going somewhere, but I haven't decided."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "Tom: \"I was thinking we could go to Da Lat."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Jenny: \"Oh, I've always wanted to go there!"
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 0,
+        "textEn": "Tom: \"Exactly."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 6,
+        "sentenceIndex": 0,
+        "textEn": "Jenny: \"Stop, you're making me hungry!"
+      },
+      {
+        "paragraphIndex": 6,
+        "sentenceIndex": 1,
+        "textEn": "Okay, I'm in."
+      },
+      {
+        "paragraphIndex": 6,
+        "sentenceIndex": 2,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 7,
+        "sentenceIndex": 0,
+        "textEn": "Tom: \"Saturday morning."
+      },
+      {
+        "paragraphIndex": 7,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 8,
+        "sentenceIndex": 0,
+        "textEn": "Jenny: \"That sounds perfect."
+      },
+      {
+        "paragraphIndex": 8,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 9,
+        "sentenceIndex": 0,
+        "textEn": "Tom: \"A hostel would be cheaper."
+      },
+      {
+        "paragraphIndex": 9,
+        "sentenceIndex": 1,
+        "textEn": "I know a good one near the city center."
+      },
+      {
+        "paragraphIndex": 9,
+        "sentenceIndex": 2,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 10,
+        "sentenceIndex": 0,
+        "textEn": "Jenny: \"Great."
+      },
+      {
+        "paragraphIndex": 10,
+        "sentenceIndex": 1,
+        "textEn": "I'll check if Anna wants to come too."
+      },
+      {
+        "paragraphIndex": 10,
+        "sentenceIndex": 2,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 11,
+        "sentenceIndex": 0,
+        "textEn": "Tom: \"Sure!"
+      },
+      {
+        "paragraphIndex": 11,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 12,
+        "sentenceIndex": 0,
+        "textEn": "Jenny: \"Deal."
+      },
+      {
+        "paragraphIndex": 12,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      }
+    ]
+  },
+  {
+    "order": 23,
+    "slug": "scientists-discover-new-species-of-deep-sea-fish",
+    "title": "Scientists Discover New Species of Deep-Sea Fish",
+    "topic": "Science",
+    "level": "B2",
+    "category": "news",
+    "wordCount": 182,
+    "totalSentences": 12,
+    "paragraphs": [
+      "Marine biologists have announced the discovery of a new species of fish living more than 3,000 meters below the surface of the Pacific Ocean. The creature, named Abyssolux luminaris, produces its own light through a process called bioluminescence.",
+      "The discovery was made during a deep-sea expedition led by researchers from the Ocean Institute in California. Using a remotely operated submarine equipped with high-definition cameras, the team spotted the glowing fish near a hydrothermal vent — an underwater volcanic opening that releases heat and minerals.",
+      "Dr. Sarah Meyers, the lead scientist on the expedition, said the find was \"extraordinary.\" She explained that the fish has several unique features, including transparent skin, no eyes, and a long glowing spine used to attract prey in complete darkness.",
+      "\"We believe there are still thousands of undiscovered species in the deep ocean,\" Dr. Meyers told reporters. \"The deep sea is one of the least explored environments on Earth.\"",
+      "The discovery has been published in the journal Nature Marine Science. Researchers hope to study the fish further to better understand how life adapts to extreme conditions. The findings could also have implications for medical and environmental research."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Marine biologists have announced the discovery of a new species of fish living more than 3,000 meters below the surface of the Pacific Ocean."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "The creature, named Abyssolux luminaris, produces its own light through a process called bioluminescence."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "The discovery was made during a deep-sea expedition led by researchers from the Ocean Institute in California."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Using a remotely operated submarine equipped with high-definition cameras, the team spotted the glowing fish near a hydrothermal vent — an underwater volcanic opening that releases heat and minerals."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Dr."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "\" She explained that the fish has several unique features, including transparent skin, no eyes, and a long glowing spine used to attract prey in complete darkness."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "\"We believe there are still thousands of undiscovered species in the deep ocean,\" Dr."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Meyers told reporters."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 2,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "The discovery has been published in the journal Nature Marine Science."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "Researchers hope to study the fish further to better understand how life adapts to extreme conditions."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "The findings could also have implications for medical and environmental research."
+      }
+    ]
+  },
+  {
+    "order": 24,
+    "slug": "city-launches-free-electric-bus-service",
+    "title": "City Launches Free Electric Bus Service",
+    "topic": "Transport",
+    "level": "B2",
+    "category": "news",
+    "wordCount": 175,
+    "totalSentences": 14,
+    "paragraphs": [
+      "The city of Greenfield has launched a new free electric bus service, making it one of the first cities in the country to offer zero-cost public transportation powered entirely by renewable energy.",
+      "The initiative, called \"GreenRide,\" was introduced by the city council to reduce traffic congestion and lower carbon emissions. Twenty new electric buses will operate across six main routes, running from 6 a.m. to 10 p.m. daily.",
+      "Mayor Julia Torres made the announcement at a press conference held at the city's central bus terminal. \"This is a historic step toward a cleaner and more connected city,\" she said. \"We want every resident to have access to affordable, eco-friendly transportation.\"",
+      "The buses are equipped with air conditioning, USB charging ports, and real-time tracking through a smartphone app. All vehicles are charged overnight using solar energy from panels installed on the city's public buildings.",
+      "Local residents have responded positively. Many commuters said they plan to switch from their private cars to the new service. Environmental groups also praised the move, calling it \"a model for other cities to follow.\"",
+      "The city plans to expand the network to twelve routes by the end of next year."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "The city of Greenfield has launched a new free electric bus service, making it one of the first cities in the country to offer zero-cost public transportation powered entirely by renewable energy."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "The initiative, called \"GreenRide,\" was introduced by the city council to reduce traffic congestion and lower carbon emissions."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "m."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 2,
+        "textEn": "m."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 3,
+        "textEn": "daily."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Mayor Julia Torres made the announcement at a press conference held at the city's central bus terminal."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "\"This is a historic step toward a cleaner and more connected city,\" she said."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "The buses are equipped with air conditioning, USB charging ports, and real-time tracking through a smartphone app."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "All vehicles are charged overnight using solar energy from panels installed on the city's public buildings."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Local residents have responded positively."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "Many commuters said they plan to switch from their private cars to the new service."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 2,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 0,
+        "textEn": "The city plans to expand the network to twelve routes by the end of next year."
+      }
+    ]
+  },
+  {
+    "order": 25,
+    "slug": "teen-inventor-wins-global-climate-award",
+    "title": "Teen Inventor Wins Global Climate Award",
+    "topic": "Environment",
+    "level": "B2",
+    "category": "news",
+    "wordCount": 168,
+    "totalSentences": 9,
+    "paragraphs": [
+      "A 17-year-old student from Vietnam has won the Global Youth Climate Innovation Award for designing a low-cost water filter made from recycled plastic bottles and natural sand layers.",
+      "Nguyen Bao Chau, a high school student from Ho Chi Minh City, developed the device after noticing that many rural communities in her region lacked access to clean drinking water. The filter can remove up to 98% of common bacteria and requires no electricity to operate.",
+      "The award ceremony was held in Geneva, Switzerland, where Chau presented her invention to an audience of scientists, policymakers, and young innovators from 40 countries. She received a cash prize of $10,000 and a scholarship to study environmental engineering.",
+      "\"I built the first version in my kitchen using materials I found at a recycling center,\" Chau said in her acceptance speech. \"If it can help even one family have clean water, that is enough for me.\"",
+      "The judging panel praised Chau for the simplicity and practicality of her design. Officials from two international aid organizations have already contacted her about scaling the project for use in developing communities across Southeast Asia."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "A 17-year-old student from Vietnam has won the Global Youth Climate Innovation Award for designing a low-cost water filter made from recycled plastic bottles and natural sand layers."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Nguyen Bao Chau, a high school student from Ho Chi Minh City, developed the device after noticing that many rural communities in her region lacked access to clean drinking water."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "The filter can remove up to 98% of common bacteria and requires no electricity to operate."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "The award ceremony was held in Geneva, Switzerland, where Chau presented her invention to an audience of scientists, policymakers, and young innovators from 40 countries."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "She received a cash prize of $10,000 and a scholarship to study environmental engineering."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "\"I built the first version in my kitchen using materials I found at a recycling center,\" Chau said in her acceptance speech."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "The judging panel praised Chau for the simplicity and practicality of her design."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "Officials from two international aid organizations have already contacted her about scaling the project for use in developing communities across Southeast Asia."
+      }
+    ]
+  },
+  {
+    "order": 26,
+    "slug": "record-number-of-tourists-visit-japan-in-2025",
+    "title": "Record Number of Tourists Visit Japan in 2025",
+    "topic": "Travel",
+    "level": "B2",
+    "category": "news",
+    "wordCount": 163,
+    "totalSentences": 9,
+    "paragraphs": [
+      "Japan welcomed a record 40 million foreign tourists in 2025, surpassing the previous record set in 2019 before the global pandemic. The Japan Tourism Agency announced the figures this week, calling it a \"milestone year\" for the country's tourism industry.",
+      "Popular destinations such as Tokyo, Kyoto, and Osaka saw the highest visitor numbers, with many hotels and transport services operating at full capacity throughout the year. Mount Fuji attracted so many climbers that authorities introduced a daily limit of 4,000 visitors to protect the environment and ensure safety.",
+      "The surge in tourism has brought significant economic benefits. The industry generated an estimated 8 trillion yen — roughly $55 billion — in revenue, supporting thousands of jobs in hotels, restaurants, and cultural sites.",
+      "However, the record numbers have also raised concerns about \"overtourism.\" Residents in some areas have complained about noise, litter, and overcrowded streets. Several local governments have introduced new rules, such as banning photography in certain neighborhoods and limiting the number of visitors to popular temples.",
+      "Japan's government says it is working on a \"sustainable tourism\" plan to balance economic growth with the wellbeing of local communities."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "Japan welcomed a record 40 million foreign tourists in 2025, surpassing the previous record set in 2019 before the global pandemic."
+      },
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 1,
+        "textEn": "The Japan Tourism Agency announced the figures this week, calling it a \"milestone year\" for the country's tourism industry."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "Popular destinations such as Tokyo, Kyoto, and Osaka saw the highest visitor numbers, with many hotels and transport services operating at full capacity throughout the year."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "Mount Fuji attracted so many climbers that authorities introduced a daily limit of 4,000 visitors to protect the environment and ensure safety."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "The surge in tourism has brought significant economic benefits."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "The industry generated an estimated 8 trillion yen — roughly $55 billion — in revenue, supporting thousands of jobs in hotels, restaurants, and cultural sites."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "\" Residents in some areas have complained about noise, litter, and overcrowded streets."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Several local governments have introduced new rules, such as banning photography in certain neighborhoods and limiting the number of visitors to popular temples."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Japan's government says it is working on a \"sustainable tourism\" plan to balance economic growth with the wellbeing of local communities."
+      }
+    ]
+  },
+  {
+    "order": 27,
+    "slug": "ai-tool-helps-doctors-detect-cancer-earlier",
+    "title": "AI Tool Helps Doctors Detect Cancer Earlier",
+    "topic": "Health",
+    "level": "B2",
+    "category": "news",
+    "wordCount": 171,
+    "totalSentences": 12,
+    "paragraphs": [
+      "A new artificial intelligence tool developed by researchers at Stanford University has shown remarkable accuracy in detecting early-stage cancer from medical scans, potentially saving thousands of lives each year.",
+      "The AI system, called MediScan Pro, analyzes CT scans and MRI images to identify tumors that are too small for the human eye to detect reliably. In clinical trials involving over 10,000 patients, the tool correctly identified early-stage cancer in 94% of cases — significantly higher than the 78% accuracy rate of experienced radiologists working alone.",
+      "Dr. James Liu, who led the research team, said the tool is not designed to replace doctors but to work alongside them. \"The AI acts like a second pair of eyes,\" he explained. \"It flags areas of concern so that doctors can focus their attention and make better decisions.\"",
+      "The technology is already being tested in hospitals across the United States, Canada, and the United Kingdom. Regulators in the European Union are reviewing the system for approval.",
+      "Medical experts say early detection is one of the most important factors in successful cancer treatment. When cancer is found at an early stage, survival rates can be more than three times higher than when diagnosed at a later stage.",
+      "The research team plans to expand MediScan Pro to cover additional types of cancer in the coming years."
+    ],
+    "sentences": [
+      {
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "textEn": "A new artificial intelligence tool developed by researchers at Stanford University has shown remarkable accuracy in detecting early-stage cancer from medical scans, potentially saving thousands of lives each year."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "textEn": "The AI system, called MediScan Pro, analyzes CT scans and MRI images to identify tumors that are too small for the human eye to detect reliably."
+      },
+      {
+        "paragraphIndex": 1,
+        "sentenceIndex": 1,
+        "textEn": "In clinical trials involving over 10,000 patients, the tool correctly identified early-stage cancer in 94% of cases — significantly higher than the 78% accuracy rate of experienced radiologists working alone."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 0,
+        "textEn": "Dr."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 1,
+        "textEn": "James Liu, who led the research team, said the tool is not designed to replace doctors but to work alongside them."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 2,
+        "textEn": "\"The AI acts like a second pair of eyes,\" he explained."
+      },
+      {
+        "paragraphIndex": 2,
+        "sentenceIndex": 3,
+        "textEn": "\""
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 0,
+        "textEn": "The technology is already being tested in hospitals across the United States, Canada, and the United Kingdom."
+      },
+      {
+        "paragraphIndex": 3,
+        "sentenceIndex": 1,
+        "textEn": "Regulators in the European Union are reviewing the system for approval."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 0,
+        "textEn": "Medical experts say early detection is one of the most important factors in successful cancer treatment."
+      },
+      {
+        "paragraphIndex": 4,
+        "sentenceIndex": 1,
+        "textEn": "When cancer is found at an early stage, survival rates can be more than three times higher than when diagnosed at a later stage."
+      },
+      {
+        "paragraphIndex": 5,
+        "sentenceIndex": 0,
+        "textEn": "The research team plans to expand MediScan Pro to cover additional types of cancer in the coming years."
+      }
+    ]
+  }
+]
