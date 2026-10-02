@@ -210,14 +210,21 @@ export const FeedbackDrawer: React.FC = () => {
               userSnippet={
                 specificMistakes[0].where &&
                 !specificMistakes[0].where.startsWith('Thiếu') &&
-                !specificMistakes[0].where.includes('Chữ cái')
+                !specificMistakes[0].where.includes('Chữ cái') &&
+                !specificMistakes[0].where.includes('Toàn câu')
                   ? specificMistakes[0].where
-                  : specificMistakes[0].relatedEnglish || userAnswer
+                  : exerciseMode === 'vi_to_en'
+                  ? '(Bỏ sót từ)'
+                  : specificMistakes[0].where || '(Bỏ sót)'
               }
               fixedSnippet={
-                specificMistakes[0].correctMeaning ||
-                specificMistakes[0].fixedSnippet ||
-                referenceAnswer
+                exerciseMode === 'vi_to_en'
+                  ? specificMistakes[0].relatedEnglish ||
+                    specificMistakes[0].fixedSnippet ||
+                    referenceAnswer
+                  : specificMistakes[0].correctMeaning ||
+                    specificMistakes[0].fixedSnippet ||
+                    referenceAnswer
               }
               reason={specificMistakes[0].whyIncorrect}
               rule={grammarInsight?.relevantRule || grammarAnalysis?.tense}

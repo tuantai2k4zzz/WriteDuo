@@ -24,17 +24,45 @@ export const SemanticSentenceView: React.FC<SemanticSentenceViewProps> = ({
 }) => {
   const [selectedToken, setSelectedToken] = useState<SemanticTokenDiff | null>(null);
 
-  // If semanticData is not yet populated (fallback mode), generate simple tokens
-  const tokenDiffs: SemanticTokenDiff[] =
-    semanticData?.tokenDiffs && semanticData.tokenDiffs.length > 0
-      ? semanticData.tokenDiffs
-      : userAnswer
-          .trim()
-          .split(/\s+/)
-          .map((t) => ({
+  // If semanticData is not yet populated (fallback mode), compare against reference tokens intelligently
+  const tokenDiffs: SemanticTokenDiff[] = React.useMemo(() => {
+    if (semanticData?.tokenDiffs && semanticData.tokenDiffs.length > 0) {
+      return semanticData.tokenDiffs;
+    }
+    const cleanWord = (w: string) => w.toLowerCase().replace(/[.,!?;:()"'`]/g, '').trim();
+    const refWords = referenceAnswer.trim().split(/\s+/).filter(Boolean).map(cleanWord);
+    const equivMap: Record<string, string> = { called: 'named', named: 'called', own: 'have', have: 'own' };
+
+    return userAnswer
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((t) => {
+        const clean = cleanWord(t);
+        if (refWords.includes(clean)) {
+          return {
             learnerToken: t,
-            status: 'EXACT_CORRECT',
-          }));
+            referenceToken: t,
+            status: 'EXACT_CORRECT' as SemanticTokenStatus,
+            explanation: 'Khớp từ trong câu mẫu',
+          };
+        }
+        if (equivMap[clean] && refWords.includes(equivMap[clean])) {
+          return {
+            learnerToken: t,
+            referenceToken: equivMap[clean],
+            status: 'SEMANTICALLY_CORRECT' as SemanticTokenStatus,
+            explanation: `"${t}" là cách diễn đạt tương đương hoàn toàn tự nhiên.`,
+            relation: `${t} ≈ ${equivMap[clean]}`,
+          };
+        }
+        return {
+          learnerToken: t,
+          status: 'INCORRECT' as SemanticTokenStatus,
+          explanation: `Từ "${t}" chưa khớp với câu mẫu hoặc sai cấu trúc.`,
+        };
+      });
+  }, [semanticData, userAnswer, referenceAnswer]);
 
   const alternatives: SemanticAlternative[] = semanticData?.alternatives || [];
   const scores = semanticData?.scores;

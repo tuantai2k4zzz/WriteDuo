@@ -115,7 +115,7 @@ export class SemanticAnalyzer {
       specificMistakes.push({
         errorType: 'grammar_error',
         where: "it's name",
-        relatedEnglish: "it's name",
+        relatedEnglish: 'named',
         correctMeaning: 'named / called',
         whyIncorrect:
           '"it\'s" là viết tắt của "it is", không phải tính từ sở hữu. Để diễn đạt tên của thú cưng trong câu này, cấu trúc tự nhiên nhất là dùng mệnh đề phân từ rút gọn: "a dog named Max" hoặc "a dog called Max".',
@@ -124,155 +124,199 @@ export class SemanticAnalyzer {
       });
     }
 
-    // Two-pointer / LCS alignment algorithm
-    let rIdx = 0;
+    // 2. Pattern: "it is Max" or "it's Max" instead of "named Max"
+    const hasItIsAnomaly = /\bit\s+is\b|\bit['’]s\b/i.test(learnerSentence) && !/named|called/i.test(learnerSentence);
+    if (hasItIsAnomaly && !hasItsNameAnomaly) {
+      specificMistakes.push({
+        errorType: 'grammar_error',
+        where: 'it is',
+        relatedEnglish: 'named',
+        correctMeaning: 'named',
+        whyIncorrect:
+          'Trong tiếng Anh, sau "a dog" không thể dùng trực tiếp mệnh đề "it is Max" vì sẽ tạo thành hai mệnh đề rời rạc. Cấu trúc tự nhiên chuẩn xác là dùng phân từ rút gọn: "a dog named Max" (hoặc "called Max").',
+        howToFix: 'Thay "it is" bằng "named" (hoặc "called").',
+        fixedSnippet: referenceSentence,
+      });
+    }
+
+    // Dynamic Programming (Needleman-Wunsch / LCS) Sequence Alignment
+    const m = learnerRawTokens.length;
+    const n = refRawTokens.length;
+
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    const bt: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    for (let i = 1; i <= m; i++) {
+      dp[i][0] = dp[i - 1][0] - 1.0;
+      bt[i][0] = 2; // learner extra
+    }
+    for (let j = 1; j <= n; j++) {
+      dp[0][j] = dp[0][j - 1] - 1.0;
+      bt[0][j] = 3; // ref missing
+    }
+
+    for (let i = 1; i <= m; i++) {
+      const lClean = this.cleanWord(learnerRawTokens[i - 1]);
+      for (let j = 1; j <= n; j++) {
+        const rClean = this.cleanWord(refRawTokens[j - 1]);
+
+        let matchScore = -1.2;
+        if (lClean === rClean) {
+          matchScore = 3.0;
+        } else if (this.checkEquivalent(lClean, rClean).isEquivalent) {
+          matchScore = 2.6;
+        }
+
+        const scoreDiag = dp[i - 1][j - 1] + matchScore;
+        const scoreLearnerExtra = dp[i - 1][j] - 1.0;
+        const scoreRefMissing = dp[i][j - 1] - 1.0;
+
+        if (scoreDiag >= scoreLearnerExtra && scoreDiag >= scoreRefMissing) {
+          dp[i][j] = scoreDiag;
+          bt[i][j] = 1;
+        } else if (scoreLearnerExtra >= scoreRefMissing) {
+          dp[i][j] = scoreLearnerExtra;
+          bt[i][j] = 2;
+        } else {
+          dp[i][j] = scoreRefMissing;
+          bt[i][j] = 3;
+        }
+      }
+    }
+
+    // Backtrack to extract aligned operations
+    let i = m;
+    let j = n;
+    interface AlignStep {
+      type: 'exact' | 'equiv' | 'mismatch' | 'learner_extra' | 'ref_missing';
+      lIdx?: number;
+      rIdx?: number;
+    }
+    const steps: AlignStep[] = [];
+
+    while (i > 0 || j > 0) {
+      if (i > 0 && j > 0 && bt[i][j] === 1) {
+        const lClean = this.cleanWord(learnerRawTokens[i - 1]);
+        const rClean = this.cleanWord(refRawTokens[j - 1]);
+        if (lClean === rClean) {
+          steps.push({ type: 'exact', lIdx: i - 1, rIdx: j - 1 });
+        } else if (this.checkEquivalent(lClean, rClean).isEquivalent) {
+          steps.push({ type: 'equiv', lIdx: i - 1, rIdx: j - 1 });
+        } else {
+          steps.push({ type: 'mismatch', lIdx: i - 1, rIdx: j - 1 });
+        }
+        i--;
+        j--;
+      } else if (i > 0 && (j === 0 || bt[i][j] === 2)) {
+        steps.push({ type: 'learner_extra', lIdx: i - 1 });
+        i--;
+      } else {
+        steps.push({ type: 'ref_missing', rIdx: j - 1 });
+        j--;
+      }
+    }
+
+    steps.reverse();
+
     let exactMatches = 0;
     let equivalentMatches = 0;
     let incorrectCount = 0;
 
-    for (let lIdx = 0; lIdx < learnerRawTokens.length; lIdx++) {
-      const lRaw = learnerRawTokens[lIdx];
-      const lClean = this.cleanWord(lRaw);
-
-      if (rIdx < refRawTokens.length) {
-        const rRaw = refRawTokens[rIdx];
-        const rClean = this.cleanWord(rRaw);
-
-        // Check Exact Match
-        if (lClean === rClean) {
-          tokenDiffs.push({
-            learnerToken: lRaw,
-            referenceToken: rRaw,
-            status: 'EXACT_CORRECT',
-          });
-          exactMatches++;
-          rIdx++;
-          continue;
-        }
-
-        // Check Semantic Equivalent (e.g. called ≈ named)
-        const eqCheck = this.checkEquivalent(lClean, rClean);
-        if (eqCheck.isEquivalent) {
-          tokenDiffs.push({
-            learnerToken: lRaw,
-            referenceToken: rRaw,
-            status: 'SEMANTICALLY_CORRECT',
-            explanation: eqCheck.note,
-            alternativeTo: rRaw,
-            relation: `${lRaw} ≈ ${rRaw}`,
-          });
-          alternatives.push({
-            learnerExpression: lRaw,
-            referenceExpression: rRaw,
-            relationship: `${lRaw} ≈ ${rRaw}`,
-            noteVi: eqCheck.note || `Từ "${lRaw}" diễn đạt hoàn toàn đúng nghĩa và tự nhiên trong câu này.`,
-            contextDifference: eqCheck.contextDiff,
-          });
-          equivalentMatches++;
-          rIdx++;
-          continue;
-        }
-
-        // Lookahead to check if learner missed reference word (Missing token)
-        // e.g. Learner: "I have a dog Max", Ref: "I have a dog named Max"
-        if (lIdx + 1 < learnerRawTokens.length) {
-          const nextLClean = this.cleanWord(learnerRawTokens[lIdx + 1]);
-          if (nextLClean === rClean || this.checkEquivalent(nextLClean, rClean).isEquivalent) {
-            // Current lRaw is extra or mismatched
-          }
-        }
-
-        if (rIdx + 1 < refRawTokens.length) {
-          const nextRClean = this.cleanWord(refRawTokens[rIdx + 1]);
-          if (lClean === nextRClean) {
-            // Missing rRaw
-            missingElements.push({
-              word: rRaw,
-              positionHint: `Giữa "${refRawTokens[rIdx - 1] || ''}" và "${rRaw}"`,
-              whyNeeded: `Từ "${rRaw}" là thành phần liên kết ngữ nghĩa quan trọng của câu.`,
-            });
-            tokenDiffs.push({
-              learnerToken: '',
-              referenceToken: rRaw,
-              status: 'MISSING',
-              explanation: `Thiếu từ "${rRaw}"`,
-            });
-            rIdx++; // advance reference to catch up with learner
-            // Now match current lRaw with new rRaw
-            tokenDiffs.push({
-              learnerToken: lRaw,
-              referenceToken: refRawTokens[rIdx],
-              status: 'EXACT_CORRECT',
-            });
-            exactMatches++;
-            rIdx++;
-            continue;
-          }
-        }
-
-        // If part of "it's name" anomaly
-        if (lClean === "it's" || lClean === 'its' || (lClean === 'name' && hasItsNameAnomaly)) {
-          tokenDiffs.push({
-            learnerToken: lRaw,
-            referenceToken: rRaw,
-            status: 'INCORRECT',
-            explanation:
-              lClean === 'name'
-                ? 'Dùng quá khứ phân từ "named" (được đặt tên là) thay cho danh từ/động từ "name".'
-                : '"it\'s" = "it is". Cấu trúc tự nhiên: a dog named Max.',
-          });
-          incorrectCount++;
-          // if next ref token is target participle, align it
-          if (rClean === 'named') {
-            rIdx++;
-          }
-          continue;
-        }
-
-        // Generic word mismatch
+    for (const step of steps) {
+      if (step.type === 'exact' && step.lIdx !== undefined && step.rIdx !== undefined) {
+        const lRaw = learnerRawTokens[step.lIdx];
+        const rRaw = refRawTokens[step.rIdx];
+        tokenDiffs.push({
+          learnerToken: lRaw,
+          referenceToken: rRaw,
+          status: 'EXACT_CORRECT',
+        });
+        exactMatches++;
+      } else if (step.type === 'equiv' && step.lIdx !== undefined && step.rIdx !== undefined) {
+        const lRaw = learnerRawTokens[step.lIdx];
+        const rRaw = refRawTokens[step.rIdx];
+        const eqCheck = this.checkEquivalent(lRaw, rRaw);
+        tokenDiffs.push({
+          learnerToken: lRaw,
+          referenceToken: rRaw,
+          status: 'SEMANTICALLY_CORRECT',
+          explanation: eqCheck.note,
+          alternativeTo: rRaw,
+          relation: `${lRaw} ≈ ${rRaw}`,
+        });
+        alternatives.push({
+          learnerExpression: lRaw,
+          referenceExpression: rRaw,
+          relationship: `${lRaw} ≈ ${rRaw}`,
+          noteVi: eqCheck.note || `Từ "${lRaw}" diễn đạt tương đương hoàn toàn tự nhiên.`,
+          contextDifference: eqCheck.contextDiff,
+        });
+        equivalentMatches++;
+      } else if (step.type === 'mismatch' && step.lIdx !== undefined && step.rIdx !== undefined) {
+        const lRaw = learnerRawTokens[step.lIdx];
+        const rRaw = refRawTokens[step.rIdx];
         tokenDiffs.push({
           learnerToken: lRaw,
           referenceToken: rRaw,
           status: 'INCORRECT',
-          explanation: `Từ "${lRaw}" chưa tương ứng với từ "${rRaw}" trong ngữ cảnh này.`,
+          explanation: `Từ "${lRaw}" chưa khớp với từ "${rRaw}" trong ngữ cảnh này.`,
         });
         incorrectCount++;
-        rIdx++;
-      } else {
-        // Extra tokens from learner
+      } else if (step.type === 'learner_extra' && step.lIdx !== undefined) {
+        const lRaw = learnerRawTokens[step.lIdx];
+        const lClean = this.cleanWord(lRaw);
+        const isGrammarError =
+          lClean === 'it' || lClean === 'is' || lClean === "it's" || lClean === 'its' || lClean === 'name';
         tokenDiffs.push({
           learnerToken: lRaw,
-          status: 'PARTIALLY_CORRECT',
-          explanation: `Từ dư hoặc diễn đạt thêm: "${lRaw}"`,
+          status: 'INCORRECT',
+          explanation: isGrammarError
+            ? `Từ/cụm "${lRaw}" sai cấu trúc ngữ pháp trong câu này.`
+            : `Từ dư hoặc diễn đạt chưa chuẩn: "${lRaw}".`,
+        });
+        incorrectCount++;
+      } else if (step.type === 'ref_missing' && step.rIdx !== undefined) {
+        const rRaw = refRawTokens[step.rIdx];
+        missingElements.push({
+          word: rRaw,
+          positionHint: 'Trong câu',
+          whyNeeded: `Cần có từ "${rRaw}" để câu trọn vẹn ngữ nghĩa.`,
+        });
+        tokenDiffs.push({
+          learnerToken: '',
+          referenceToken: rRaw,
+          status: 'MISSING',
+          explanation: `Thiếu từ "${rRaw}"`,
         });
       }
-    }
-
-    // Any remaining reference tokens are missing
-    while (rIdx < refRawTokens.length) {
-      const rRaw = refRawTokens[rIdx];
-      missingElements.push({
-        word: rRaw,
-        positionHint: `Cuối câu`,
-        whyNeeded: `Cần có từ "${rRaw}" để câu hoàn chỉnh nghĩa.`,
-      });
-      tokenDiffs.push({
-        learnerToken: '',
-        referenceToken: rRaw,
-        status: 'MISSING',
-        explanation: `Thiếu từ "${rRaw}"`,
-      });
-      rIdx++;
     }
 
     // Scoring calculations
     const totalRefWords = Math.max(refRawTokens.length, 1);
     const validWordsCount = exactMatches + equivalentMatches;
-    const completeness = Math.max(0, Math.min(100, Math.round(((totalRefWords - missingElements.length) / totalRefWords) * 100)));
-    const wordAccuracy = Math.max(0, Math.min(100, Math.round((validWordsCount / Math.max(learnerRawTokens.length, totalRefWords)) * 100)));
-    const grammarAccuracy = hasItsNameAnomaly ? 70 : incorrectCount > 0 ? Math.max(50, 95 - incorrectCount * 15) : 98;
-    const naturalness = equivalentMatches > 0 && incorrectCount === 0 ? 96 : hasItsNameAnomaly ? 60 : wordAccuracy >= 85 ? 94 : 75;
-    const semanticMeaning = Math.round(validWordsCount >= totalRefWords - 1 ? 95 : (validWordsCount / totalRefWords) * 100);
+    const completeness = Math.max(
+      0,
+      Math.min(100, Math.round(((totalRefWords - missingElements.length) / totalRefWords) * 100)),
+    );
+    const wordAccuracy = Math.max(
+      0,
+      Math.min(100, Math.round((validWordsCount / Math.max(learnerRawTokens.length, totalRefWords)) * 100)),
+    );
+    const hasGrammarFlaw = hasItsNameAnomaly || hasItIsAnomaly || incorrectCount > 0;
+    const grammarAccuracy = hasGrammarFlaw ? Math.max(50, 95 - incorrectCount * 12) : 98;
+    const naturalness =
+      equivalentMatches > 0 && incorrectCount === 0
+        ? 96
+        : hasGrammarFlaw
+        ? 62
+        : wordAccuracy >= 85
+        ? 94
+        : 75;
+    const semanticMeaning = Math.round(
+      validWordsCount >= totalRefWords - 1 && missingElements.length <= 1
+        ? 90
+        : (validWordsCount / totalRefWords) * 100,
+    );
 
     let overallStatus: 'EXACT_MATCH' | 'SEMANTICALLY_CORRECT' | 'PARTIALLY_CORRECT' | 'NEEDS_CORRECTION';
     if (missingElements.length === 0 && incorrectCount === 0) {
@@ -281,7 +325,7 @@ export class SemanticAnalyzer {
       } else {
         overallStatus = 'EXACT_MATCH';
       }
-    } else if (semanticMeaning >= 70 || (validWordsCount >= 3 && missingElements.length <= 1)) {
+    } else if (semanticMeaning >= 65 || (validWordsCount >= 3 && missingElements.length <= 1)) {
       overallStatus = 'PARTIALLY_CORRECT';
     } else {
       overallStatus = 'NEEDS_CORRECTION';

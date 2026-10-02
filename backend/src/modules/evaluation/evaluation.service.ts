@@ -62,20 +62,26 @@ export class EvaluationService {
     // 1. In-Memory Cache Hit (0ms)
     if (this.evalCache.has(cacheKey)) {
       const cached = this.evalCache.get(cacheKey)!;
-      this.logger.log(`Instant Memory Cache Hit (0ms) for: "${userTrimmed}" (Deep: ${cached.isDeep})`);
-      // Update progress in background
-      this.persistProgressAndMistakesAsync(cached.evaluation, sentence, userTrimmed, mode);
-      return this.formatResponse(cached.evaluation, sentence, userTrimmed, mode, cached.isDeep, 'memory_cache');
+      if (cached.evaluation?.semanticAnalysis?.tokenDiffs && cached.evaluation.semanticAnalysis.tokenDiffs.length > 0) {
+        this.logger.log(`Instant Memory Cache Hit (0ms) for: "${userTrimmed}" (Deep: ${cached.isDeep})`);
+        this.persistProgressAndMistakesAsync(cached.evaluation, sentence, userTrimmed, mode);
+        return this.formatResponse(cached.evaluation, sentence, userTrimmed, mode, cached.isDeep, 'memory_cache');
+      } else {
+        this.evalCache.delete(cacheKey);
+      }
     }
 
     // 2. Persistent MongoDB Cache Hit (< 15ms)
     try {
       const dbCached = await this.cacheModel.findOne({ cacheKey });
-      if (dbCached && dbCached.evaluation) {
+      if (dbCached && dbCached.evaluation?.semanticAnalysis?.tokenDiffs && dbCached.evaluation.semanticAnalysis.tokenDiffs.length > 0) {
         this.logger.log(`Persistent DB Cache Hit (<15ms) for: "${userTrimmed}"`);
         this.evalCache.set(cacheKey, { evaluation: dbCached.evaluation, isDeep: dbCached.isDeepAnalysis });
         this.persistProgressAndMistakesAsync(dbCached.evaluation, sentence, userTrimmed, mode);
         return this.formatResponse(dbCached.evaluation, sentence, userTrimmed, mode, dbCached.isDeepAnalysis, 'db_cache');
+      } else if (dbCached) {
+        // Invalidate legacy cache without semantic analysis
+        await this.cacheModel.deleteOne({ cacheKey });
       }
     } catch (e: any) {
       this.logger.warn(`Cache read error: ${e.message}`);
@@ -226,7 +232,12 @@ export class EvaluationService {
 
     // If deep analysis is already in RAM cache, return immediately
     const memCached = this.evalCache.get(cacheKey);
-    if (memCached && memCached.isDeep) {
+    if (
+      memCached &&
+      memCached.isDeep &&
+      memCached.evaluation?.semanticAnalysis?.tokenDiffs &&
+      memCached.evaluation.semanticAnalysis.tokenDiffs.length > 0
+    ) {
       return {
         isReady: true,
         evaluation: memCached.evaluation,
@@ -235,7 +246,12 @@ export class EvaluationService {
 
     // Check DB persistent cache
     const dbCached = await this.cacheModel.findOne({ cacheKey });
-    if (dbCached && dbCached.isDeepAnalysis) {
+    if (
+      dbCached &&
+      dbCached.isDeepAnalysis &&
+      dbCached.evaluation?.semanticAnalysis?.tokenDiffs &&
+      dbCached.evaluation.semanticAnalysis.tokenDiffs.length > 0
+    ) {
       this.evalCache.set(cacheKey, { evaluation: dbCached.evaluation, isDeep: true });
       return {
         isReady: true,
