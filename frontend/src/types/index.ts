@@ -113,6 +113,53 @@ export interface CompleteSentenceMemorize {
   keyPoints: string[];
 }
 
+export type SemanticTokenStatus =
+  | 'EXACT_CORRECT' // 🟢 Khớp chuẩn xác
+  | 'SEMANTICALLY_CORRECT' // 🟢〰️ Tương đương ngữ nghĩa (called ≈ named)
+  | 'PARTIALLY_CORRECT' // 🟡 Gần đúng / chưa chuẩn ngữ cảnh
+  | 'INCORRECT' // 🔴 Sai ngữ pháp / ngữ nghĩa
+  | 'MISSING'; // ⚪ Bị bỏ sót
+
+export interface SemanticTokenDiff {
+  learnerToken: string;
+  referenceToken?: string;
+  status: SemanticTokenStatus;
+  explanation?: string;
+  alternativeTo?: string;
+  relation?: string;
+}
+
+export interface SemanticAlternative {
+  learnerExpression: string;
+  referenceExpression: string;
+  relationship: string; // ví dụ: "called ≈ named"
+  noteVi: string;
+  contextDifference?: string;
+}
+
+export interface SemanticDimensionScores {
+  semanticMeaning: number; // 0 - 100
+  grammarAccuracy: number; // 0 - 100
+  wordAccuracy: number; // 0 - 100
+  naturalness: number; // 0 - 100
+  completeness: number; // 0 - 100
+}
+
+export interface SemanticEvaluationData {
+  overallStatus: 'EXACT_MATCH' | 'SEMANTICALLY_CORRECT' | 'PARTIALLY_CORRECT' | 'NEEDS_CORRECTION';
+  scores: SemanticDimensionScores;
+  tokenDiffs: SemanticTokenDiff[];
+  alternatives: SemanticAlternative[];
+  missingElements: Array<{ word: string; positionHint: string; whyNeeded: string }>;
+  naturalnessNote?: string;
+  contextRecommendation?: {
+    recommended: string;
+    learnerVersion: string;
+    why: string;
+    whenToUseLearnerVersion: string;
+  };
+}
+
 export interface EvaluationResult {
   score: number;
   status: 'correct' | 'almost_correct' | 'missing_info' | 'partially_incorrect' | 'incorrect';
@@ -126,6 +173,7 @@ export interface EvaluationResult {
   missing_information: string[];
   extra_information: string[];
   isCachedAlternative?: boolean;
+  semanticAnalysis?: SemanticEvaluationData;
 }
 
 export interface AnswerEvaluationResponse {

@@ -147,6 +147,24 @@ export class EvaluationService {
         completeSentenceMemorize: defaultMemorize,
         missing_information: [],
         extra_information: [],
+        semanticAnalysis: {
+          overallStatus: 'EXACT_MATCH',
+          scores: {
+            semanticMeaning: 100,
+            grammarAccuracy: 100,
+            wordAccuracy: 100,
+            naturalness: 100,
+            completeness: 100,
+          },
+          tokenDiffs: userTrimmed.split(/\s+/).map((t) => ({
+            learnerToken: t,
+            referenceToken: t,
+            status: 'EXACT_CORRECT',
+          })),
+          alternatives: [],
+          missingElements: [],
+          naturalnessNote: 'Câu viết hoàn hảo 100% ngữ pháp và ngữ nghĩa.',
+        },
       };
 
       // Save to memory cache & persistent cache

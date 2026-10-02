@@ -6,7 +6,9 @@ import {
   SpecificMistake,
   GrammarInsight,
   CompleteSentenceMemorize,
+  SemanticEvaluationData,
 } from '../ai.interface';
+import { SemanticAnalyzer } from '../../evaluation/semantic-analyzer';
 
 @Injectable()
 export class MockAIProvider implements IAIEvaluator {
@@ -66,6 +68,25 @@ export class MockAIProvider implements IAIEvaluator {
 
     // 1. Exact match with target English sentence
     if (userClean === targetEnClean) {
+      const exactSemanticAnalysis: SemanticEvaluationData = {
+        overallStatus: 'EXACT_MATCH',
+        scores: {
+          semanticMeaning: 100,
+          grammarAccuracy: 100,
+          wordAccuracy: 100,
+          naturalness: 100,
+          completeness: 100,
+        },
+        tokenDiffs: sentenceEn.split(/\s+/).map((t) => ({
+          learnerToken: t,
+          referenceToken: t,
+          status: 'EXACT_CORRECT',
+        })),
+        alternatives: [],
+        missingElements: [],
+        naturalnessNote: 'Câu viết hoàn hảo 100% ngữ pháp và ngữ nghĩa.',
+      };
+
       return Promise.resolve({
         score: 100,
         status: 'correct',
@@ -82,13 +103,12 @@ export class MockAIProvider implements IAIEvaluator {
         completeSentenceMemorize: defaultMemorize,
         missing_information: [],
         extra_information: [],
+        semanticAnalysis: exactSemanticAnalysis,
       });
     }
 
     // 2. Empty check
     const userWords = userClean.split(/\s+/).filter(Boolean);
-    const targetWords = targetEnClean.split(/\s+/).filter(Boolean);
-
     if (userWords.length === 0) {
       return Promise.resolve({
         score: 0,
@@ -115,128 +135,75 @@ export class MockAIProvider implements IAIEvaluator {
       });
     }
 
-    // 3. Heuristic checks for English
-    const whatYouGotRight: string[] = [];
-    const specificMistakes: SpecificMistake[] = [];
-    const missingInfo: string[] = [];
+    // 3. SEMANTIC TRANSLATION INTELLIGENCE 2.0 EVALUATION
+    const analysis = SemanticAnalyzer.analyzeTokens(input.userTranslationVi, sentenceEn);
 
-    // Check key English tokens
-    const tokens: any[] = input.tokens || [];
-    let matchedTokens = 0;
-    const missingKeyTokens: string[] = [];
+    let score = 80;
+    let status: 'correct' | 'almost_correct' | 'missing_info' | 'partially_incorrect' | 'incorrect' = 'almost_correct';
+    let overview = '';
+    let explanation = '';
+    let whatYouGotRight: string[] = [];
 
-    for (const t of tokens) {
-      const tNorm = this.normalize(t.text || '');
-      if (tNorm.length > 2) {
-        if (userClean.includes(tNorm)) {
-          matchedTokens++;
-        } else {
-          missingKeyTokens.push(t.text);
-        }
-      }
-    }
-
-    if (matchedTokens > 0) {
-      whatYouGotRight.push(`Đã sử dụng đúng các từ vựng cốt lõi của câu (${matchedTokens} từ)`);
-    }
-
-    // Check missing critical keywords
-    if (missingKeyTokens.length > 0 && missingKeyTokens.length <= 3) {
-      const miss = missingKeyTokens[0];
-      const tokenObj = tokens.find((t) => t.text === miss);
-      specificMistakes.push({
-        errorType: 'missing_info',
-        where: `Thiếu từ vựng quan trọng: "${miss}"`,
-        relatedEnglish: miss,
-        correctMeaning: tokenObj?.meaningVi || miss,
-        whyIncorrect: `Từ "${miss}" là một thành phần mang nghĩa quan trọng của câu.`,
-        howToFix: `Bổ sung từ "${miss}" vào đúng vị trí trong câu.`,
-        fixedSnippet: sentenceEn,
-      });
-      missingInfo.push(`Thiếu từ: "${miss}"`);
-    }
-
-    // Check Capitalization & Punctuation
-    const rawInput = input.userTranslationVi.trim();
-    if (rawInput.length > 0 && rawInput[0] !== rawInput[0].toUpperCase()) {
-      specificMistakes.push({
-        errorType: 'unnatural_phrasing',
-        where: 'Chữ cái đầu câu',
-        relatedEnglish: rawInput.slice(0, 10),
-        correctMeaning: sentenceEn.slice(0, 10),
-        whyIncorrect: 'Trong tiếng Anh chuẩn, chữ cái đầu câu luôn phải viết hoa.',
-        howToFix: `Viết hoa chữ "${rawInput[0].toUpperCase()}" ở đầu câu.`,
-        fixedSnippet: sentenceEn,
-      });
-    }
-
-    // Calculate word overlap & Levenshtein
-    let overlapCount = 0;
-    for (const tw of targetWords) {
-      if (userWords.includes(tw)) {
-        overlapCount++;
-      }
-    }
-    const overlapRatio = overlapCount / Math.max(targetWords.length, 1);
-    const levSim = this.levenshteinSimilarity(userClean, targetEnClean);
-    let baseScore = Math.round((overlapRatio * 0.65 + levSim * 0.35) * 100);
-
-    let status: 'correct' | 'almost_correct' | 'missing_info' | 'partially_incorrect' | 'incorrect';
-    let overview: string;
-    let explanation: string;
-
-    if (baseScore >= 85 || specificMistakes.length === 0) {
+    if (analysis.overallStatus === 'SEMANTICALLY_CORRECT') {
+      score = 96;
       status = 'correct';
-      baseScore = Math.max(baseScore, 88);
-      overview = 'Rất chuẩn! Câu tiếng Anh của bạn rất chính xác và tự nhiên.';
-      explanation = 'Bạn đã nắm vững từ vựng và ngữ pháp của câu này.';
-      if (whatYouGotRight.length === 0) {
-        whatYouGotRight.push('Diễn đạt đúng ngữ pháp và từ vựng chuẩn');
-      }
-    } else if (baseScore >= 70) {
+      overview = 'Ý nghĩa hoàn toàn đúng · Diễn đạt tự nhiên';
+      explanation =
+        analysis.alternatives[0]?.noteVi ||
+        'Câu của bạn sử dụng cách diễn đạt tương đương hoàn toàn tự nhiên và chính xác.';
+      whatYouGotRight = [
+        'Ý nghĩa hoàn toàn chính xác so với câu gốc',
+        `Sử dụng cách diễn đạt tự nhiên chuẩn bản xứ: ${analysis.alternatives.map((a) => a.relationship).join(', ')}`,
+      ];
+    } else if (analysis.overallStatus === 'PARTIALLY_CORRECT') {
+      score = Math.max(72, Math.round(analysis.scores.semanticMeaning * 0.7 + analysis.scores.grammarAccuracy * 0.25));
       status = 'almost_correct';
-      baseScore = Math.max(baseScore, 74);
-      overview = 'Rất gần với đáp án chuẩn! Chỉ cần sửa một vài chi tiết nhỏ.';
-      explanation = 'Ý câu hoàn toàn đúng, chú ý thêm cách dùng từ hoặc chính tả.';
-      if (whatYouGotRight.length === 0) {
-        whatYouGotRight.push('Nắm vững cấu trúc câu chính');
-      }
-    } else if (baseScore >= 45) {
-      status = 'missing_info';
-      baseScore = Math.max(baseScore, 55);
-      overview = 'Bạn đã nắm được một phần câu nhưng còn thiếu từ vựng quan trọng.';
-      explanation = `Hãy xem câu mẫu: "${sentenceEn}" để hoàn thiện hơn.`;
+      overview = 'Hiểu được ý chính nhưng cấu trúc ngữ pháp cần điều chỉnh';
+      explanation =
+        analysis.specificMistakes[0]?.whyIncorrect ||
+        'Ý câu người nghe đã hiểu được, nhưng chú ý sửa lại trật tự từ hoặc cách dùng thì.';
+      whatYouGotRight = ['Đã truyền đạt được ý nghĩa cốt lõi của câu'];
     } else {
+      score = Math.max(30, Math.min(65, Math.round(analysis.scores.semanticMeaning * 0.5)));
       status = 'incorrect';
-      baseScore = Math.min(baseScore, 35);
-      overview = 'Câu tiếng Anh chưa chính xác so với ý câu tiếng Việt.';
-      explanation = 'Đừng lo! Hãy xem đáp án mẫu và phân tích ngữ pháp bên dưới để ghi nhớ nhé.';
+      overview = 'Cấu trúc câu chưa chính xác so với ý câu cần dịch';
+      explanation = 'Đừng lo! Hãy xem phân tích từng từ bên dưới và câu chuẩn để ghi nhớ nhé.';
+      whatYouGotRight = [];
+      if (analysis.specificMistakes.length === 0) {
+        analysis.specificMistakes.push({
+          errorType: 'wrong_meaning',
+          where: 'Toàn câu',
+          relatedEnglish: sentenceEn,
+          correctMeaning: refVi,
+          whyIncorrect: 'Chưa truyền đạt đúng ý nghĩa câu tiếng Anh.',
+          howToFix: `Viết theo mẫu: "${sentenceEn}"`,
+          fixedSnippet: sentenceEn,
+        });
+      }
     }
 
-    if (status !== 'correct' && specificMistakes.length === 0) {
-      specificMistakes.push({
-        errorType: 'unnatural_phrasing',
-        where: 'Cấu trúc câu',
-        relatedEnglish: sentenceEn,
-        correctMeaning: refVi,
-        whyIncorrect: 'Trật tự từ hoặc cách dùng thì chưa hoàn toàn chuẩn xác.',
-        howToFix: `Câu chuẩn mẫu: "${sentenceEn}"`,
-        fixedSnippet: sentenceEn,
-      });
-    }
+    const missingInfo = analysis.missingElements.map((m) => `Thiếu từ: "${m.word}"`);
 
     return Promise.resolve({
-      score: baseScore,
+      score,
       status,
-      semantic_similarity: Number((baseScore / 100).toFixed(2)),
+      semantic_similarity: Number((score / 100).toFixed(2)),
       overview,
       explanation,
       whatYouGotRight,
-      specificMistakes,
+      specificMistakes: analysis.specificMistakes,
       grammarInsight: defaultGrammarInsight,
       completeSentenceMemorize: defaultMemorize,
       missing_information: missingInfo.slice(0, 3),
       extra_information: [],
+      semanticAnalysis: {
+        overallStatus: analysis.overallStatus,
+        scores: analysis.scores,
+        tokenDiffs: analysis.tokenDiffs,
+        alternatives: analysis.alternatives,
+        missingElements: analysis.missingElements,
+        naturalnessNote: analysis.naturalnessNote,
+      },
     });
   }
 
@@ -487,6 +454,22 @@ export class MockAIProvider implements IAIEvaluator {
       completeSentenceMemorize: defaultMemorize,
       missing_information: missingInfo.slice(0, 3),
       extra_information: [],
+      semanticAnalysis: {
+        overallStatus: score >= 90 ? 'EXACT_MATCH' : score >= 70 ? 'PARTIALLY_CORRECT' : 'NEEDS_CORRECTION',
+        scores: {
+          semanticMeaning: score,
+          grammarAccuracy: Math.min(100, score + 5),
+          wordAccuracy: score,
+          naturalness: Math.max(70, score - 5),
+          completeness: Math.max(60, score),
+        },
+        tokenDiffs: input.userTranslationVi.trim().split(/\s+/).map((w) => ({
+          learnerToken: w,
+          status: score >= 80 ? 'EXACT_CORRECT' : 'PARTIALLY_CORRECT',
+        })),
+        alternatives: [],
+        missingElements: missingInfo.map((m) => ({ word: m, positionHint: 'Trong câu', whyNeeded: 'Cần thiết cho ý nghĩa' })),
+      },
     });
   }
 

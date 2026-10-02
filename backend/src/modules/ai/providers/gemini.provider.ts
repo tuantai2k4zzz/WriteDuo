@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EvaluationInput, EvaluationResult, IAIEvaluator } from '../ai.interface';
+import { SemanticAnalyzer } from '../../evaluation/semantic-analyzer';
 
 @Injectable()
 export class GeminiProvider implements IAIEvaluator {
@@ -25,25 +26,30 @@ export class GeminiProvider implements IAIEvaluator {
 
     const prompt = isViToEn
       ? `Gia sư Tuantaidz AI: Học viên làm bài dịch [VI -> EN].
-- Tiếng Việt: "${input.referenceTranslationVi}"
+- Tiếng Việt gốc: "${input.referenceTranslationVi}"
 - Tiếng Anh mẫu: "${input.sentenceEn}"
 - Học viên viết: "${input.userTranslationVi}"
-Chấm điểm (0-100), chỉ tóm tắt các ý chính (ngắn gọn, không dài dòng).
+
+QUY TẮC CHẤM NGỮ NGHĨA THÔNG MINH (Semantic Translation Intelligence 2.0):
+1. KHÔNG bắt lỗi từ đồng nghĩa hoặc cách diễn đạt tương đương tự nhiên (ví dụ: "called" thay cho "named" là ĐÚNG 100%, ghi rõ "called ≈ named" trong ghi chú, KHÔNG trừ điểm).
+2. Phân tích chính xác cụm từ sai nếu có (ví dụ "it's name" -> where: "it's name", giải thích "it's" = "it is", sửa thành "named" hoặc "called").
+3. Chấm điểm đa chiều (0-100), nhận xét ngắn gọn, sư phạm, tích cực.
+
 JSON format duy nhất:
 {
   "score": 90,
-  "status": "correct",
-  "overview": "Nhận xét 1 câu",
+  "status": "correct" | "almost_correct" | "incorrect",
+  "overview": "Nhận xét tổng quan 1 câu",
   "explanation": "Giải thích ngắn gọn",
-  "whatYouGotRight": ["Điểm ngữ pháp/từ vựng đúng"],
+  "whatYouGotRight": ["Điểm làm tốt"],
   "specificMistakes": [
     {
-      "errorType": "wrong_tense" | "missing_info" | "unnatural_phrasing",
-      "where": "vị trí lỗi",
+      "errorType": "grammar_error" | "missing_info" | "unnatural_phrasing",
+      "where": "cụm từ học viên viết chưa chuẩn (ví dụ: it's name)",
       "relatedEnglish": "từ tiếng Anh",
       "correctMeaning": "nghĩa đúng",
-      "whyIncorrect": "lý do",
-      "howToFix": "cách sửa",
+      "whyIncorrect": "lý do chưa chuẩn",
+      "howToFix": "cách sửa chuẩn",
       "fixedSnippet": "${input.sentenceEn}"
     }
   ],
@@ -117,14 +123,20 @@ JSON format duy nhất:
       }
 
       const parsed: EvaluationResult = JSON.parse(rawText);
+      const semanticData = SemanticAnalyzer.analyzeTokens(input.userTranslationVi, input.sentenceEn);
+
       return {
-        score: Math.min(Math.max(parsed.score || 0, 0), 100),
+        score: Math.min(Math.max(parsed.score || semanticData.scores.semanticMeaning || 0, 0), 100),
         status: parsed.status || (parsed.score >= 80 ? 'correct' : parsed.score >= 50 ? 'almost_correct' : 'incorrect'),
         semantic_similarity: parsed.semantic_similarity || (parsed.score / 100),
         overview: parsed.overview || 'Đã đánh giá câu trả lời.',
         explanation: parsed.explanation || 'Đã phân tích bản dịch.',
-        whatYouGotRight: Array.isArray(parsed.whatYouGotRight) ? parsed.whatYouGotRight : [],
-        specificMistakes: Array.isArray(parsed.specificMistakes) ? parsed.specificMistakes : [],
+        whatYouGotRight: Array.isArray(parsed.whatYouGotRight) && parsed.whatYouGotRight.length > 0
+          ? parsed.whatYouGotRight
+          : ['Đã truyền đạt được ý nghĩa câu'],
+        specificMistakes: Array.isArray(parsed.specificMistakes) && parsed.specificMistakes.length > 0
+          ? parsed.specificMistakes
+          : semanticData.specificMistakes,
         grammarInsight: parsed.grammarInsight || {
           relevantRule: 'Cấu trúc câu',
           whyThisStructure: 'Tuân theo cấu trúc ngữ pháp chuẩn.',
@@ -136,6 +148,14 @@ JSON format duy nhất:
         },
         missing_information: Array.isArray(parsed.missing_information) ? parsed.missing_information : [],
         extra_information: Array.isArray(parsed.extra_information) ? parsed.extra_information : [],
+        semanticAnalysis: parsed.semanticAnalysis || {
+          overallStatus: semanticData.overallStatus,
+          scores: semanticData.scores,
+          tokenDiffs: semanticData.tokenDiffs,
+          alternatives: semanticData.alternatives,
+          missingElements: semanticData.missingElements,
+          naturalnessNote: semanticData.naturalnessNote,
+        },
       };
     } catch (err: any) {
       clearTimeout(timeoutId);

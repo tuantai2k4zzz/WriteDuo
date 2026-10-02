@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TimeRewindRepair } from './learning/TimeRewindRepair';
+import { SemanticSentenceView } from './learning/SemanticSentenceView';
 
 export const FeedbackDrawer: React.FC = () => {
   const {
@@ -81,19 +82,33 @@ export const FeedbackDrawer: React.FC = () => {
   const isMissing = status === 'missing_info';
   const isViToEn = exerciseMode === 'vi_to_en';
 
+  const semanticData = evaluation.semanticAnalysis;
+  const isExactMatch = semanticData?.overallStatus === 'EXACT_MATCH';
+  const isEquivalent =
+    semanticData?.overallStatus === 'SEMANTICALLY_CORRECT' ||
+    (isCorrect && (semanticData?.alternatives?.length ?? 0) > 0);
+
   // Bright Futuristic Colors
   let badgeBorder = 'border-rose-400 bg-rose-50 text-rose-700 dark:border-rose-500/40 dark:bg-rose-950/40 dark:text-rose-300';
   let badgePill = 'bg-rose-500 text-white';
   let statusTitle = 'Cần Điều Chỉnh Lại';
 
-  if (isCorrect) {
+  if (isExactMatch) {
     badgeBorder = 'border-emerald-400 bg-emerald-50 text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-950/40 dark:text-emerald-300';
     badgePill = 'bg-emerald-500 text-white';
-    statusTitle = 'Tuyệt Vời · Chuẩn 100%';
-  } else if (isAlmost) {
+    statusTitle = 'Tuyệt Vời · Khớp Hoàn Hảo';
+  } else if (isEquivalent) {
     badgeBorder = 'border-cyan-400 bg-cyan-50 text-cyan-700 dark:border-cyan-500/40 dark:bg-cyan-950/40 dark:text-cyan-300';
     badgePill = 'bg-cyan-500 text-white';
-    statusTitle = 'Rất Tốt · Đúng Hầu Hết Ý';
+    statusTitle = 'Xuất Sắc · Đúng Ý & Tự Nhiên';
+  } else if (isCorrect) {
+    badgeBorder = 'border-emerald-400 bg-emerald-50 text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-950/40 dark:text-emerald-300';
+    badgePill = 'bg-emerald-500 text-white';
+    statusTitle = 'Rất Chuẩn Xác';
+  } else if (isAlmost || semanticData?.overallStatus === 'PARTIALLY_CORRECT') {
+    badgeBorder = 'border-amber-400 bg-amber-50 text-amber-700 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-300';
+    badgePill = 'bg-amber-500 text-white';
+    statusTitle = 'Ý Nghĩa Gần Đúng · Cần Hoàn Thiện';
   } else if (isMissing) {
     badgeBorder = 'border-amber-400 bg-amber-50 text-amber-700 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-300';
     badgePill = 'bg-amber-500 text-white';
@@ -122,7 +137,7 @@ export const FeedbackDrawer: React.FC = () => {
               <div
                 className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl shadow-md ${badgePill}`}
               >
-                {isCorrect ? (
+                {isCorrect || isExactMatch || isEquivalent ? (
                   <CheckCircle2 className="h-7 w-7" />
                 ) : isAlmost ? (
                   <Sparkles className="h-7 w-7" />
@@ -155,7 +170,7 @@ export const FeedbackDrawer: React.FC = () => {
               {!isCorrect && (
                 <button
                   onClick={retryCurrentSentence}
-                  className="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all"
+                  className="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all cursor-pointer"
                   title="Thử lại câu này (Ctrl+R)"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
@@ -174,6 +189,13 @@ export const FeedbackDrawer: React.FC = () => {
             </div>
           </div>
 
+          {/* ── SEMANTIC SENTENCE VIEW 2.0 (4-COLOR TOKEN DIFFS & LANGUAGE NOTES) ── */}
+          <SemanticSentenceView
+            semanticData={evaluation.semanticAnalysis}
+            userAnswer={userAnswer}
+            referenceAnswer={referenceAnswer}
+          />
+
           {/* ── BACKGROUND SCANNING RADAR (If deep analysis is still completing) ── */}
           {!isDeepAnalysisReady && !isCorrect && (
             <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-700 dark:text-cyan-300 text-xs font-mono">
@@ -183,23 +205,21 @@ export const FeedbackDrawer: React.FC = () => {
           )}
 
           {/* ── TIME REWIND ERROR EXPERIENCE (< 1s Visual Anomaly Repair) ── */}
-          {!isCorrect && (
+          {!isCorrect && specificMistakes.length > 0 && (
             <TimeRewindRepair
               userSnippet={
-                specificMistakes.length > 0 && specificMistakes[0].where
+                specificMistakes[0].where &&
+                !specificMistakes[0].where.startsWith('Thiếu') &&
+                !specificMistakes[0].where.includes('Chữ cái')
                   ? specificMistakes[0].where
-                  : userAnswer
+                  : specificMistakes[0].relatedEnglish || userAnswer
               }
               fixedSnippet={
-                specificMistakes.length > 0 && specificMistakes[0].fixedSnippet
-                  ? specificMistakes[0].fixedSnippet
-                  : referenceAnswer
+                specificMistakes[0].correctMeaning ||
+                specificMistakes[0].fixedSnippet ||
+                referenceAnswer
               }
-              reason={
-                specificMistakes.length > 0
-                  ? specificMistakes[0].whyIncorrect
-                  : evaluation.overview || evaluation.explanation
-              }
+              reason={specificMistakes[0].whyIncorrect}
               rule={grammarInsight?.relevantRule || grammarAnalysis?.tense}
             />
           )}
