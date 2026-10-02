@@ -56,10 +56,10 @@ export const DailyMission: React.FC<DailyMissionProps> = ({
             <Target className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-base font-black font-mono text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <h3 className="text-base font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
               NHIỆM VỤ HÔM NAY
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               Tiến độ mục tiêu ngày của Tuấn Tài
             </p>
           </div>

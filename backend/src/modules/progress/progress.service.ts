@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { UserProgress, UserProgressDocument, UserMistake, UserMistakeDocument, Reading, ReadingDocument, Sentence, SentenceDocument } from '../../schemas';
 
 @Injectable()
@@ -16,6 +16,7 @@ export class ProgressService {
     let progress = await this.progressModel.findOne().lean();
     if (!progress) {
       const created = await this.progressModel.create({
+        userId: new Types.ObjectId(),
         xp: 140,
         streakCount: 3,
         hearts: 5,

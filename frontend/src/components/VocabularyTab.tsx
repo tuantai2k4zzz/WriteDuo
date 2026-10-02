@@ -63,7 +63,7 @@ export const VocabularyTab: React.FC = () => {
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <h1 className="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                   MEMORY PALACE — CUNG ĐIỆN TỪ VỰNG
                 </h1>
                 <NeonBadge label="SEMANTIC MAPPING" color="cyan" pulse />
@@ -125,7 +125,7 @@ export const VocabularyTab: React.FC = () => {
       ) : words.length === 0 ? (
         <HolographicPanel glowColor="cyan" className="p-12 text-center">
           <BookmarkCheck className="mx-auto h-12 w-12 text-cyan-600 dark:text-cyan-500/60 mb-3" />
-          <h3 className="text-base font-black font-mono text-slate-900 dark:text-white">CHƯA CÓ TỪ VỰNG NÀO</h3>
+          <h3 className="text-base font-black text-slate-900 dark:text-white">CHƯA CÓ TỪ VỰNG NÀO</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
             Khi đọc bài học, bạn có thể nhấp vào bất kỳ từ tiếng Anh nào để tra nghĩa và bấm nút "Lưu Vào Sổ Từ" để thêm vào đây!
           </p>
@@ -145,7 +145,7 @@ export const VocabularyTab: React.FC = () => {
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-black font-mono text-slate-900 dark:text-white tracking-tight">
+                      <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
                         {item.word}
                       </h3>
                       {item.pos && (

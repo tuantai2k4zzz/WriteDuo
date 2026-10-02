@@ -1,3 +1,13 @@
+import * as dns from 'dns';
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch {
+  // Ignore if restricted
+}
+
 import mongoose from 'mongoose';
 import * as fs from 'fs';
 import * as path from 'path';

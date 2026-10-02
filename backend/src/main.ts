@@ -1,6 +1,14 @@
+import * as dns from 'dns';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
+
+// Configure DNS servers to prevent querySrv ECONNREFUSED on Windows when resolving MongoDB Atlas SRV records
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch {
+  // Ignore if restricted
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

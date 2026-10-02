@@ -2,6 +2,11 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-sans: var(--font-nunito), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
@@ -21,11 +26,31 @@
   --color-foreground: var(--foreground);
 }
 
+html {
+  font-size: 16.5px; /* Giúp chữ toàn bộ giao diện to vừa phải, thoáng mắt và dễ nhìn */
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-nunito), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500; /* Nền tảng nét chữ béo mũm mĩm vừa phải, rõ chữ, chống mỏng mảnh */
+  letter-spacing: -0.012em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+/* Kế thừa font chữ mũm mĩm cho form và buttons */
+button, input, textarea, select {
+  font-family: inherit;
+}
+
+/* Tiêu đề căng mọng, to béo và sắc nét */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
+  font-weight: 800;
 }
 
 /* --- STARK TECH HUD & 3D CYBER STYLES (2026) --- */

@@ -94,11 +94,11 @@ export const LearningGalaxy: React.FC<LearningGalaxyProps> = ({ skills }) => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Brain className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
-            <h3 className="text-base font-black font-mono text-slate-900 dark:text-white tracking-tight">
+            <h3 className="text-base font-black text-slate-900 dark:text-white tracking-tight">
               NEURAL GALAXY — MA TRẬN NĂNG LỰC
             </h3>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             Hệ thống 8 trục năng lực ngôn ngữ theo thời gian thực
           </p>
         </div>

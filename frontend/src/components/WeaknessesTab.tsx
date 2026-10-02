@@ -39,7 +39,7 @@ export const WeaknessesTab: React.FC = () => {
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <h1 className="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                   MISTAKE DNA — PHÂN TÍCH ĐIỂM YẾU
                 </h1>
                 <NeonBadge label="NEURAL REPAIR" color="rose" pulse />
@@ -72,7 +72,7 @@ export const WeaknessesTab: React.FC = () => {
       ) : weaknesses.length === 0 ? (
         <HolographicPanel glowColor="emerald" className="p-12 text-center">
           <CheckCircle2 className="mx-auto h-14 w-14 text-emerald-500 dark:text-emerald-400 mb-4" />
-          <h3 className="text-lg font-black font-mono text-slate-900 dark:text-white">CHƯA PHÁT HIỆN DỊ THƯỜNG</h3>
+          <h3 className="text-lg font-black text-slate-900 dark:text-white">CHƯA PHÁT HIỆN DỊ THƯỜNG</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">
             Hệ thống chưa ghi nhận lỗ hổng ngữ pháp nghiêm trọng nào. Khi bạn gặp lỗi trong các bài đọc, AI sẽ lập tức mã hóa chuỗi DNA lỗi tại đây!
           </p>
@@ -100,7 +100,7 @@ export const WeaknessesTab: React.FC = () => {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-base font-black font-mono text-slate-900 dark:text-white">
+                          <h3 className="text-base font-black text-slate-900 dark:text-white">
                             {item.tag}
                           </h3>
                           <NeonBadge

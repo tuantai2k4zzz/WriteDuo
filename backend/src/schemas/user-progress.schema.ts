@@ -5,7 +5,7 @@ export type UserProgressDocument = UserProgress & Document;
 
 @Schema({ timestamps: true })
 export class UserProgress {
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true, unique: true, index: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', default: () => new Types.ObjectId(), index: true })
   userId: Types.ObjectId;
 
   @Prop({ default: 0 })
