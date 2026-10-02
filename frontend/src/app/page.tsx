@@ -31,6 +31,7 @@ export default function Home() {
     startLesson,
     userProgress,
     setUserProgress,
+    initTheme,
   } = useLearningStore();
 
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -38,6 +39,11 @@ export default function Home() {
   const [weaknesses, setWeaknesses] = useState<GrammarWeakness[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectingLessonId, setSelectingLessonId] = useState<string | null>(null);
+
+  // Initialize theme mode from localStorage on mount
+  useEffect(() => {
+    initTheme();
+  }, [initTheme]);
 
   // Load progress, lessons, weaknesses, and proactive review queue on mount
   useEffect(() => {
@@ -197,7 +203,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#03070f' }}>
+    <div className="min-h-screen flex flex-col bg-slate-100/70 dark:bg-[#03070f] text-slate-800 dark:text-slate-100 transition-colors duration-300">
       <Header />
 
       <main className="flex-1 pb-16">
@@ -229,23 +235,18 @@ export default function Home() {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="rounded-2xl p-5"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(6,182,212,0.12) 0%, rgba(3,8,22,0.95) 100%)',
-                      border: '1px solid rgba(6,182,212,0.35)',
-                      boxShadow: '0 0 25px rgba(6,182,212,0.1)',
-                    }}
+                    className="rounded-2xl p-5 bg-white/95 dark:bg-[#030816]/95 border border-cyan-200 dark:border-cyan-500/35 shadow-sm dark:shadow-[0_0_25px_rgba(6,182,212,0.1)] backdrop-blur-xl"
                   >
                     <div className="flex items-center gap-2 mb-2">
-                      <Zap className="h-4 w-4 text-cyan-400" />
-                      <span className="text-[11px] font-mono font-black text-cyan-300 uppercase tracking-wider">
+                      <Zap className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+                      <span className="text-[11px] font-mono font-black text-cyan-700 dark:text-cyan-300 uppercase tracking-wider">
                         TUANTAIDZ ADAPTIVE RECOMMENDATION
                       </span>
                     </div>
-                    <h4 className="text-base font-black text-white mb-1">
+                    <h4 className="text-base font-black text-slate-900 dark:text-white mb-1">
                       {recommendation.title}
                     </h4>
-                    <p className="text-xs text-slate-300 mb-4 leading-relaxed font-semibold">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 mb-4 leading-relaxed font-semibold">
                       {recommendation.description}
                     </p>
                     <button
@@ -272,30 +273,23 @@ export default function Home() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="mb-8 rounded-2xl p-6"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(88,28,220,0.15) 0%, rgba(6,10,28,0.95) 100%)',
-                  border: '1px solid rgba(139,92,246,0.35)',
-                  boxShadow: '0 0 30px rgba(139,92,246,0.1)',
-                }}
+                className="mb-8 rounded-2xl p-6 bg-white/95 dark:bg-[#0a071c]/95 border border-violet-200 dark:border-violet-500/35 shadow-sm dark:shadow-[0_0_30px_rgba(139,92,246,0.1)] backdrop-blur-xl"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-start gap-3.5">
-                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl"
-                      style={{ background: 'rgba(139,92,246,0.18)', border: '1px solid rgba(139,92,246,0.5)' }}>
-                      <Brain className="h-6 w-6 text-violet-300" />
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-500/50">
+                      <Brain className="h-6 w-6 text-violet-600 dark:text-violet-300" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-base font-black text-white tracking-tight">
+                        <h3 className="text-base font-black text-slate-900 dark:text-white tracking-tight">
                           Neural SRS — Hồi Tưởng Chủ Động
                         </h3>
-                        <span className="rounded-full px-2.5 py-0.5 text-[10px] font-black font-mono"
-                          style={{ background: 'rgba(139,92,246,0.25)', border: '1px solid rgba(139,92,246,0.5)', color: '#c4b5fd' }}>
+                        <span className="rounded-full px-2.5 py-0.5 text-[10px] font-black font-mono bg-violet-100 dark:bg-violet-950/50 border border-violet-300 dark:border-violet-500/50 text-violet-700 dark:text-violet-300">
                           {reviewItems.length} câu đến hạn
                         </span>
                       </div>
-                      <p className="text-xs font-semibold" style={{ color: 'rgba(148,163,184,0.9)' }}>
+                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">
                         Thuật toán SRS phát hiện {reviewItems.length} cấu trúc đang giảm độ bền trí nhớ — kích hoạt ngay để ghi nhớ vĩnh viễn.
                       </p>
                     </div>
@@ -303,12 +297,7 @@ export default function Home() {
 
                   <button
                     onClick={handleStartSmartReview}
-                    className="flex items-center justify-center gap-2 rounded-xl py-3 px-6 text-sm font-black text-violet-200 flex-shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95 font-mono"
-                    style={{
-                      background: 'rgba(139,92,246,0.25)',
-                      border: '1px solid rgba(139,92,246,0.6)',
-                      boxShadow: '0 0 20px rgba(139,92,246,0.25)',
-                    }}
+                    className="flex items-center justify-center gap-2 rounded-xl py-3 px-6 text-sm font-black text-white dark:text-violet-200 flex-shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95 font-mono bg-violet-600 hover:bg-violet-500 dark:bg-violet-500/25 dark:border dark:border-violet-500/60 shadow-md shadow-violet-500/20"
                   >
                     <span>Ôn Ngay ({reviewItems.length})</span>
                     <ArrowRight className="h-4 w-4" />
@@ -320,10 +309,10 @@ export default function Home() {
             {/* ── LEVEL FILTER BAR ── */}
             <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
               <div className="flex items-center gap-2">
-                <Compass className="h-4 w-4 text-cyan-400" />
-                <h2 className="text-base font-black text-white tracking-tight font-mono">
+                <Compass className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+                <h2 className="text-base font-black text-slate-900 dark:text-white tracking-tight font-mono">
                   LỘ TRÌNH BÀI ĐỌC
-                  <span className="ml-2 text-cyan-400/80 text-sm">({lessons.length})</span>
+                  <span className="ml-2 text-cyan-600 dark:text-cyan-400/80 text-sm">({lessons.length})</span>
                 </h2>
               </div>
 
@@ -332,13 +321,11 @@ export default function Home() {
                   <button
                     key={opt.value}
                     onClick={() => setSelectedLevel(opt.value)}
-                    className="rounded-lg px-3 py-1.5 text-[11px] font-black transition-all font-mono whitespace-nowrap cursor-pointer"
-                    style={{
-                      background: selectedLevel === opt.value ? 'rgba(6,182,212,0.25)' : 'rgba(255,255,255,0.04)',
-                      border: selectedLevel === opt.value ? '1px solid rgba(6,182,212,0.7)' : '1px solid rgba(255,255,255,0.08)',
-                      color: selectedLevel === opt.value ? '#67e8f9' : 'rgba(148,163,184,0.7)',
-                      boxShadow: selectedLevel === opt.value ? '0 0 12px rgba(6,182,212,0.2)' : 'none',
-                    }}
+                    className={`rounded-lg px-3 py-1.5 text-[11px] font-black transition-all font-mono whitespace-nowrap cursor-pointer border ${
+                      selectedLevel === opt.value
+                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-700 dark:text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.2)]'
+                        : 'bg-white/90 dark:bg-white/[0.04] border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-white/20'
+                    }`}
                   >
                     {opt.label}
                   </button>
@@ -350,14 +337,12 @@ export default function Home() {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {[1, 2, 3, 4, 5, 6].map((n) => (
-                  <div key={n} className="h-48 rounded-2xl animate-pulse"
-                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(6,182,212,0.1)' }} />
+                  <div key={n} className="h-48 rounded-2xl animate-pulse bg-slate-200/80 dark:bg-white/[0.04] border border-slate-300/60 dark:border-cyan-500/10" />
                 ))}
               </div>
             ) : lessons.length === 0 ? (
-              <div className="rounded-2xl p-12 text-center"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(6,182,212,0.2)' }}>
-                <ShieldCheck className="h-10 w-10 text-slate-600 mx-auto mb-3" />
+              <div className="rounded-2xl p-12 text-center bg-white/80 dark:bg-white/[0.03] border border-dashed border-slate-300 dark:border-cyan-500/20">
+                <ShieldCheck className="h-10 w-10 text-slate-400 dark:text-slate-600 mx-auto mb-3" />
                 <p className="text-slate-500 font-bold font-mono">Không tìm thấy bài học nào.</p>
               </div>
             ) : (

@@ -192,21 +192,16 @@ export const ParagraphChallenge: React.FC = () => {
 
         {/* ── BOSS BATTLE 2.0 HUD: BOSS HP & LEARNING STAGES ── */}
         <div
-          className="rounded-2xl p-4 backdrop-blur-md"
-          style={{
-            background: 'linear-gradient(135deg, rgba(20,4,12,0.9) 0%, rgba(10,2,24,0.9) 100%)',
-            border: '1px solid rgba(244,63,94,0.3)',
-            boxShadow: '0 0 25px rgba(244,63,94,0.1)',
-          }}
+          className="rounded-2xl p-4 backdrop-blur-md bg-rose-50/95 dark:bg-gradient-to-br dark:from-[#14040c]/90 dark:to-[#0a0218]/90 border border-rose-300 dark:border-rose-500/30 shadow-xs dark:shadow-[0_0_25px_rgba(244,63,94,0.1)]"
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2.5">
             <div className="flex items-center gap-2">
               <span className="text-rose-500 animate-pulse font-mono font-black text-sm">⚔️</span>
-              <span className="text-xs font-mono font-black text-rose-300 uppercase tracking-wider">
+              <span className="text-xs font-mono font-black text-rose-700 dark:text-rose-300 uppercase tracking-wider">
                 BOSS: {activeLesson.title.toUpperCase()} (LEVEL {activeLesson.level})
               </span>
             </div>
-            <div className="text-xs font-mono font-bold text-slate-300">
+            <div className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300">
               {result
                 ? result.score >= 80
                   ? '🏆 TRÙM ĐÃ BỊ ĐÁNH BẠI (VICTORY)'
@@ -216,7 +211,7 @@ export const ParagraphChallenge: React.FC = () => {
           </div>
 
           {/* Boss HP Bar */}
-          <div className="w-full h-3 rounded-full bg-slate-900 border border-rose-900/60 overflow-hidden mb-3">
+          <div className="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-900 border border-rose-300 dark:border-rose-900/60 overflow-hidden mb-3">
             <motion.div
               initial={{ width: '100%' }}
               animate={{
@@ -237,16 +232,16 @@ export const ParagraphChallenge: React.FC = () => {
 
           {/* 4 Objective Stages */}
           <div className="grid grid-cols-4 gap-2 text-center text-[10px] font-mono font-bold">
-            <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+            <div className="p-1.5 rounded-lg bg-emerald-100/80 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400">
               1. TỪ VỰNG ✓
             </div>
-            <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+            <div className="p-1.5 rounded-lg bg-emerald-100/80 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400">
               2. CÚ PHÁP ✓
             </div>
-            <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+            <div className="p-1.5 rounded-lg bg-emerald-100/80 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400">
               3. CÂU ĐƠN ✓
             </div>
-            <div className={`p-1.5 rounded-lg border ${result && result.score >= 80 ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300' : 'bg-rose-500/15 border-rose-500/40 text-rose-300 animate-pulse'}`}>
+            <div className={`p-1.5 rounded-lg border ${result && result.score >= 80 ? 'bg-emerald-100/80 dark:bg-emerald-500/15 border-emerald-300 dark:border-emerald-500/40 text-emerald-700 dark:text-emerald-300' : 'bg-rose-100/80 dark:bg-rose-500/15 border-rose-300 dark:border-rose-500/40 text-rose-700 dark:text-rose-300 animate-pulse'}`}>
               4. TOÀN ĐOẠN ⚔️
             </div>
           </div>

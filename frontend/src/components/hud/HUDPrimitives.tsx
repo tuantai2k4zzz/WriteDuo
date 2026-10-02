@@ -21,68 +21,54 @@ export const HolographicPanel: React.FC<HolographicPanelProps> = ({
   style,
   ...props
 }) => {
-  const glowMap = {
+  const colorMap = {
     cyan: {
-      border: 'rgba(6, 182, 212, 0.25)',
-      corner: 'rgba(6, 182, 212, 0.7)',
-      bg: 'linear-gradient(135deg, rgba(4, 11, 26, 0.95) 0%, rgba(6, 16, 38, 0.95) 100%)',
-      shadow: '0 0 35px rgba(6, 182, 212, 0.08)',
+      wrapper: 'bg-white/95 dark:bg-gradient-to-br dark:from-[#040b1a]/95 dark:to-[#061026]/95 border-cyan-200/90 dark:border-cyan-500/25 shadow-sm shadow-cyan-100/50 dark:shadow-[0_0_35px_rgba(6,182,212,0.08)]',
+      corner: 'border-cyan-500 dark:border-cyan-400',
+      scanline: 'rgba(6, 182, 212, 0.7)',
     },
     amber: {
-      border: 'rgba(245, 158, 11, 0.25)',
-      corner: 'rgba(245, 158, 11, 0.7)',
-      bg: 'linear-gradient(135deg, rgba(26, 16, 4, 0.95) 0%, rgba(38, 22, 6, 0.95) 100%)',
-      shadow: '0 0 35px rgba(245, 158, 11, 0.08)',
+      wrapper: 'bg-white/95 dark:bg-gradient-to-br dark:from-[#1a1004]/95 dark:to-[#261606]/95 border-amber-200/90 dark:border-amber-500/25 shadow-sm shadow-amber-100/50 dark:shadow-[0_0_35px_rgba(245,158,11,0.08)]',
+      corner: 'border-amber-500 dark:border-amber-400',
+      scanline: 'rgba(245, 158, 11, 0.7)',
     },
     emerald: {
-      border: 'rgba(16, 185, 129, 0.25)',
-      corner: 'rgba(16, 185, 129, 0.7)',
-      bg: 'linear-gradient(135deg, rgba(4, 26, 16, 0.95) 0%, rgba(6, 38, 24, 0.95) 100%)',
-      shadow: '0 0 35px rgba(16, 185, 129, 0.08)',
+      wrapper: 'bg-white/95 dark:bg-gradient-to-br dark:from-[#041a10]/95 dark:to-[#062618]/95 border-emerald-200/90 dark:border-emerald-500/25 shadow-sm shadow-emerald-100/50 dark:shadow-[0_0_35px_rgba(16,185,129,0.08)]',
+      corner: 'border-emerald-500 dark:border-emerald-400',
+      scanline: 'rgba(16, 185, 129, 0.7)',
     },
     violet: {
-      border: 'rgba(139, 92, 246, 0.25)',
-      corner: 'rgba(139, 92, 246, 0.7)',
-      bg: 'linear-gradient(135deg, rgba(18, 8, 38, 0.95) 0%, rgba(26, 12, 54, 0.95) 100%)',
-      shadow: '0 0 35px rgba(139, 92, 246, 0.08)',
+      wrapper: 'bg-white/95 dark:bg-gradient-to-br dark:from-[#120826]/95 dark:to-[#1a0c36]/95 border-violet-200/90 dark:border-violet-500/25 shadow-sm shadow-violet-100/50 dark:shadow-[0_0_35px_rgba(139,92,246,0.08)]',
+      corner: 'border-violet-500 dark:border-violet-400',
+      scanline: 'rgba(139, 92, 246, 0.7)',
     },
     rose: {
-      border: 'rgba(244, 63, 94, 0.25)',
-      corner: 'rgba(244, 63, 94, 0.7)',
-      bg: 'linear-gradient(135deg, rgba(38, 6, 16, 0.95) 0%, rgba(54, 8, 24, 0.95) 100%)',
-      shadow: '0 0 35px rgba(244, 63, 94, 0.08)',
+      wrapper: 'bg-white/95 dark:bg-gradient-to-br dark:from-[#260610]/95 dark:to-[#360818]/95 border-rose-200/90 dark:border-rose-500/25 shadow-sm shadow-rose-100/50 dark:shadow-[0_0_35px_rgba(244,63,94,0.08)]',
+      corner: 'border-rose-500 dark:border-rose-400',
+      scanline: 'rgba(244, 63, 94, 0.7)',
     },
   };
 
-  const theme = glowMap[glowColor];
+  const theme = colorMap[glowColor];
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl backdrop-blur-xl transition-all duration-300 ${className}`}
-      style={{
-        background: theme.bg,
-        border: `1px solid ${theme.border}`,
-        boxShadow: theme.shadow,
-        ...style,
-      }}
+      className={`relative overflow-hidden rounded-2xl border backdrop-blur-xl transition-all duration-300 ${theme.wrapper} ${className}`}
+      style={style}
       {...props}
     >
       {/* 4 Tech Corner Brackets */}
       <div
-        className="pointer-events-none absolute top-0 left-0 h-3 w-3 rounded-tl-lg"
-        style={{ borderTop: `2px solid ${theme.corner}`, borderLeft: `2px solid ${theme.corner}` }}
+        className={`pointer-events-none absolute top-0 left-0 h-3 w-3 rounded-tl-lg border-t-2 border-l-2 ${theme.corner}`}
       />
       <div
-        className="pointer-events-none absolute top-0 right-0 h-3 w-3 rounded-tr-lg"
-        style={{ borderTop: `2px solid ${theme.corner}`, borderRight: `2px solid ${theme.corner}` }}
+        className={`pointer-events-none absolute top-0 right-0 h-3 w-3 rounded-tr-lg border-t-2 border-r-2 ${theme.corner}`}
       />
       <div
-        className="pointer-events-none absolute bottom-0 left-0 h-3 w-3 rounded-bl-lg"
-        style={{ borderBottom: `2px solid ${theme.corner}`, borderLeft: `2px solid ${theme.corner}` }}
+        className={`pointer-events-none absolute bottom-0 left-0 h-3 w-3 rounded-bl-lg border-b-2 border-l-2 ${theme.corner}`}
       />
       <div
-        className="pointer-events-none absolute bottom-0 right-0 h-3 w-3 rounded-br-lg"
-        style={{ borderBottom: `2px solid ${theme.corner}`, borderRight: `2px solid ${theme.corner}` }}
+        className={`pointer-events-none absolute bottom-0 right-0 h-3 w-3 rounded-br-lg border-b-2 border-r-2 ${theme.corner}`}
       />
 
       {/* Optional Animated Scanline */}
@@ -90,7 +76,7 @@ export const HolographicPanel: React.FC<HolographicPanelProps> = ({
         <div
           className="pointer-events-none absolute inset-x-0 h-[1.5px] opacity-40"
           style={{
-            background: `linear-gradient(90deg, transparent, ${theme.corner}, transparent)`,
+            background: `linear-gradient(90deg, transparent, ${theme.scanline}, transparent)`,
             animation: 'scanline 5s linear infinite',
           }}
         />
@@ -111,11 +97,11 @@ export const NeonBadge: React.FC<{
   pulse?: boolean;
 }> = ({ label, color = 'cyan', icon, pulse = false }) => {
   const styles = {
-    cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.15)]',
-    amber: 'bg-amber-500/10 text-amber-400 border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.15)]',
-    emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.15)]',
-    violet: 'bg-violet-500/10 text-violet-400 border-violet-500/30 shadow-[0_0_12px_rgba(139,92,246,0.15)]',
-    rose: 'bg-rose-500/10 text-rose-400 border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.15)]',
+    cyan: 'bg-cyan-100/80 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border-cyan-300 dark:border-cyan-500/30 shadow-xs dark:shadow-[0_0_12px_rgba(6,182,212,0.15)]',
+    amber: 'bg-amber-100/80 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-500/30 shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.15)]',
+    emerald: 'bg-emerald-100/80 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-500/30 shadow-xs dark:shadow-[0_0_12px_rgba(16,185,129,0.15)]',
+    violet: 'bg-violet-100/80 dark:bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-300 dark:border-violet-500/30 shadow-xs dark:shadow-[0_0_12px_rgba(139,92,246,0.15)]',
+    rose: 'bg-rose-100/80 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-300 dark:border-rose-500/30 shadow-xs dark:shadow-[0_0_12px_rgba(244,63,94,0.15)]',
   };
 
   return (
@@ -153,7 +139,7 @@ export const EnergyBar: React.FC<{
   const clamped = Math.min(100, Math.max(0, value));
 
   return (
-    <div className={`relative w-full overflow-hidden rounded-full bg-slate-900/80 border border-slate-700/50 ${height}`}>
+    <div className={`relative w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-700/50 ${height}`}>
       <motion.div
         className="h-full rounded-full transition-all duration-500"
         initial={{ width: 0 }}
@@ -166,7 +152,7 @@ export const EnergyBar: React.FC<{
       {showTicks && (
         <div className="pointer-events-none absolute inset-0 flex justify-between px-1 opacity-20">
           {[25, 50, 75].map((tick) => (
-            <div key={tick} className="h-full w-px bg-white" />
+            <div key={tick} className="h-full w-px bg-slate-500 dark:bg-white" />
           ))}
         </div>
       )}
@@ -213,11 +199,11 @@ export const AIThinkingIndicator: React.FC<{
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-500" />
         </span>
-        <h4 className="text-sm font-black font-mono tracking-wider text-cyan-300">
+        <h4 className="text-sm font-black font-mono tracking-wider text-cyan-700 dark:text-cyan-300">
           {message}
         </h4>
       </div>
-      <p className="mt-1 text-xs font-mono text-slate-400">
+      <p className="mt-1 text-xs font-mono text-slate-600 dark:text-slate-400">
         {subtext}
       </p>
     </div>
@@ -254,7 +240,8 @@ export const ProgressRing: React.FC<{
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="rgba(255, 255, 255, 0.08)"
+          stroke="currentColor"
+          className="text-slate-200 dark:text-white/10"
           strokeWidth={strokeWidth}
           fill="none"
         />
@@ -278,11 +265,11 @@ export const ProgressRing: React.FC<{
       </svg>
       {/* Center Text */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-base font-black font-mono text-white leading-none">
+        <span className="text-base font-black font-mono text-slate-900 dark:text-white leading-none">
           {label ?? `${Math.round(progress)}%`}
         </span>
         {sublabel && (
-          <span className="text-[9px] font-mono text-slate-400 mt-0.5 uppercase tracking-wider">
+          <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-wider">
             {sublabel}
           </span>
         )}

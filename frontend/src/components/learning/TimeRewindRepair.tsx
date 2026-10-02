@@ -32,55 +32,52 @@ export const TimeRewindRepair: React.FC<TimeRewindRepairProps> = ({
   }, []);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl p-4 sm:p-5 my-4 backdrop-blur-md"
-      style={{
-        background: phase === 'anomaly'
-          ? 'linear-gradient(135deg, rgba(38,6,16,0.95) 0%, rgba(20,4,8,0.98) 100%)'
-          : 'linear-gradient(135deg, rgba(4,30,20,0.95) 0%, rgba(2,15,10,0.98) 100%)',
-        border: phase === 'anomaly' ? '1px solid rgba(244,63,94,0.5)' : '1px solid rgba(16,185,129,0.5)',
-        boxShadow: phase === 'anomaly' ? '0 0 30px rgba(244,63,94,0.15)' : '0 0 30px rgba(16,185,129,0.15)',
-        transition: 'all 0.4s ease',
-      }}
+    <div
+      className={`relative overflow-hidden rounded-2xl p-4 sm:p-5 my-4 backdrop-blur-md transition-all duration-300 border ${
+        phase === 'anomaly'
+          ? 'bg-rose-50/95 dark:bg-gradient-to-br dark:from-[#260610]/95 dark:to-[#140408]/98 border-rose-300 dark:border-rose-500/50 shadow-sm dark:shadow-[0_0_30px_rgba(244,63,94,0.15)]'
+          : 'bg-emerald-50/95 dark:bg-gradient-to-br dark:from-[#041e14]/95 dark:to-[#020f0a]/98 border-emerald-300 dark:border-emerald-500/50 shadow-sm dark:shadow-[0_0_30px_rgba(16,185,129,0.15)]'
+      }`}
     >
       {/* Top Status */}
       <div className="flex items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
           {phase === 'anomaly' ? (
             <>
-              <AlertTriangle className="h-4 w-4 text-rose-400 animate-pulse" />
-              <span className="text-xs font-mono font-black text-rose-300 tracking-wider uppercase">
+              <AlertTriangle className="h-4 w-4 text-rose-600 dark:text-rose-400 animate-pulse" />
+              <span className="text-xs font-mono font-black text-rose-700 dark:text-rose-300 tracking-wider uppercase">
                 PHÁT HIỆN DỊ THƯỜNG CÚ PHÁP
               </span>
             </>
           ) : (
             <>
-              <CheckCircle className="h-4 w-4 text-emerald-400" />
-              <span className="text-xs font-mono font-black text-emerald-300 tracking-wider uppercase">
+              <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-xs font-mono font-black text-emerald-700 dark:text-emerald-300 tracking-wider uppercase">
                 ĐÃ SỬA CHỮA (TIME REWIND)
               </span>
             </>
           )}
         </div>
 
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-black/40 text-slate-300 border border-white/10">
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-black/40 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10">
           TUANTAIDZ REPAIR PROTOCOL
         </span>
       </div>
 
       {/* Snippet Transformation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl p-3 bg-black/40 border border-white/5 font-mono">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl p-3 bg-white/90 dark:bg-black/40 border border-slate-200 dark:border-white/5 font-mono">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">Bạn viết:</span>
-          <span className="text-sm font-black text-rose-400 line-through">
+          <span className="text-xs text-slate-500 dark:text-slate-400">Bạn viết:</span>
+          <span className="text-sm font-black text-rose-600 dark:text-rose-400 line-through">
             "{userSnippet}"
           </span>
         </div>
 
-        <ArrowRight className="hidden sm:block h-4 w-4 text-slate-500" />
+        <ArrowRight className="hidden sm:block h-4 w-4 text-slate-400 dark:text-slate-500" />
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">Chuẩn xác:</span>
-          <span className="text-sm font-black text-emerald-400">
+          <span className="text-xs text-slate-500 dark:text-slate-400">Chuẩn xác:</span>
+          <span className="text-sm font-black text-emerald-700 dark:text-emerald-400">
             "{fixedSnippet}"
           </span>
         </div>
@@ -88,15 +85,15 @@ export const TimeRewindRepair: React.FC<TimeRewindRepairProps> = ({
 
       {/* Reason & Rule */}
       {(reason || rule) && (
-        <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-1 text-xs">
+        <div className="mt-3 pt-3 border-t border-slate-200 dark:border-white/10 flex flex-col gap-1 text-xs">
           {rule && (
-            <div className="flex items-center gap-1.5 text-cyan-300 font-mono font-bold">
+            <div className="flex items-center gap-1.5 text-cyan-700 dark:text-cyan-300 font-mono font-bold">
               <Zap className="h-3.5 w-3.5" />
               <span>Quy tắc: {rule}</span>
             </div>
           )}
           {reason && (
-            <p className="text-slate-300 font-semibold leading-relaxed">
+            <p className="text-slate-700 dark:text-slate-300 font-semibold leading-relaxed">
               💡 {reason}
             </p>
           )}

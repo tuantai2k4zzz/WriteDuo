@@ -22,6 +22,7 @@ interface LearningState {
 
   // Theme: Dark (TUANTAIDZ HUD) vs Light (Clean Lab)
   themeMode: 'dark' | 'light';
+  initTheme: () => void;
   toggleThemeMode: () => void;
 
   // Active Lesson
@@ -81,6 +82,21 @@ export const useLearningStore = create<LearningState>((set, get) => ({
   },
 
   themeMode: 'dark',
+  initTheme: () => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('vspeak_theme_mode') as 'dark' | 'light' | null;
+        if (saved) {
+          if (saved === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+          set({ themeMode: saved });
+        }
+      } catch (e) {}
+    }
+  },
   toggleThemeMode: () => {
     const nextTheme = get().themeMode === 'dark' ? 'light' : 'dark';
     if (typeof document !== 'undefined') {
@@ -89,6 +105,9 @@ export const useLearningStore = create<LearningState>((set, get) => ({
       } else {
         document.documentElement.classList.remove('dark');
       }
+      try {
+        localStorage.setItem('vspeak_theme_mode', nextTheme);
+      } catch (e) {}
     }
     set({ themeMode: nextTheme });
   },

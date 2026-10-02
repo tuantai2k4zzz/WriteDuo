@@ -56,10 +56,10 @@ export const DailyMission: React.FC<DailyMissionProps> = ({
             <Target className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-base font-black font-mono text-white tracking-tight flex items-center gap-2">
+            <h3 className="text-base font-black font-mono text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
               NHIỆM VỤ HÔM NAY
             </h3>
-            <p className="text-xs text-slate-400 font-mono">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
               Tiến độ mục tiêu ngày của Tuấn Tài
             </p>
           </div>
@@ -71,8 +71,8 @@ export const DailyMission: React.FC<DailyMissionProps> = ({
       {/* Main XP Progress Bar */}
       <div className="space-y-1.5 mb-5">
         <div className="flex justify-between text-xs font-mono">
-          <span className="text-slate-300 font-bold">Mục tiêu XP ngày</span>
-          <span className="text-amber-400 font-black">{todayXp} / {goalXp} XP</span>
+          <span className="text-slate-600 dark:text-slate-300 font-bold">Mục tiêu XP ngày</span>
+          <span className="text-amber-600 dark:text-amber-400 font-black">{todayXp} / {goalXp} XP</span>
         </div>
         <EnergyBar value={xpPercent} color="amber" height="h-2.5" />
       </div>
@@ -86,33 +86,33 @@ export const DailyMission: React.FC<DailyMissionProps> = ({
               playSound('click');
               onNavigateTab(m.tab);
             }}
-            className="group flex items-center justify-between gap-3 rounded-xl p-3 cursor-pointer transition-all hover:scale-[1.01]"
-            style={{
-              background: m.completed ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.03)',
-              border: m.completed ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid rgba(255, 255, 255, 0.06)',
-            }}
+            className={`group flex items-center justify-between gap-3 rounded-xl p-3 cursor-pointer transition-all hover:scale-[1.01] border ${
+              m.completed
+                ? 'bg-emerald-50/80 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/25'
+                : 'bg-slate-50/80 dark:bg-white/[0.03] border-slate-200/80 dark:border-white/[0.06]'
+            }`}
           >
             <div className="flex items-center gap-2.5">
               {m.completed ? (
-                <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
               ) : (
-                <Circle className="h-4 w-4 text-slate-500 flex-shrink-0" />
+                <Circle className="h-4 w-4 text-slate-400 dark:text-slate-500 flex-shrink-0" />
               )}
               <div>
-                <div className={`text-xs font-bold font-mono ${m.completed ? 'text-emerald-300 line-through opacity-80' : 'text-slate-200'}`}>
+                <div className={`text-xs font-bold font-mono ${m.completed ? 'text-emerald-700 dark:text-emerald-300 line-through opacity-80' : 'text-slate-800 dark:text-slate-200'}`}>
                   {m.title}
                 </div>
-                <div className="text-[10px] font-mono text-slate-400">
+                <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
                   {m.progress}
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="rounded-md bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-mono font-bold text-amber-300">
+              <span className="rounded-md bg-amber-100/80 dark:bg-amber-500/10 border border-amber-300 dark:border-amber-500/20 px-2 py-0.5 text-[10px] font-mono font-bold text-amber-700 dark:text-amber-300">
                 {m.reward}
               </span>
-              <ArrowRight className="h-3.5 w-3.5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500 group-hover:text-cyan-500 group-hover:translate-x-0.5 transition-all" />
             </div>
           </div>
         ))}

@@ -93,12 +93,12 @@ export const LearningGalaxy: React.FC<LearningGalaxyProps> = ({ skills }) => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Brain className="h-4 w-4 text-cyan-400" />
-            <h3 className="text-base font-black font-mono text-white tracking-tight">
+            <Brain className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+            <h3 className="text-base font-black font-mono text-slate-900 dark:text-white tracking-tight">
               NEURAL GALAXY — MA TRẬN NĂNG LỰC
             </h3>
           </div>
-          <p className="text-xs text-slate-400 font-mono">
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
             Hệ thống 8 trục năng lực ngôn ngữ theo thời gian thực
           </p>
         </div>
@@ -125,7 +125,8 @@ export const LearningGalaxy: React.FC<LearningGalaxyProps> = ({ skills }) => {
                 cy={center}
                 r={radius * pct}
                 fill="none"
-                stroke="rgba(255, 255, 255, 0.07)"
+                stroke="currentColor"
+                className="text-slate-300 dark:text-white/10"
                 strokeDasharray={pct === 1 ? '4 4' : 'none'}
               />
             ))}
@@ -142,7 +143,7 @@ export const LearningGalaxy: React.FC<LearningGalaxyProps> = ({ skills }) => {
                   y1={center}
                   x2={x2}
                   y2={y2}
-                  stroke="rgba(6, 182, 212, 0.15)"
+                  stroke="rgba(6, 182, 212, 0.25)"
                 />
               );
             })}
@@ -194,16 +195,12 @@ export const LearningGalaxy: React.FC<LearningGalaxyProps> = ({ skills }) => {
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
-                className="rounded-xl p-4 sm:p-5"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(6, 182, 212, 0.2)',
-                }}
+                className="rounded-xl p-4 sm:p-5 bg-slate-50/90 dark:bg-white/[0.03] border border-cyan-200 dark:border-cyan-500/20 shadow-xs dark:shadow-none"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{activeMeta.icon}</span>
-                    <h4 className="text-base font-black font-mono text-white">
+                    <h4 className="text-base font-black font-mono text-slate-900 dark:text-white">
                       {activeMeta.label}
                     </h4>
                   </div>
@@ -220,17 +217,17 @@ export const LearningGalaxy: React.FC<LearningGalaxyProps> = ({ skills }) => {
                   </span>
                 </div>
 
-                <p className="text-xs font-semibold text-slate-300 leading-relaxed mb-4">
+                <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                   {activeMeta.desc}
                 </p>
 
                 {/* Progress bar */}
                 <div className="space-y-1.5">
-                  <div className="flex justify-between text-[11px] font-mono text-slate-400">
+                  <div className="flex justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
                     <span>ĐỘ THÀNH THẠO</span>
                     <span>{activeScore >= 80 ? 'XUẤT SẮC' : activeScore >= 60 ? 'TỐT' : 'CẦN CẢI THIỆN'}</span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${activeScore}%` }}
@@ -240,9 +237,9 @@ export const LearningGalaxy: React.FC<LearningGalaxyProps> = ({ skills }) => {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700/50 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
                   <span>💡 Chọn các node trên radar để xem chi tiết</span>
-                  <span className="text-cyan-400">8 Trục Năng Lực</span>
+                  <span className="text-cyan-600 dark:text-cyan-400">8 Trục Năng Lực</span>
                 </div>
               </motion.div>
             )}
@@ -254,12 +251,11 @@ export const LearningGalaxy: React.FC<LearningGalaxyProps> = ({ skills }) => {
               <button
                 key={k}
                 onClick={() => setSelectedSkill(k)}
-                className="rounded-lg py-1.5 px-2 text-[10px] font-mono font-bold transition-all text-center truncate cursor-pointer"
-                style={{
-                  background: selectedSkill === k ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255, 255, 255, 0.02)',
-                  border: selectedSkill === k ? '1px solid rgba(6, 182, 212, 0.5)' : '1px solid rgba(255, 255, 255, 0.05)',
-                  color: selectedSkill === k ? '#38bdf8' : '#94a3b8',
-                }}
+                className={`rounded-lg py-1.5 px-2 text-[10px] font-mono font-bold transition-all text-center truncate cursor-pointer border ${
+                  selectedSkill === k
+                    ? 'bg-cyan-500/15 border-cyan-500 text-cyan-700 dark:text-cyan-300'
+                    : 'bg-white/80 dark:bg-white/[0.02] border-slate-200 dark:border-white/[0.05] text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-white/20'
+                }`}
               >
                 {skillMeta[k].label}
               </button>

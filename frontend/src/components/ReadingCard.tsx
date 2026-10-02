@@ -33,17 +33,11 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
     <motion.div
       whileHover={{ y: -6, scale: 1.015, transition: { duration: 0.2 } }}
       whileTap={{ scale: 0.97 }}
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-5 transition-all duration-300 cursor-pointer
+      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-5 transition-all duration-300 cursor-pointer backdrop-blur-md
         ${isCompleted
-          ? 'border-emerald-500/40 bg-[#0a1a12]/80 shadow-lg shadow-emerald-500/10'
-          : 'border-cyan-500/20 bg-[#060d1a]/90 hover:border-cyan-400/50 shadow-lg hover:shadow-cyan-500/15'
+          ? 'border-emerald-500/30 bg-emerald-50/80 dark:bg-[#0a1a12]/90 shadow-sm dark:shadow-emerald-500/10'
+          : 'border-slate-200/90 dark:border-cyan-500/20 bg-white/95 dark:bg-[#060d1a]/95 hover:border-cyan-500/50 dark:hover:border-cyan-400/50 shadow-sm hover:shadow-md dark:hover:shadow-cyan-500/15'
         }`}
-      style={{
-        background: isCompleted
-          ? 'linear-gradient(135deg, rgba(5,20,12,0.95) 0%, rgba(10,30,18,0.95) 100%)'
-          : 'linear-gradient(135deg, rgba(4,10,22,0.97) 0%, rgba(6,14,30,0.97) 100%)',
-        backdropFilter: 'blur(12px)',
-      }}
     >
       {/* Scan line top */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -56,7 +50,7 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
       {/* Top Header */}
       <div>
         <div className="flex items-center justify-between gap-2 mb-3">
-          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-cyan-400/70 font-mono">
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-cyan-600 dark:text-cyan-400/70 font-mono">
             {lesson.topic}
           </span>
           <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-black tracking-widest font-mono ${config.badge}`}>
@@ -66,18 +60,18 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
 
         {/* Title */}
         <h3 className={`text-base font-black tracking-tight leading-snug mb-2 line-clamp-2 transition-colors
-          ${isCompleted ? 'text-emerald-300' : 'text-white group-hover:text-cyan-300'}`}>
+          ${isCompleted ? 'text-emerald-600 dark:text-emerald-300' : 'text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300'}`}>
           {lesson.title}
         </h3>
 
         {/* Meta Stats */}
-        <div className="flex items-center gap-4 text-[11px] font-semibold text-slate-400/80 mb-5 font-mono">
+        <div className="flex items-center gap-4 text-[11px] font-semibold text-slate-500 dark:text-slate-400/80 mb-5 font-mono">
           <div className="flex items-center gap-1.5">
-            <BookOpen className="h-3 w-3 text-cyan-500/60" />
+            <BookOpen className="h-3 w-3 text-cyan-600 dark:text-cyan-500/60" />
             <span>{lesson.wordCount} từ</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Layers className="h-3 w-3 text-cyan-500/60" />
+            <Layers className="h-3 w-3 text-cyan-600 dark:text-cyan-500/60" />
             <span>{lesson.totalSentences} câu</span>
           </div>
         </div>
@@ -89,14 +83,9 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
         disabled={isLoading}
         className={`w-full flex items-center justify-center gap-2 rounded-xl py-2.5 px-4 text-xs font-black tracking-wider uppercase transition-all duration-200 active:scale-95 disabled:opacity-60 font-mono
           ${isCompleted
-            ? 'bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-500/30'
-            : 'bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-400/70'
+            ? 'bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-300 dark:border-emerald-500/50 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-500/30'
+            : 'bg-cyan-50 dark:bg-cyan-500/15 border border-cyan-300 dark:border-cyan-500/40 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-500/25 hover:border-cyan-400'
           }`}
-        style={{
-          boxShadow: isCompleted
-            ? '0 0 12px rgba(16,185,129,0.15)'
-            : '0 0 12px rgba(6,182,212,0.12)',
-        }}
       >
         {isLoading ? (
           <>
