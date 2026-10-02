@@ -24,7 +24,7 @@ export class GeminiProvider implements IAIEvaluator {
     const isViToEn = input.mode === 'vi_to_en';
 
     const prompt = isViToEn
-      ? `Gia sư Jarvis: Học viên làm bài dịch [VI -> EN].
+      ? `Gia sư Tuantaidz AI: Học viên làm bài dịch [VI -> EN].
 - Tiếng Việt: "${input.referenceTranslationVi}"
 - Tiếng Anh mẫu: "${input.sentenceEn}"
 - Học viên viết: "${input.userTranslationVi}"
@@ -58,7 +58,7 @@ JSON format duy nhất:
     "keyPoints": ["Ý chính cần nhớ"]
   }
 }`
-      : `Gia sư Jarvis: Học viên làm bài dịch [EN -> VI].
+      : `Gia sư Tuantaidz AI: Học viên làm bài dịch [EN -> VI].
 - Tiếng Anh: "${input.sentenceEn}"
 - Dịch chuẩn: "${input.referenceTranslationVi}"
 - Học viên dịch: "${input.userTranslationVi}"

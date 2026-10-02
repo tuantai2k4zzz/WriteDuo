@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
 import { SavedWord } from '../types';
 import { speakEnglish, playSound } from '../lib/audio';
-import { Search, Volume2, BookmarkCheck, Trash2, Heart, Layers } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Search, Volume2, BookmarkCheck, Trash2, Heart, Layers, Sparkles, BookOpen } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { HolographicPanel, NeonBadge } from './hud/HUDPrimitives';
 
 export const VocabularyTab: React.FC = () => {
   const [words, setWords] = useState<SavedWord[]>([]);
@@ -52,28 +53,46 @@ export const VocabularyTab: React.FC = () => {
   const cefrLevels = ['ALL', 'A1', 'A2', 'B1', 'B2', 'C1'];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <BookmarkCheck className="h-6 w-6 text-blue-600" />
-          <h1 className="text-2xl font-black text-gray-900 tracking-tight">Sổ Từ Vựng Cá Nhân</h1>
-        </div>
-        <p className="text-sm font-semibold text-gray-500">
-          Các từ vựng bạn đã lưu trong quá trình làm bài Reading. Nhấp loa để nghe phát âm chuẩn.
-        </p>
-      </div>
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      {/* ── HEADER BANNER ── */}
+      <HolographicPanel glowColor="cyan" className="p-6 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+              <BookOpen className="h-7 w-7" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h1 className="text-xl sm:text-2xl font-black font-mono text-white tracking-tight">
+                  MEMORY PALACE — CUNG ĐIỆN TỪ VỰNG
+                </h1>
+                <NeonBadge label="SEMANTIC MAPPING" color="cyan" pulse />
+              </div>
+              <p className="text-xs sm:text-sm font-semibold text-slate-300 leading-relaxed max-w-2xl">
+                Lưu trữ và kết nối các mắt xích từ vựng theo chuẩn CEFR quốc tế. Bấm vào biểu tượng loa để kích hoạt phát âm chuẩn bản xứ.
+              </p>
+            </div>
+          </div>
 
-      {/* Filter and Search Bar */}
+          <div className="flex items-center gap-2 font-mono text-xs text-slate-400 self-start sm:self-center">
+            <span>TỔNG SỐ TỪ:</span>
+            <span className="px-2 py-0.5 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 font-bold">
+              {words.length}
+            </span>
+          </div>
+        </div>
+      </HolographicPanel>
+
+      {/* ── SEARCH & CEFR FILTER HUD ── */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-cyan-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm từ vựng hoặc nghĩa tiếng Việt..."
-            className="w-full rounded-2xl border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm font-semibold text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/10 shadow-sm"
+            placeholder="Tra cứu từ vựng hoặc nghĩa tiếng Việt trong cung điện..."
+            className="w-full rounded-2xl border border-cyan-500/30 bg-slate-900/90 py-2.5 pl-10 pr-4 text-sm font-semibold text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 backdrop-blur-md"
           />
         </div>
 
@@ -82,12 +101,17 @@ export const VocabularyTab: React.FC = () => {
           {cefrLevels.map((lvl) => (
             <button
               key={lvl}
-              onClick={() => setSelectedCefr(lvl)}
-              className={`rounded-xl px-3 py-1.5 text-xs font-black transition-all ${
-                selectedCefr === lvl
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
+              onClick={() => {
+                playSound('click');
+                setSelectedCefr(lvl);
+              }}
+              className="rounded-xl px-3 py-1.5 text-xs font-mono font-bold transition-all cursor-pointer"
+              style={{
+                background: selectedCefr === lvl ? 'rgba(6, 182, 212, 0.25)' : 'rgba(255, 255, 255, 0.03)',
+                border: selectedCefr === lvl ? '1px solid rgba(6, 182, 212, 0.6)' : '1px solid rgba(255, 255, 255, 0.08)',
+                color: selectedCefr === lvl ? '#67e8f9' : '#94a3b8',
+                boxShadow: selectedCefr === lvl ? '0 0 12px rgba(6, 182, 212, 0.2)' : 'none',
+              }}
             >
               {lvl}
             </button>
@@ -95,80 +119,106 @@ export const VocabularyTab: React.FC = () => {
         </div>
       </div>
 
-      {/* Vocabulary List */}
+      {/* ── VOCABULARY GRID ── */}
       {loading ? (
-        <div className="text-center py-12 text-gray-400 font-semibold">Đang tải sổ từ vựng...</div>
-      ) : words.length === 0 ? (
-        <div className="rounded-3xl border-2 border-dashed border-gray-200 p-12 text-center bg-gray-50/50">
-          <Layers className="mx-auto h-12 w-12 text-gray-300 mb-3" />
-          <h3 className="text-base font-black text-gray-700">Chưa có từ vựng nào</h3>
-          <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
-            Khi học bài Reading, nhấp vào bất kỳ từ tiếng Anh nào trong câu và chọn "Lưu Sổ Tay" để ôn tập tại đây.
-          </p>
+        <div className="text-center py-16 font-mono text-slate-400 animate-pulse">
+          TUANTAIDZ AI ĐANG TRÍCH XUẤT CUNG ĐIỆN TỪ VỰNG...
         </div>
+      ) : words.length === 0 ? (
+        <HolographicPanel glowColor="cyan" className="p-12 text-center">
+          <BookmarkCheck className="mx-auto h-12 w-12 text-cyan-500/60 mb-3" />
+          <h3 className="text-base font-black font-mono text-white">CHƯA CÓ TỪ VỰNG NÀO</h3>
+          <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+            Khi đọc bài học, bạn có thể nhấp vào bất kỳ từ tiếng Anh nào để tra nghĩa và bấm nút "Lưu Vào Sổ Từ" để thêm vào đây!
+          </p>
+        </HolographicPanel>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          {words.map((item) => (
-            <motion.div
-              key={item._id}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-4 shadow-sm hover:border-blue-300 transition-all"
-            >
-              <div className="flex-1 pr-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg font-black text-gray-900">{item.word}</span>
-                  {item.cefr && (
-                    <span className="rounded-md bg-blue-100 px-1.5 py-0.2 text-[10px] font-black text-blue-700">
-                      {item.cefr}
-                    </span>
-                  )}
-                  {item.pos && (
-                    <span className="text-xs font-bold text-gray-400">({item.pos})</span>
-                  )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <AnimatePresence>
+            {words.map((item) => (
+              <motion.div
+                key={item._id}
+                layout
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.92 }}
+                className="group relative rounded-2xl p-4 sm:p-5 transition-all backdrop-blur-xl"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(6,16,38,0.9) 0%, rgba(3,8,22,0.95) 100%)',
+                  border: '1px solid rgba(6,182,212,0.25)',
+                  boxShadow: '0 0 20px rgba(6,182,212,0.05)',
+                }}
+              >
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-black font-mono text-white tracking-tight">
+                        {item.word}
+                      </h3>
+                      {item.pos && (
+                        <span className="text-[10px] font-mono text-cyan-400 italic">
+                          ({item.pos})
+                        </span>
+                      )}
+                      {item.cefr && (
+                        <NeonBadge label={item.cefr} color="cyan" />
+                      )}
+                    </div>
+                    {item.ipa && (
+                      <span className="text-xs font-mono text-slate-400">
+                        {item.ipa}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => speakEnglish(item.word, 0.95)}
+                      className="p-2 rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors cursor-pointer"
+                      title="Phát âm"
+                    >
+                      <Volume2 className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => handleToggleFavorite(item._id)}
+                      className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                      title="Yêu thích"
+                    >
+                      <Heart
+                        className={`h-4 w-4 ${
+                          item.isFavorite ? 'fill-rose-500 text-rose-500' : ''
+                        }`}
+                      />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="p-2 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                      title="Xóa"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
 
-                {item.ipa && (
-                  <p className="text-xs font-mono font-semibold text-emerald-600 mb-1">
-                    {item.ipa}
-                  </p>
+                <p className="text-sm font-bold text-cyan-200 mb-2">
+                  {item.meaningVi}
+                </p>
+
+                {item.exampleEn && (
+                  <div className="rounded-xl p-2.5 bg-black/40 border border-white/5 text-xs space-y-1">
+                    <p className="text-slate-300 font-mono italic">
+                      "{item.exampleEn}"
+                    </p>
+                    {item.exampleVi && (
+                      <p className="text-slate-400 text-[11px]">
+                        {item.exampleVi}
+                      </p>
+                    )}
+                  </div>
                 )}
-
-                <p className="text-sm font-bold text-gray-700">{item.meaningVi}</p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-1.5 flex-shrink-0">
-                <button
-                  onClick={() => speakEnglish(item.word)}
-                  className="rounded-xl p-2 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                  title="Nghe phát âm"
-                >
-                  <Volume2 className="h-5 w-5" />
-                </button>
-
-                <button
-                  onClick={() => handleToggleFavorite(item._id)}
-                  className="rounded-xl p-2 text-gray-400 hover:bg-rose-50 hover:text-rose-500 transition-colors"
-                  title="Yêu thích"
-                >
-                  <Heart
-                    className={`h-5 w-5 ${
-                      item.isFavorite ? 'fill-rose-500 text-rose-500' : ''
-                    }`}
-                  />
-                </button>
-
-                <button
-                  onClick={() => handleDelete(item._id)}
-                  className="rounded-xl p-2 text-gray-300 hover:bg-red-50 hover:text-red-500 transition-colors"
-                  title="Xoá"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       )}
     </div>

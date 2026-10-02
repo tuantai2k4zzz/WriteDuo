@@ -50,12 +50,12 @@ export const Header: React.FC = () => {
               <span className="font-extrabold tracking-tight text-slate-900 dark:text-white text-lg">
                 Write
               </span>
-              <span className="rounded-md bg-cyan-500/10 border border-cyan-500/30 px-1.5 py-0.5 text-[10px] font-black uppercase text-cyan-600 dark:text-cyan-400">
-                JARVIS 2026
+              <span className="rounded-md bg-cyan-500/15 border border-cyan-500/40 px-2 py-0.5 text-[10px] font-black font-mono uppercase text-cyan-600 dark:text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
+                TUANTAIDZ OS
               </span>
             </div>
-            <p className="text-[11px] font-semibold text-slate-400">
-              Interactive Reading & Writing
+            <p className="text-[11px] font-mono font-semibold text-slate-400">
+              AI Adaptive Learning System
             </p>
           </div>
         </div>

@@ -4,7 +4,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLearningStore } from '../lib/store';
 import { speakEnglish, speakVietnamese, playSound } from '../lib/audio';
 import { api } from '../lib/api';
+import { telemetry } from '../lib/telemetry';
 import ExerciseSidebar from './ExerciseSidebar';
+import { SentenceReactor } from './learning/SentenceReactor';
 import {
   Volume2,
   Turtle,
@@ -98,6 +100,7 @@ export const InteractiveSentence: React.FC = () => {
       setOptimisticStatus('Đã nhận câu trả lời · Đang chấm điểm...');
       setEvaluating(true);
       playSound('click');
+      telemetry.track('answer_submitted', { sentenceId: sentence._id, mode: exerciseMode });
 
       // Fast Evaluation (< 100ms response time)
       const res = await api.evaluateAnswer(
@@ -107,6 +110,12 @@ export const InteractiveSentence: React.FC = () => {
       );
 
       setEvaluationResult(res);
+
+      if (res?.evaluation?.score >= 80) {
+        telemetry.track('answer_correct', { score: res.evaluation.score });
+      } else {
+        telemetry.track('answer_incorrect', { score: res?.evaluation?.score ?? 0 });
+      }
 
       // If deep analysis is not yet ready, fetch it in the background
       if (!res.isDeepAnalysisReady) {
@@ -452,6 +461,9 @@ export const InteractiveSentence: React.FC = () => {
               )}
             </motion.div>
 
+            {/* ── SENTENCE REACTOR (HOLOGRAPHIC SYNTACTIC MAP) ── */}
+            <SentenceReactor sentence={sentence} onTokenClick={openWordModal} />
+
             {/* ── ANSWER INPUT FORM (OPTIMISTIC UI) ── */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div
@@ -513,7 +525,7 @@ export const InteractiveSentence: React.FC = () => {
                 {isEvaluating ? (
                   <>
                     <Sparkles className="h-4 w-4 animate-spin text-cyan-200" />
-                    <span>{optimisticStatus || 'JARVIS Đang Chấm Điểm (< 1s)...'}</span>
+                    <span>{optimisticStatus || 'TUANTAIDZ AI Đang Chấm Điểm (< 1s)...'}</span>
                   </>
                 ) : (
                   <>

@@ -20,7 +20,7 @@ interface LearningState {
   setExerciseMode: (mode: 'en_to_vi' | 'vi_to_en') => void;
   toggleExerciseMode: () => void;
 
-  // Theme: Stark Dark (JARVIS HUD) vs Stark Light (Clean Lab)
+  // Theme: Dark (TUANTAIDZ HUD) vs Light (Clean Lab)
   themeMode: 'dark' | 'light';
   toggleThemeMode: () => void;
 

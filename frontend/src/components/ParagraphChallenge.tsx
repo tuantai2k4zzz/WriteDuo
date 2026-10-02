@@ -190,6 +190,68 @@ export const ParagraphChallenge: React.FC = () => {
           </div>
         </div>
 
+        {/* ── BOSS BATTLE 2.0 HUD: BOSS HP & LEARNING STAGES ── */}
+        <div
+          className="rounded-2xl p-4 backdrop-blur-md"
+          style={{
+            background: 'linear-gradient(135deg, rgba(20,4,12,0.9) 0%, rgba(10,2,24,0.9) 100%)',
+            border: '1px solid rgba(244,63,94,0.3)',
+            boxShadow: '0 0 25px rgba(244,63,94,0.1)',
+          }}
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2.5">
+            <div className="flex items-center gap-2">
+              <span className="text-rose-500 animate-pulse font-mono font-black text-sm">⚔️</span>
+              <span className="text-xs font-mono font-black text-rose-300 uppercase tracking-wider">
+                BOSS: {activeLesson.title.toUpperCase()} (LEVEL {activeLesson.level})
+              </span>
+            </div>
+            <div className="text-xs font-mono font-bold text-slate-300">
+              {result
+                ? result.score >= 80
+                  ? '🏆 TRÙM ĐÃ BỊ ĐÁNH BẠI (VICTORY)'
+                  : `HP CÒN LẠI: ${Math.max(0, 100 - result.score)}%`
+                : `BOSS SHIELD: 100% HP`}
+            </div>
+          </div>
+
+          {/* Boss HP Bar */}
+          <div className="w-full h-3 rounded-full bg-slate-900 border border-rose-900/60 overflow-hidden mb-3">
+            <motion.div
+              initial={{ width: '100%' }}
+              animate={{
+                width: result
+                  ? `${Math.max(0, 100 - result.score)}%`
+                  : `${Math.max(15, 100 - Math.min(85, Math.floor(userInput.length / 4)))}%`,
+              }}
+              transition={{ duration: 0.6 }}
+              className="h-full rounded-full"
+              style={{
+                background: result && result.score >= 80
+                  ? '#10b981'
+                  : 'linear-gradient(90deg, #f43f5e, #fb7185, #fda4af)',
+                boxShadow: '0 0 12px rgba(244,63,94,0.5)',
+              }}
+            />
+          </div>
+
+          {/* 4 Objective Stages */}
+          <div className="grid grid-cols-4 gap-2 text-center text-[10px] font-mono font-bold">
+            <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+              1. TỪ VỰNG ✓
+            </div>
+            <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+              2. CÚ PHÁP ✓
+            </div>
+            <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+              3. CÂU ĐƠN ✓
+            </div>
+            <div className={`p-1.5 rounded-lg border ${result && result.score >= 80 ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300' : 'bg-rose-500/15 border-rose-500/40 text-rose-300 animate-pulse'}`}>
+              4. TOÀN ĐOẠN ⚔️
+            </div>
+          </div>
+        </div>
+
         {/* ── 2-COLUMN SPLIT WORKSPACE (IF NOT SUBMITTED) ── */}
         {!result ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
@@ -258,17 +320,17 @@ export const ParagraphChallenge: React.FC = () => {
                 <button
                   onClick={() => handleSubmit()}
                   disabled={!userInput.trim() || isSubmitting}
-                  className="flex items-center gap-2 px-6 py-3 rounded-2xl text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-md hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-mono active:scale-95"
+                  className="flex items-center gap-2 px-6 py-3 rounded-2xl text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-md hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-mono active:scale-95 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
-                      <Sparkles className="h-4 w-4 animate-spin" />
-                      <span>JARVIS Đang Chấm Điểm...</span>
+                      <Sparkles className="h-4 w-4 animate-spin text-cyan-200" />
+                      <span>TUANTAIDZ AI Đang Chấm Điểm...</span>
                     </>
                   ) : (
                     <>
                       <Send className="h-4 w-4" />
-                      <span>Chấm Điểm Toàn Bài</span>
+                      <span>Chấm Điểm Toàn Bài (Boss Fight)</span>
                     </>
                   )}
                 </button>

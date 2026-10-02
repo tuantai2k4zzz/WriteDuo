@@ -103,7 +103,7 @@ export class MockAIProvider implements IAIEvaluator {
             where: 'Chưa nhập câu',
             relatedEnglish: sentenceEn,
             correctMeaning: refVi,
-            whyIncorrect: 'Cần nhập câu tiếng Anh để Jarvis chấm điểm.',
+            whyIncorrect: 'Cần nhập câu tiếng Anh để Tuantaidz AI chấm điểm.',
             howToFix: `Viết: "${sentenceEn}"`,
             fixedSnippet: sentenceEn,
           },

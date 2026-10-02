@@ -22,6 +22,7 @@ import {
   Lightbulb,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { TimeRewindRepair } from './learning/TimeRewindRepair';
 
 export const FeedbackDrawer: React.FC = () => {
   const {
@@ -179,6 +180,28 @@ export const FeedbackDrawer: React.FC = () => {
               <Sparkles className="h-4 w-4 animate-spin text-cyan-500" />
               <span>AI Đang Phân Tích Chuyên Sâu Ngữ Pháp & So Khớp Chi Tiết...</span>
             </div>
+          )}
+
+          {/* ── TIME REWIND ERROR EXPERIENCE (< 1s Visual Anomaly Repair) ── */}
+          {!isCorrect && (
+            <TimeRewindRepair
+              userSnippet={
+                specificMistakes.length > 0 && specificMistakes[0].where
+                  ? specificMistakes[0].where
+                  : userAnswer
+              }
+              fixedSnippet={
+                specificMistakes.length > 0 && specificMistakes[0].fixedSnippet
+                  ? specificMistakes[0].fixedSnippet
+                  : referenceAnswer
+              }
+              reason={
+                specificMistakes.length > 0
+                  ? specificMistakes[0].whyIncorrect
+                  : evaluation.overview || evaluation.explanation
+              }
+              rule={grammarInsight?.relevantRule || grammarAnalysis?.tense}
+            />
           )}
 
           {/* ── ERROR VISUALIZATION: SIDE-BY-SIDE COMPARISON ── */}

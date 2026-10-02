@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLearningStore } from '../lib/store';
 import { api } from '../lib/api';
-import { Lesson, ReviewQueueItem } from '../types';
+import { Lesson, ReviewQueueItem, GrammarWeakness } from '../types';
 import { Header } from '../components/Header';
 import { ReadingCard } from '../components/ReadingCard';
 import { InteractiveSentence } from '../components/InteractiveSentence';
@@ -13,38 +13,47 @@ import { LessonCompleteModal } from '../components/LessonCompleteModal';
 import { VocabularyTab } from '../components/VocabularyTab';
 import { WeaknessesTab } from '../components/WeaknessesTab';
 import { ParagraphChallenge } from '../components/ParagraphChallenge';
-import { Sparkles, Compass, Brain, ArrowRight, ShieldCheck } from 'lucide-react';
+import { TuantaidzBrandPlate } from '../components/hud/TuantaidzBrandPlate';
+import { LearningGalaxy } from '../components/dashboard/LearningGalaxy';
+import { DailyMission } from '../components/dashboard/DailyMission';
+import { computeSkillVector, getAdaptiveRecommendation } from '../lib/adaptive';
+import { Sparkles, Compass, Brain, ArrowRight, ShieldCheck, Zap, Radio, Target } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Home() {
   const {
     currentTab,
+    setCurrentTab,
     selectedLevel,
     setSelectedLevel,
     activeLesson,
     isParagraphChallengeActive,
     startLesson,
+    userProgress,
     setUserProgress,
   } = useLearningStore();
 
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [reviewItems, setReviewItems] = useState<ReviewQueueItem[]>([]);
+  const [weaknesses, setWeaknesses] = useState<GrammarWeakness[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectingLessonId, setSelectingLessonId] = useState<string | null>(null);
 
-  // Load progress, lessons, and proactive review queue on mount
+  // Load progress, lessons, weaknesses, and proactive review queue on mount
   useEffect(() => {
     async function initData() {
       try {
         setLoading(true);
-        const [progressData, lessonsData, reviewData] = await Promise.all([
+        const [progressData, lessonsData, reviewData, weaknessesData] = await Promise.all([
           api.getProgress(),
           api.getLessons(selectedLevel),
           api.getSmartReviewQueue(),
+          api.getGrammarWeaknesses().catch(() => []),
         ]);
         setUserProgress(progressData);
         setLessons(lessonsData);
         setReviewItems(reviewData.items || []);
+        setWeaknesses(weaknessesData || []);
       } catch (err) {
         console.error('Failed to load initial data:', err);
       } finally {
@@ -53,6 +62,9 @@ export default function Home() {
     }
     initData();
   }, [selectedLevel, setUserProgress]);
+
+  const skillVector = computeSkillVector(userProgress, weaknesses);
+  const recommendation = getAdaptiveRecommendation(skillVector, reviewItems.length);
 
   const handleSelectLesson = async (lesson: Lesson) => {
     try {
@@ -195,57 +207,66 @@ export default function Home() {
         {currentTab === 'learn' && (
           <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
 
-            {/* ── HERO BANNER ── */}
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="relative overflow-hidden rounded-3xl p-8 sm:p-10 mb-8"
-              style={{
-                background: 'linear-gradient(135deg, rgba(4,10,25,0.98) 0%, rgba(6,15,40,0.98) 60%, rgba(8,20,50,0.98) 100%)',
-                border: '1px solid rgba(6,182,212,0.3)',
-                boxShadow: '0 0 60px rgba(6,182,212,0.08), inset 0 1px 0 rgba(6,182,212,0.15)',
-              }}
-            >
-              {/* Scan line top */}
-              <div className="absolute inset-x-0 top-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, #06b6d4, #f59e0b, #06b6d4, transparent)' }} />
-              {/* Scan line bottom */}
-              <div className="absolute inset-x-0 bottom-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(6,182,212,0.4), transparent)' }} />
+            {/* ── EXCLUSIVE HOLOGRAPHIC BRAND SIGNBOARD FOR TUANTAIDZ ── */}
+            <TuantaidzBrandPlate />
 
-              {/* HUD corner decorators */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400/50 rounded-tl-3xl" />
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-amber-400/50 rounded-tr-3xl" />
-              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-cyan-400/30 rounded-bl-3xl" />
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-amber-400/30 rounded-br-3xl" />
-
-              {/* Decorative glow orbs */}
-              <div className="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-cyan-400/5 blur-3xl pointer-events-none" />
-              <div className="absolute right-20 bottom-0 h-40 w-40 rounded-full bg-amber-400/5 blur-2xl pointer-events-none" />
-
-              <div className="relative z-10 max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-black backdrop-blur-md mb-3 font-mono"
-                  style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.3)', color: '#67e8f9' }}>
-                  <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-                  <span>AI-POWERED LEARNING SYSTEM v2.0</span>
-                </div>
-                <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight mb-3 text-white">
-                  Luyện Dịch & Viết Tiếng Anh{' '}
-                  <span style={{ color: '#06b6d4' }}>Tương Tác</span>
-                </h1>
-                <p className="text-sm sm:text-base font-semibold leading-relaxed" style={{ color: 'rgba(148,163,184,0.9)' }}>
-                  Phân tích sâu ngữ pháp · Phản xạ dịch tự nhiên · Hệ thống SRS chống quên · AI chấm điểm tức thì
-                </p>
+            {/* ── DASHBOARD GRID: NEURAL GALAXY & DAILY MISSION ── */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
+              <div className="lg:col-span-7">
+                <LearningGalaxy skills={skillVector} />
               </div>
 
-              {/* Status dots */}
-              <div className="absolute top-4 right-8 hidden sm:flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[10px] font-mono text-slate-400">SYSTEM ONLINE</span>
-                </div>
-              </div>
-            </motion.div>
+              <div className="lg:col-span-5">
+                <DailyMission
+                  todayXp={userProgress?.todayXp ?? 35}
+                  goalXp={userProgress?.dailyGoalXp ?? 50}
+                  weaknessCount={weaknesses.length}
+                  onNavigateTab={setCurrentTab}
+                />
 
-            {/* ── SPACED REPETITION CARD ── */}
+                {/* ADAPTIVE RECOMMENDATION CARD */}
+                {recommendation && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-2xl p-5"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(6,182,212,0.12) 0%, rgba(3,8,22,0.95) 100%)',
+                      border: '1px solid rgba(6,182,212,0.35)',
+                      boxShadow: '0 0 25px rgba(6,182,212,0.1)',
+                    }}
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <Zap className="h-4 w-4 text-cyan-400" />
+                      <span className="text-[11px] font-mono font-black text-cyan-300 uppercase tracking-wider">
+                        TUANTAIDZ ADAPTIVE RECOMMENDATION
+                      </span>
+                    </div>
+                    <h4 className="text-base font-black text-white mb-1">
+                      {recommendation.title}
+                    </h4>
+                    <p className="text-xs text-slate-300 mb-4 leading-relaxed font-semibold">
+                      {recommendation.description}
+                    </p>
+                    <button
+                      onClick={() => {
+                        if (recommendation.type === 'review') {
+                          handleStartSmartReview();
+                        } else if (lessons.length > 0) {
+                          handleSelectLesson(lessons[0]);
+                        }
+                      }}
+                      className="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 px-4 text-xs font-mono font-black text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 transition-all cursor-pointer shadow-md active:scale-95"
+                    >
+                      <span>{recommendation.actionText}</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+
+            {/* ── NEURAL SRS SPACED REPETITION CARD ── */}
             {reviewItems.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -253,15 +274,15 @@ export default function Home() {
                 transition={{ delay: 0.1 }}
                 className="mb-8 rounded-2xl p-6"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(88,28,220,0.12) 0%, rgba(6,10,28,0.95) 100%)',
-                  border: '1px solid rgba(139,92,246,0.3)',
-                  boxShadow: '0 0 30px rgba(139,92,246,0.08)',
+                  background: 'linear-gradient(135deg, rgba(88,28,220,0.15) 0%, rgba(6,10,28,0.95) 100%)',
+                  border: '1px solid rgba(139,92,246,0.35)',
+                  boxShadow: '0 0 30px rgba(139,92,246,0.1)',
                 }}
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-start gap-3.5">
                     <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl"
-                      style={{ background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.4)' }}>
+                      style={{ background: 'rgba(139,92,246,0.18)', border: '1px solid rgba(139,92,246,0.5)' }}>
                       <Brain className="h-6 w-6 text-violet-300" />
                     </div>
                     <div>
@@ -270,12 +291,12 @@ export default function Home() {
                           Neural SRS — Hồi Tưởng Chủ Động
                         </h3>
                         <span className="rounded-full px-2.5 py-0.5 text-[10px] font-black font-mono"
-                          style={{ background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.4)', color: '#c4b5fd' }}>
-                          {reviewItems.length} câu
+                          style={{ background: 'rgba(139,92,246,0.25)', border: '1px solid rgba(139,92,246,0.5)', color: '#c4b5fd' }}>
+                          {reviewItems.length} câu đến hạn
                         </span>
                       </div>
-                      <p className="text-xs font-semibold" style={{ color: 'rgba(148,163,184,0.8)' }}>
-                        AI phát hiện {reviewItems.length} câu đến hạn ôn — luyện ngay để giữ trí nhớ dài hạn.
+                      <p className="text-xs font-semibold" style={{ color: 'rgba(148,163,184,0.9)' }}>
+                        Thuật toán SRS phát hiện {reviewItems.length} cấu trúc đang giảm độ bền trí nhớ — kích hoạt ngay để ghi nhớ vĩnh viễn.
                       </p>
                     </div>
                   </div>
@@ -284,9 +305,9 @@ export default function Home() {
                     onClick={handleStartSmartReview}
                     className="flex items-center justify-center gap-2 rounded-xl py-3 px-6 text-sm font-black text-violet-200 flex-shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95 font-mono"
                     style={{
-                      background: 'rgba(139,92,246,0.2)',
-                      border: '1px solid rgba(139,92,246,0.5)',
-                      boxShadow: '0 0 20px rgba(139,92,246,0.2)',
+                      background: 'rgba(139,92,246,0.25)',
+                      border: '1px solid rgba(139,92,246,0.6)',
+                      boxShadow: '0 0 20px rgba(139,92,246,0.25)',
                     }}
                   >
                     <span>Ôn Ngay ({reviewItems.length})</span>
@@ -299,10 +320,10 @@ export default function Home() {
             {/* ── LEVEL FILTER BAR ── */}
             <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
               <div className="flex items-center gap-2">
-                <Compass className="h-4 w-4 text-cyan-400/70" />
+                <Compass className="h-4 w-4 text-cyan-400" />
                 <h2 className="text-base font-black text-white tracking-tight font-mono">
                   LỘ TRÌNH BÀI ĐỌC
-                  <span className="ml-2 text-cyan-400/60 text-sm">({lessons.length})</span>
+                  <span className="ml-2 text-cyan-400/80 text-sm">({lessons.length})</span>
                 </h2>
               </div>
 
@@ -311,12 +332,12 @@ export default function Home() {
                   <button
                     key={opt.value}
                     onClick={() => setSelectedLevel(opt.value)}
-                    className="rounded-lg px-3 py-1.5 text-[11px] font-black transition-all font-mono whitespace-nowrap"
+                    className="rounded-lg px-3 py-1.5 text-[11px] font-black transition-all font-mono whitespace-nowrap cursor-pointer"
                     style={{
-                      background: selectedLevel === opt.value ? 'rgba(6,182,212,0.2)' : 'rgba(255,255,255,0.04)',
-                      border: selectedLevel === opt.value ? '1px solid rgba(6,182,212,0.6)' : '1px solid rgba(255,255,255,0.08)',
+                      background: selectedLevel === opt.value ? 'rgba(6,182,212,0.25)' : 'rgba(255,255,255,0.04)',
+                      border: selectedLevel === opt.value ? '1px solid rgba(6,182,212,0.7)' : '1px solid rgba(255,255,255,0.08)',
                       color: selectedLevel === opt.value ? '#67e8f9' : 'rgba(148,163,184,0.7)',
-                      boxShadow: selectedLevel === opt.value ? '0 0 10px rgba(6,182,212,0.15)' : 'none',
+                      boxShadow: selectedLevel === opt.value ? '0 0 12px rgba(6,182,212,0.2)' : 'none',
                     }}
                   >
                     {opt.label}
