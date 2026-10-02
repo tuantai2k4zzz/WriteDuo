@@ -30,9 +30,16 @@ import { ReviewModule } from './modules/review/review.module';
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI') || 'mongodb://127.0.0.1:27017/study_vspeak',
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const uri = configService.get<string>('MONGODB_URI') || 'mongodb://127.0.0.1:27017/study_vspeak';
+        if (!configService.get<string>('MONGODB_URI')) {
+          console.warn('⚠️ [MongoDB] MONGODB_URI is not set! Falling back to local mongodb://127.0.0.1:27017/study_vspeak');
+        }
+        return {
+          uri,
+          serverSelectionTimeoutMS: 8000,
+        };
+      },
       inject: [ConfigService],
     }),
     MongooseModule.forFeature([

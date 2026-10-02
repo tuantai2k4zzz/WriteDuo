@@ -35,5 +35,8 @@ async function bootstrap() {
   await app.listen(port);
   Logger.log(`🚀 Study Write Backend running at http://localhost:${port}/api/v1`, 'Bootstrap');
 }
-bootstrap();
+// Only run standalone server if not in Vercel serverless environment
+if (!process.env.VERCEL) {
+  bootstrap();
+}
 
