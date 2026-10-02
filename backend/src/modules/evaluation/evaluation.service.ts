@@ -192,26 +192,46 @@ export class EvaluationService {
       mode,
     };
 
-    const fastEvaluation = await this.mockProvider.evaluateTranslation(evalInput);
-    if (!fastEvaluation.grammarInsight) fastEvaluation.grammarInsight = defaultGrammarInsight;
-    if (!fastEvaluation.completeSentenceMemorize) fastEvaluation.completeSentenceMemorize = defaultMemorize;
+    let finalEvaluation: EvaluationResult;
+    let isDeep = false;
+    let tier = 'fast_evaluation';
 
-    // Cache Fast Result in Memory
-    this.evalCache.set(cacheKey, { evaluation: fastEvaluation, isDeep: false });
+    const activeProvider = this.aiService.getActiveProvider();
+    if (activeProvider.name !== 'MockAIProvider') {
+      try {
+        this.logger.log(`Evaluating dynamically with ${activeProvider.name}...`);
+        finalEvaluation = await this.aiService.evaluateTranslation(evalInput);
+        isDeep = true;
+        tier = 'ai_deep_evaluation';
+      } catch (err: any) {
+        this.logger.warn(`AI Provider failed (${err.message}), falling back to local engine.`);
+        finalEvaluation = await this.mockProvider.evaluateTranslation(evalInput);
+      }
+    } else {
+      finalEvaluation = await this.mockProvider.evaluateTranslation(evalInput);
+    }
 
-    // 5. Trigger Background Tier 2 Deep Analysis (Asynchronous AI task)
-    this.triggerBackgroundDeepAnalysis(sentence, evalInput, cacheKey, userNorm, userTrimmed, mode);
+    if (!finalEvaluation.grammarInsight) finalEvaluation.grammarInsight = defaultGrammarInsight;
+    if (!finalEvaluation.completeSentenceMemorize) finalEvaluation.completeSentenceMemorize = defaultMemorize;
 
-    // 6. Asynchronous Persistence of Progress & Mistakes
-    this.persistProgressAndMistakesAsync(fastEvaluation, sentence, userTrimmed, mode);
+    // Cache in RAM and DB
+    this.evalCache.set(cacheKey, { evaluation: finalEvaluation, isDeep });
+    if (isDeep) {
+      this.saveToPersistentCacheAsync(cacheKey, sentence._id, mode, userNorm, userTrimmed, finalEvaluation, true);
+    } else {
+      this.triggerBackgroundDeepAnalysis(sentence, evalInput, cacheKey, userNorm, userTrimmed, mode);
+    }
+
+    // Asynchronous Persistence of Progress & Mistakes
+    this.persistProgressAndMistakesAsync(finalEvaluation, sentence, userTrimmed, mode);
 
     // Auto-cache acceptable alternative translation in DB
-    if (mode === 'en_to_vi' && fastEvaluation.score >= 92 && !sentence.alternativeTranslations.includes(userTrimmed)) {
+    if (mode === 'en_to_vi' && finalEvaluation.score >= 92 && !sentence.alternativeTranslations.includes(userTrimmed)) {
       sentence.alternativeTranslations.push(userTrimmed);
       sentence.save().catch(() => {});
     }
 
-    return this.formatResponse(fastEvaluation, sentence, userTrimmed, mode, false, 'fast_evaluation');
+    return this.formatResponse(finalEvaluation, sentence, userTrimmed, mode, isDeep, tier);
   }
 
   // --- TIER 2: DEEP ANALYSIS QUERY (Called by frontend when user expands details or auto-polled) ---

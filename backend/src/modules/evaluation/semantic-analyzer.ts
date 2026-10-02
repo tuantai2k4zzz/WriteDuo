@@ -35,6 +35,28 @@ export class SemanticAnalyzer {
     exhausted: [{ ref: 'tired', note: '"exhausted" (kiệt sức) nhấn mạnh mức độ mệt mỏi mạnh hơn "tired".' }],
     really: [{ ref: 'very', note: '"really" rất tự nhiên trong văn phong nói; "very" mang tính trung tính.' }],
     healthy: [{ ref: 'wholesome', note: 'Đều chỉ thực phẩm lành mạnh, tốt cho sức khỏe.' }],
+    it: [
+      {
+        ref: 'he',
+        note: '"It" và "He" đều chuẩn khi nói về thú cưng. "He" mang sắc thái thân thiết; "It" đúng chuẩn ngữ pháp.',
+      },
+      {
+        ref: 'she',
+        note: '"It" và "She" đều chuẩn khi nói về thú cưng. "She" mang sắc thái thân thiết; "It" đúng chuẩn ngữ pháp.',
+      },
+    ],
+    he: [
+      {
+        ref: 'it',
+        note: '"He" và "It" đều có thể dùng để nói về vật nuôi.',
+      },
+    ],
+    she: [
+      {
+        ref: 'it',
+        note: '"She" và "It" đều có thể dùng để nói về vật nuôi.',
+      },
+    ],
   };
 
   /**
@@ -108,36 +130,6 @@ export class SemanticAnalyzer {
 
     // Detect specific common grammatical patterns in learner sentence
     const learnerLower = learnerSentence.toLowerCase();
-
-    // 1. Pattern: "it's name" or "its name" instead of "named" or "called"
-    const hasItsNameAnomaly = /it['’]?s\s+name/i.test(learnerSentence);
-    if (hasItsNameAnomaly) {
-      specificMistakes.push({
-        errorType: 'grammar_error',
-        where: "it's name",
-        relatedEnglish: 'named',
-        correctMeaning: 'named / called',
-        whyIncorrect:
-          '"it\'s" là viết tắt của "it is", không phải tính từ sở hữu. Để diễn đạt tên của thú cưng trong câu này, cấu trúc tự nhiên nhất là dùng mệnh đề phân từ rút gọn: "a dog named Max" hoặc "a dog called Max".',
-        howToFix: 'Thay cụm "it\'s name" bằng từ "named" hoặc "called".',
-        fixedSnippet: referenceSentence,
-      });
-    }
-
-    // 2. Pattern: "it is Max" or "it's Max" instead of "named Max"
-    const hasItIsAnomaly = /\bit\s+is\b|\bit['’]s\b/i.test(learnerSentence) && !/named|called/i.test(learnerSentence);
-    if (hasItIsAnomaly && !hasItsNameAnomaly) {
-      specificMistakes.push({
-        errorType: 'grammar_error',
-        where: 'it is',
-        relatedEnglish: 'named',
-        correctMeaning: 'named',
-        whyIncorrect:
-          'Trong tiếng Anh, sau "a dog" không thể dùng trực tiếp mệnh đề "it is Max" vì sẽ tạo thành hai mệnh đề rời rạc. Cấu trúc tự nhiên chuẩn xác là dùng phân từ rút gọn: "a dog named Max" (hoặc "called Max").',
-        howToFix: 'Thay "it is" bằng "named" (hoặc "called").',
-        fixedSnippet: referenceSentence,
-      });
-    }
 
     // Dynamic Programming (Needleman-Wunsch / LCS) Sequence Alignment
     const m = learnerRawTokens.length;
@@ -259,20 +251,33 @@ export class SemanticAnalyzer {
           learnerToken: lRaw,
           referenceToken: rRaw,
           status: 'INCORRECT',
-          explanation: `Từ "${lRaw}" chưa khớp với từ "${rRaw}" trong ngữ cảnh này.`,
+          explanation: `Từ "${lRaw}" khác với từ "${rRaw}" trong câu mẫu.`,
+        });
+        specificMistakes.push({
+          errorType: 'unnatural_phrasing',
+          where: lRaw,
+          relatedEnglish: rRaw,
+          correctMeaning: rRaw,
+          whyIncorrect: `Trong câu mẫu sử dụng "${rRaw}".`,
+          howToFix: `Dùng "${rRaw}" thay cho "${lRaw}".`,
+          fixedSnippet: referenceSentence,
         });
         incorrectCount++;
       } else if (step.type === 'learner_extra' && step.lIdx !== undefined) {
         const lRaw = learnerRawTokens[step.lIdx];
-        const lClean = this.cleanWord(lRaw);
-        const isGrammarError =
-          lClean === 'it' || lClean === 'is' || lClean === "it's" || lClean === 'its' || lClean === 'name';
         tokenDiffs.push({
           learnerToken: lRaw,
           status: 'INCORRECT',
-          explanation: isGrammarError
-            ? `Từ/cụm "${lRaw}" sai cấu trúc ngữ pháp trong câu này.`
-            : `Từ dư hoặc diễn đạt chưa chuẩn: "${lRaw}".`,
+          explanation: `Từ "${lRaw}" không có trong câu chuẩn.`,
+        });
+        specificMistakes.push({
+          errorType: 'unnatural_phrasing',
+          where: lRaw,
+          relatedEnglish: '',
+          correctMeaning: '',
+          whyIncorrect: `Từ "${lRaw}" không xuất hiện trong câu chuẩn.`,
+          howToFix: `Lược bỏ từ "${lRaw}".`,
+          fixedSnippet: referenceSentence,
         });
         incorrectCount++;
       } else if (step.type === 'ref_missing' && step.rIdx !== undefined) {
@@ -302,7 +307,7 @@ export class SemanticAnalyzer {
       0,
       Math.min(100, Math.round((validWordsCount / Math.max(learnerRawTokens.length, totalRefWords)) * 100)),
     );
-    const hasGrammarFlaw = hasItsNameAnomaly || hasItIsAnomaly || incorrectCount > 0;
+    const hasGrammarFlaw = incorrectCount > 0;
     const grammarAccuracy = hasGrammarFlaw ? Math.max(50, 95 - incorrectCount * 12) : 98;
     const naturalness =
       equivalentMatches > 0 && incorrectCount === 0
