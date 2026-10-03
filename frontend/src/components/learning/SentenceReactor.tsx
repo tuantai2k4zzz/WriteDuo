@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sentence, Token, GrammarComponent } from '../../types';
-import { playSound, speakEnglish } from '../../lib/audio';
-import { Sparkles, Layers, Info } from 'lucide-react';
+import { playSound } from '../../lib/audio';
+import { Layers, Info, Lock, Unlock, Eye, EyeOff } from 'lucide-react';
 
 interface SentenceReactorProps {
   sentence: Sentence;
@@ -16,10 +16,43 @@ export const SentenceReactor: React.FC<SentenceReactorProps> = ({
   onTokenClick,
 }) => {
   const [activeComponent, setActiveComponent] = useState<GrammarComponent | null>(null);
-  const [hoveredTokenIndex, setHoveredTokenIndex] = useState<number | null>(null);
+  const [unlockedIndices, setUnlockedIndices] = useState<Set<number>>(new Set());
+
+  // Reset unlocked state when sentence changes so learner always starts with hidden blueprint
+  useEffect(() => {
+    setUnlockedIndices(new Set());
+    setActiveComponent(null);
+  }, [sentence._id]);
 
   const grammar = sentence.grammarAnalysis;
   const components = grammar?.components || [];
+  const totalItems = components.length > 0 ? components.length : sentence.tokens.length;
+  const allUnlocked = unlockedIndices.size === totalItems && totalItems > 0;
+
+  const handleToggleUnlock = (idx: number, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    playSound('click');
+    setUnlockedIndices((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) {
+        next.delete(idx);
+      } else {
+        next.add(idx);
+      }
+      return next;
+    });
+  };
+
+  const handleToggleAll = () => {
+    playSound('click');
+    if (allUnlocked) {
+      setUnlockedIndices(new Set());
+    } else {
+      const all = new Set<number>();
+      for (let i = 0; i < totalItems; i++) all.add(i);
+      setUnlockedIndices(all);
+    }
+  };
 
   // Categorize colors by grammatical role
   const getRoleStyle = (role: string) => {
@@ -41,78 +74,153 @@ export const SentenceReactor: React.FC<SentenceReactorProps> = ({
 
   return (
     <div className="relative rounded-2xl p-4 sm:p-5 mb-5 backdrop-blur-md bg-white/95 dark:bg-gradient-to-br dark:from-[#060f23]/92 dark:to-[#030816]/95 border border-cyan-200 dark:border-cyan-500/30 shadow-xs dark:shadow-[0_0_30px_rgba(6,182,212,0.08)]">
-      <div className="flex items-center justify-between gap-3 mb-3">
+      {/* Header bar */}
+      <div className="flex items-center justify-between gap-3 mb-2.5 flex-wrap">
         <div className="flex items-center gap-2">
           <Layers className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
           <span className="text-xs font-mono font-black tracking-wider text-cyan-700 dark:text-cyan-300 uppercase">
             SENTENCE REACTOR — BẢN ĐỒ CÚ PHÁP
           </span>
         </div>
-        {grammar?.tense && (
-          <span className="rounded-md bg-cyan-100 dark:bg-cyan-500/10 border border-cyan-300 dark:border-cyan-500/30 px-2 py-0.5 text-[10px] font-mono font-black text-cyan-700 dark:text-cyan-400">
-            {grammar.tense}
-          </span>
-        )}
+
+        <div className="flex items-center gap-2">
+          {grammar?.tense && (
+            <span className="rounded-md bg-cyan-100 dark:bg-cyan-500/10 border border-cyan-300 dark:border-cyan-500/30 px-2 py-0.5 text-[10px] font-mono font-black text-cyan-700 dark:text-cyan-400">
+              {grammar.tense}
+            </span>
+          )}
+
+          {/* Toggle all lock / unlock button */}
+          <button
+            type="button"
+            onClick={handleToggleAll}
+            className="flex items-center gap-1 rounded-lg px-2 py-0.5 text-[10px] font-mono font-bold text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-300 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+            title={allUnlocked ? 'Khóa tất cả từ' : 'Mở khóa tất cả từ'}
+          >
+            {allUnlocked ? (
+              <>
+                <Lock className="h-2.5 w-2.5 text-amber-500" />
+                <span>Khóa lại</span>
+              </>
+            ) : (
+              <>
+                <Unlock className="h-2.5 w-2.5 text-cyan-500" />
+                <span>Mở hết</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* Helpful hint for user */}
+      <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-1.5 font-mono">
+        <Lock className="h-3 w-3 text-amber-500 flex-shrink-0" />
+        <span>Các từ vựng được khóa để luyện phản xạ tự nhớ. Bấm vào từng ô để mở khóa gợi ý khi cần.</span>
+      </p>
 
       {/* Syntactic Structure Nodes (Subject, Verb, Object, Modifiers...) */}
       {components.length > 0 ? (
-        <div className="flex flex-wrap items-center gap-2 mb-4">
+        <div className="flex flex-wrap items-center gap-2 mb-3">
           {components.map((comp, idx) => {
             const style = getRoleStyle(comp.role);
             const isSelected = activeComponent?.text === comp.text;
+            const isUnlocked = unlockedIndices.has(idx);
 
             return (
               <motion.button
+                type="button"
                 key={idx}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
-                onClick={() => {
-                  playSound('click');
-                  setActiveComponent(isSelected ? null : comp);
+                onClick={(e) => {
+                  if (!isUnlocked) {
+                    handleToggleUnlock(idx, e);
+                  } else {
+                    playSound('click');
+                    setActiveComponent(isSelected ? null : comp);
+                  }
                 }}
                 className={`flex flex-col items-center rounded-xl px-3 py-2 border transition-all cursor-pointer ${
                   isSelected
                     ? `${style.bg} ${style.border} ring-2 ring-cyan-400/40`
-                    : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-700/60 hover:border-slate-400 dark:hover:border-slate-500'
+                    : isUnlocked
+                    ? 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-700/60 hover:border-slate-400 dark:hover:border-slate-500'
+                    : 'bg-slate-100/70 dark:bg-slate-900/40 border-dashed border-slate-300 dark:border-cyan-500/25 hover:border-cyan-400/60'
                 }`}
                 style={{
                   boxShadow: isSelected ? `0 0 15px ${style.glow}40` : 'none',
                 }}
+                title={isUnlocked ? 'Bấm để xem phân tích cú pháp' : 'Bấm để mở khóa từ này'}
               >
                 <span className={`text-[10px] font-mono font-bold tracking-wider uppercase mb-0.5 ${style.text}`}>
                   {comp.role}
                 </span>
-                <span className="text-sm font-black text-slate-900 dark:text-white font-mono">
-                  {comp.text}
-                </span>
+
+                {isUnlocked ? (
+                  <motion.span
+                    initial={{ scale: 0.85, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="text-sm font-black text-slate-900 dark:text-white font-mono"
+                  >
+                    {comp.text}
+                  </motion.span>
+                ) : (
+                  <span className="flex items-center gap-1 text-xs font-mono font-black text-slate-400 dark:text-slate-500 py-0.5">
+                    <Lock className="h-3 w-3 text-amber-500/80" />
+                    <span>•••</span>
+                  </span>
+                )}
               </motion.button>
             );
           })}
         </div>
       ) : (
         /* If components not explicitly tagged, split sentence into interactive token chips */
-        <div className="flex flex-wrap items-center gap-1.5 mb-4">
-          {sentence.tokens.map((token, idx) => (
-            <motion.span
-              key={idx}
-              whileHover={{ scale: 1.05 }}
-              onClick={() => {
-                playSound('click');
-                onTokenClick?.(token);
-              }}
-              onMouseEnter={() => setHoveredTokenIndex(idx)}
-              onMouseLeave={() => setHoveredTokenIndex(null)}
-              className="inline-flex flex-col items-center rounded-lg px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900/80 border border-cyan-200 dark:border-cyan-500/20 hover:border-cyan-400 text-slate-900 dark:text-white cursor-pointer transition-all"
-            >
-              <span className="text-xs font-mono font-black text-cyan-800 dark:text-cyan-200">
-                {token.text}
-              </span>
-              <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">
-                {token.pos || 'word'}
-              </span>
-            </motion.span>
-          ))}
+        <div className="flex flex-wrap items-center gap-1.5 mb-3">
+          {sentence.tokens.map((token, idx) => {
+            const isUnlocked = unlockedIndices.has(idx);
+
+            return (
+              <motion.button
+                type="button"
+                key={idx}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  if (!isUnlocked) {
+                    handleToggleUnlock(idx);
+                  } else {
+                    playSound('click');
+                    onTokenClick?.(token);
+                  }
+                }}
+                className={`inline-flex flex-col items-center rounded-lg px-2.5 py-1.5 border transition-all cursor-pointer ${
+                  isUnlocked
+                    ? 'bg-slate-50 dark:bg-slate-900/80 border-cyan-200 dark:border-cyan-500/30 text-slate-900 dark:text-white hover:border-cyan-400'
+                    : 'bg-slate-100/60 dark:bg-slate-900/40 border-dashed border-slate-300 dark:border-cyan-500/20 text-slate-400 dark:text-slate-500 hover:border-cyan-400/60'
+                }`}
+                title={isUnlocked ? 'Bấm để tra cứu nghĩa từ vựng' : 'Bấm để mở khóa từ này'}
+              >
+                {isUnlocked ? (
+                  <motion.span
+                    initial={{ scale: 0.85, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="text-xs font-mono font-black text-cyan-800 dark:text-cyan-200"
+                  >
+                    {token.text}
+                  </motion.span>
+                ) : (
+                  <span className="flex items-center gap-1 text-xs font-mono font-black text-slate-400 dark:text-slate-500">
+                    <Lock className="h-2.5 w-2.5 text-amber-500/80" />
+                    <span>•••</span>
+                  </span>
+                )}
+                <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">
+                  {token.pos || 'word'}
+                </span>
+              </motion.button>
+            );
+          })}
         </div>
       )}
 
@@ -141,3 +249,4 @@ export const SentenceReactor: React.FC<SentenceReactorProps> = ({
     </div>
   );
 };
+

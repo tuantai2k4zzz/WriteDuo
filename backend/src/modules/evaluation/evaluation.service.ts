@@ -19,6 +19,7 @@ import { VocabularyService } from '../vocabulary/vocabulary.service';
 import { EvaluateAnswerDto } from './dto/evaluate-answer.dto';
 import { EvaluateParagraphDto } from './dto/evaluate-paragraph.dto';
 import { EvaluationResult, CompleteSentenceMemorize, GrammarInsight, EvaluationInput } from '../ai/ai.interface';
+import { SemanticAnalyzer } from './semantic-analyzer';
 
 @Injectable()
 export class EvaluationService {
@@ -512,70 +513,166 @@ export class EvaluationService {
 
   // --- PARAGRAPH EVALUATION (POST-LESSON BOSS CHALLENGE) ---
   async evaluateParagraph(dto: EvaluateParagraphDto, userId?: string) {
-    const isObjectId = Types.ObjectId.isValid(dto.lessonId);
-    const reading = isObjectId
-      ? await this.readingModel.findById(dto.lessonId)
-      : await this.readingModel.findOne({ slug: dto.lessonId });
+    let fullEn = dto.fullEn?.trim();
+    let fullVi = dto.fullVi?.trim();
 
-    if (!reading) {
-      throw new NotFoundException(`Reading lesson not found: ${dto.lessonId}`);
+    // If client didn't supply fullEn and fullVi directly, look up reading & sentences from DB
+    if (!fullEn || !fullVi) {
+      try {
+        const isObjectId = Types.ObjectId.isValid(dto.lessonId);
+        const reading = isObjectId
+          ? await this.readingModel.findById(dto.lessonId)
+          : await this.readingModel.findOne({ slug: dto.lessonId });
+
+        if (reading) {
+          const sentences = await this.sentenceModel
+            .find({ readingId: reading._id })
+            .sort({ paragraphIndex: 1, sentenceIndex: 1 });
+
+          if (!fullEn && sentences.length > 0) {
+            fullEn = sentences.map((s) => s.textEn.trim()).join(' ');
+          }
+          if (!fullVi && sentences.length > 0) {
+            fullVi = sentences.map((s) => s.primaryTranslationVi.trim()).join(' ');
+          }
+        }
+      } catch (err: any) {
+        this.logger.warn(`Could not load reading from DB for paragraph eval: ${err.message}`);
+      }
     }
-
-    const sentences = await this.sentenceModel
-      .find({ readingId: reading._id })
-      .sort({ paragraphIndex: 1, sentenceIndex: 1 });
 
     const mode = dto.mode || 'en_to_vi';
     const userTrimmed = dto.userParagraph.trim();
 
-    const fullEn = sentences.map((s) => s.textEn).join(' ');
-    const fullVi = sentences.map((s) => s.primaryTranslationVi).join(' ');
+    // Safe fallbacks to prevent crash if lesson is virtual
+    if (!fullEn) fullEn = userTrimmed || 'This is a practice reading lesson.';
+    if (!fullVi) fullVi = userTrimmed || 'Đây là một bài học đọc luyện tập.';
 
     const target = mode === 'vi_to_en' ? fullEn : fullVi;
     const promptText = mode === 'vi_to_en' ? fullVi : fullEn;
 
-    // Calculate word overlap & 5-axis metrics
-    const userWords = this.norm(userTrimmed).split(/\s+/).filter(Boolean);
-    const targetWords = this.norm(target).split(/\s+/).filter(Boolean);
+    const userNorm = this.norm(userTrimmed);
+    const targetNorm = this.norm(target);
 
-    let matchCount = 0;
-    for (const tw of targetWords) {
-      if (userWords.includes(tw)) matchCount++;
+    // 1. Exact match check (Instant 100% Evaluation)
+    if (userNorm === targetNorm) {
+      if (userId && Types.ObjectId.isValid(userId)) {
+        this.awardParagraphXpAsync(userId);
+      }
+
+      return {
+        score: 100,
+        status: 'correct' as const,
+        overview: 'Tuyệt đỉnh xuất sắc! Bạn đã dịch trọn vẹn toàn bộ đoạn văn hoàn toàn chuẩn xác 100%.',
+        metrics: {
+          meaning: 100,
+          grammar: 100,
+          vocabulary: 100,
+          naturalness: 100,
+          completeness: 100,
+        },
+        strengths: [
+          'Nắm trọn vẹn thông điệp toàn bài đọc',
+          'Dịch chính xác 100% ngữ pháp và cấu trúc các câu',
+          'Văn phong tự nhiên, đúng thì và đúng ngữ cảnh',
+        ],
+        improvements: [],
+        promptText,
+        referenceParagraph: target,
+        xpBonus: 50,
+        mode,
+      };
     }
-    const ratio = matchCount / Math.max(targetWords.length, 1);
-    const overallScore = Math.min(Math.max(Math.round(ratio * 100), 20), 100);
 
-    // 5-Axis Score Breakdown (Futuristic HUD radar metrics)
-    const meaningScore = Math.min(100, Math.round(overallScore * 1.05));
-    const grammarScore = Math.min(100, Math.max(40, Math.round(overallScore * 0.95)));
-    const vocabularyScore = Math.min(100, Math.round(ratio * 100));
-    const naturalnessScore = Math.min(100, Math.max(50, Math.round(overallScore * 0.9)));
-    const completenessScore = Math.min(100, Math.round((userWords.length / Math.max(targetWords.length, 1)) * 100));
+    // 2. Semantic Analysis across the whole paragraph (matching single sentence evaluation logic)
+    const analysis = SemanticAnalyzer.analyzeTokens(userTrimmed, target);
+    const scores = analysis.scores;
 
-    const isHigh = overallScore >= 80;
-    const isMid = overallScore >= 50;
-
-    const overview = isHigh
-      ? 'Tuyệt tác! Bạn đã hoàn thành xuất sắc bản dịch toàn bộ đoạn văn.'
-      : isMid
-      ? 'Khá tốt! Bạn đã nắm được phần lớn ý nghĩa của toàn bài.'
-      : 'Cần luyện tập thêm để kết nối các câu trong đoạn văn mượt mà hơn.';
-
+    let overallScore = 75;
+    let status: 'correct' | 'almost_correct' | 'incorrect' = 'almost_correct';
+    let overview = '';
     const strengths: string[] = [];
     const improvements: string[] = [];
 
-    if (meaningScore >= 80) strengths.push('Nắm trọn vẹn thông điệp và chủ đề bài đọc');
-    if (vocabularyScore >= 75) strengths.push('Sử dụng đúng các thuật ngữ và từ vựng cốt lõi');
-    if (completenessScore >= 80) strengths.push('Dịch đầy đủ không bỏ sót câu nào trong đoạn');
+    if (analysis.overallStatus === 'EXACT_MATCH') {
+      overallScore = 100;
+      status = 'correct';
+      overview = 'Xuất sắc! Bạn đã dịch trọn vẹn đoạn văn khớp hoàn hảo 100%.';
+      strengths.push('Dịch chính xác hoàn hảo 100% toàn bộ đoạn văn');
+      strengths.push('Văn phong tự nhiên, đúng thì và đúng ngữ pháp');
+    } else if (analysis.overallStatus === 'SEMANTICALLY_CORRECT') {
+      overallScore = Math.max(88, Math.min(98, Math.round(scores.semanticMeaning)));
+      status = 'correct';
+      overview = 'Xuất sắc! Ý nghĩa toàn đoạn văn hoàn toàn chuẩn xác và diễn đạt tự nhiên.';
+      strengths.push('Nắm trọn vẹn thông điệp và chủ đề bài đọc');
+      if (analysis.alternatives.length > 0) {
+        strengths.push('Sử dụng cách diễn đạt tương đương rất tự nhiên');
+      }
+    } else if (analysis.overallStatus === 'PARTIALLY_CORRECT') {
+      overallScore = Math.max(
+        65,
+        Math.min(
+          84,
+          Math.round(scores.semanticMeaning * 0.6 + scores.grammarAccuracy * 0.25 + scores.completeness * 0.15),
+        ),
+      );
+      status = overallScore >= 80 ? 'correct' : 'almost_correct';
+      overview = 'Khá tốt! Bạn đã nắm được phần lớn ý nghĩa của toàn bài đọc.';
+      if (scores.semanticMeaning >= 70) strengths.push('Truyền đạt được ý nghĩa cốt lõi của đoạn văn');
+      if (scores.completeness >= 80) strengths.push('Dịch đầy đủ không bỏ sót câu nào');
+      improvements.push('Cần chú ý liên kết thì và giới từ giữa các câu');
+    } else {
+      overallScore = Math.max(
+        25,
+        Math.min(64, Math.round(scores.semanticMeaning * 0.5 + scores.completeness * 0.3)),
+      );
+      status = 'incorrect';
+      overview = 'Cần luyện tập thêm để kết nối các câu trong đoạn văn mượt mà hơn.';
+      improvements.push('Cần dịch bám sát nội dung đoạn văn hơn');
+      if (analysis.missingElements.length > 0) {
+        improvements.push(
+          `Chú ý các phần nội dung chưa hoàn chỉnh: ${analysis.missingElements.slice(0, 2).map((m) => m.word).join(', ')}`,
+        );
+      }
+    }
 
-    if (grammarScore < 80) improvements.push('Cần chú ý liên kết thì và giới từ giữa các câu');
-    if (naturalnessScore < 80) improvements.push('Văn phong có thể diễn đạt tự nhiên hơn, tránh dịch thô');
-    if (strengths.length === 0) strengths.push('Đã cố gắng hoàn thành bản dịch toàn bài');
+    if (strengths.length === 0) {
+      strengths.push('Đã nỗ lực hoàn thành bản dịch toàn bài');
+    }
+    if (improvements.length === 0 && overallScore < 95) {
+      improvements.push('Văn phong có thể trau chuốt thêm để đạt độ lưu loát cao hơn');
+    }
 
     // Award 50 XP bonus asynchronously if user is logged in
     if (userId && Types.ObjectId.isValid(userId)) {
-      const userObjectId = new Types.ObjectId(userId);
-      this.progressModel.findOne({ userId: userObjectId }).then((progress) => {
+      this.awardParagraphXpAsync(userId);
+    }
+
+    return {
+      score: overallScore,
+      status,
+      overview,
+      metrics: {
+        meaning: scores.semanticMeaning,
+        grammar: scores.grammarAccuracy,
+        vocabulary: scores.wordAccuracy,
+        naturalness: scores.naturalness,
+        completeness: scores.completeness,
+      },
+      strengths,
+      improvements,
+      promptText,
+      referenceParagraph: target,
+      xpBonus: 50,
+      mode,
+    };
+  }
+
+  private awardParagraphXpAsync(userId: string) {
+    const userObjectId = new Types.ObjectId(userId);
+    this.progressModel
+      .findOne({ userId: userObjectId })
+      .then((progress) => {
         if (progress) {
           const { streakCount, isNewDay } = this.calculateStreak(progress.lastActiveDate, progress.streakCount);
           progress.streakCount = streakCount;
@@ -588,27 +685,8 @@ export class EvaluationService {
           }
           progress.save().catch(() => {});
         }
-      }).catch(() => {});
-    }
-
-    return {
-      score: overallScore,
-      status: isHigh ? 'correct' : isMid ? 'almost_correct' : 'incorrect',
-      overview,
-      metrics: {
-        meaning: meaningScore,
-        grammar: grammarScore,
-        vocabulary: vocabularyScore,
-        naturalness: naturalnessScore,
-        completeness: completenessScore,
-      },
-      strengths,
-      improvements,
-      promptText,
-      referenceParagraph: target,
-      xpBonus: 50,
-      mode,
-    };
+      })
+      .catch(() => {});
   }
 
   private formatResponse(

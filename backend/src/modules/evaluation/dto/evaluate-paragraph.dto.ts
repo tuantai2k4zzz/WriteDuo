@@ -16,4 +16,12 @@ export class EvaluateParagraphDto {
   @IsOptional()
   @IsString()
   userId?: string;
+
+  @IsOptional()
+  @IsString()
+  fullEn?: string;
+
+  @IsOptional()
+  @IsString()
+  fullVi?: string;
 }

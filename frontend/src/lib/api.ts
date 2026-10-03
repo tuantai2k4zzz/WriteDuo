@@ -155,13 +155,15 @@ export const api = {
   async evaluateParagraph(
     lessonId: string,
     userParagraph: string,
-    mode?: 'en_to_vi' | 'vi_to_en'
+    mode?: 'en_to_vi' | 'vi_to_en',
+    fullEn?: string,
+    fullVi?: string,
   ): Promise<import('../types').ParagraphEvaluationResponse> {
     return fetchJson<import('../types').ParagraphEvaluationResponse>(
       `${API_BASE_URL}/answers/evaluate-paragraph`,
       {
         method: 'POST',
-        body: JSON.stringify({ lessonId, userParagraph, mode }),
+        body: JSON.stringify({ lessonId, userParagraph, mode, fullEn, fullVi }),
       }
     );
   },
