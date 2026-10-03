@@ -4,10 +4,12 @@ import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 // Configure DNS servers to prevent querySrv ECONNREFUSED on Windows when resolving MongoDB Atlas SRV records
-try {
-  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
-} catch {
-  // Ignore if restricted
+if (process.platform === 'win32') {
+  try {
+    dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+  } catch {
+    // Ignore if restricted
+  }
 }
 
 async function bootstrap() {
@@ -19,8 +21,10 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Global prefix for versioned API
-  app.setGlobalPrefix('api/v1');
+  // Global prefix for versioned API (exclude root /)
+  app.setGlobalPrefix('api/v1', {
+    exclude: ['/'],
+  });
 
   // Request validation
   app.useGlobalPipes(

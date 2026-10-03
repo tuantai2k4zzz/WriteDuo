@@ -31,9 +31,18 @@ import { ReviewModule } from './modules/review/review.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const uri = configService.get<string>('MONGODB_URI') || 'mongodb://127.0.0.1:27017/study_vspeak';
-        if (!configService.get<string>('MONGODB_URI')) {
+        const uri = configService.get<string>('MONGODB_URI');
+        if (!uri) {
+          if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+            throw new Error(
+              'Missing MONGODB_URI! Please configure MONGODB_URI in Vercel Project Settings > Environment Variables.',
+            );
+          }
           console.warn('⚠️ [MongoDB] MONGODB_URI is not set! Falling back to local mongodb://127.0.0.1:27017/study_vspeak');
+          return {
+            uri: 'mongodb://127.0.0.1:27017/study_vspeak',
+            serverSelectionTimeoutMS: 5000,
+          };
         }
         return {
           uri,
