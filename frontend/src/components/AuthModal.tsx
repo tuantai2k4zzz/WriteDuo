@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import { useLearningStore } from '../lib/store';
 import { api } from '../lib/api';
 import { playSound } from '../lib/audio';
-import { X, Lock, Mail, User, ShieldCheck, Zap, ArrowRight, Loader2, KeyRound } from 'lucide-react';
+import { X, Lock, Mail, User, ShieldCheck, ArrowRight, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const AuthModal: React.FC = () => {
-  const { isAuthModalOpen, authModalMode, closeAuthModal, openAuthModal, loadUser } = useLearningStore();
+  const { isAuthModalOpen, authModalMode, closeAuthModal, loadUser } = useLearningStore();
 
   const [mode, setMode] = useState<'login' | 'register'>(authModalMode || 'login');
   const [email, setEmail] = useState('');
@@ -53,28 +53,20 @@ export const AuthModal: React.FC = () => {
       playSound('complete');
       closeAuthModal();
     } catch (err: any) {
-      setErrorMsg(err.message || 'Xác thực không thành công. Vui lòng kiểm tra lại.');
+      setErrorMsg(err.message || 'Xác thực không thành công. Vui lòng kiểm tra lại thông tin.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleQuickFill = (testEmail: string, testName: string) => {
-    setEmail(testEmail);
-    setPassword('Password123!');
-    setName(testName);
-    setErrorMsg(null);
-    playSound('click');
-  };
-
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative w-full max-w-md overflow-hidden rounded-3xl border border-cyan-500/40 bg-white/95 dark:bg-[#070d1a]/95 p-6 sm:p-8 shadow-[0_0_50px_rgba(0,242,254,0.25)] backdrop-blur-2xl"
+          className="relative w-full max-w-md max-h-[92vh] overflow-y-auto rounded-3xl border border-cyan-500/40 bg-white/95 dark:bg-[#070d1a]/95 p-5 sm:p-8 shadow-[0_0_50px_rgba(0,242,254,0.25)] backdrop-blur-2xl"
         >
           {/* Header Glow Reactor */}
           <div className="absolute -top-24 -left-24 h-48 w-48 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none" />
@@ -86,22 +78,22 @@ export const AuthModal: React.FC = () => {
               playSound('click');
               closeAuthModal();
             }}
-            className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
 
           {/* Header Identity */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-white shadow-lg shadow-cyan-500/30 mb-3">
+          <div className="text-center mb-5 sm:mb-6 mt-1">
+            <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-white shadow-lg shadow-cyan-500/30 mb-2 sm:mb-3">
               <ShieldCheck className="h-6 w-6" />
             </div>
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               {mode === 'login' ? 'Đăng Nhập WriteDuo' : 'Tạo Tài Khoản Mới'}
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium px-2">
               {mode === 'login'
-                ? 'Dữ liệu học tập, từ vựng và XP được cô lập riêng theo tài khoản'
+                ? 'Đăng nhập để xem đúng dữ liệu học tập, từ vựng và XP của bạn'
                 : 'Bắt đầu hành trình học tiếng Anh với không gian dữ liệu riêng biệt'}
             </p>
           </div>
@@ -187,33 +179,8 @@ export const AuthModal: React.FC = () => {
             </button>
           </form>
 
-          {/* Quick Test Accounts for instant verification */}
-          <div className="mt-5 pt-4 border-t border-slate-200 dark:border-white/10">
-            <p className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase text-center mb-2">
-              ⚡ Tài khoản thử nghiệm độc lập dữ liệu:
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickFill('test-a@example.com', 'Learner A')}
-                className="flex items-center justify-center gap-1.5 rounded-lg border border-cyan-500/30 bg-cyan-50/50 dark:bg-cyan-950/30 px-2 py-1.5 text-[11px] font-bold text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/50 transition-colors cursor-pointer"
-              >
-                <KeyRound className="h-3 w-3" />
-                <span>Test User A</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('test-b@example.com', 'Learner B')}
-                className="flex items-center justify-center gap-1.5 rounded-lg border border-purple-500/30 bg-purple-50/50 dark:bg-purple-950/30 px-2 py-1.5 text-[11px] font-bold text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors cursor-pointer"
-              >
-                <KeyRound className="h-3 w-3" />
-                <span>Test User B</span>
-              </button>
-            </div>
-          </div>
-
           {/* Mode Switcher */}
-          <div className="mt-4 text-center">
+          <div className="mt-5 text-center">
             {mode === 'login' ? (
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                 Chưa có tài khoản?{' '}

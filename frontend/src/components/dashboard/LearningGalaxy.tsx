@@ -88,7 +88,7 @@ export const LearningGalaxy: React.FC<LearningGalaxyProps> = ({ skills }) => {
   const activeScore = selectedSkill ? skills[selectedSkill] : null;
 
   return (
-    <HolographicPanel glowColor="cyan" className="p-6 mb-8">
+    <HolographicPanel glowColor="cyan" className="p-4 sm:p-6 mb-6 sm:mb-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
@@ -246,7 +246,7 @@ export const LearningGalaxy: React.FC<LearningGalaxyProps> = ({ skills }) => {
           </AnimatePresence>
 
           {/* Quick select pills */}
-          <div className="grid grid-cols-4 gap-1.5 mt-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-3">
             {keys.map((k) => (
               <button
                 key={k}

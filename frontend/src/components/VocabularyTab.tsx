@@ -89,23 +89,23 @@ export const VocabularyTab: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-5xl px-3 sm:px-6 py-4 sm:py-8">
       {/* ── HEADER BANNER ── */}
-      <HolographicPanel glowColor="cyan" className="p-6 mb-8">
+      <HolographicPanel glowColor="cyan" className="p-4 sm:p-6 mb-5 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.2)]">
-              <BookOpen className="h-7 w-7" />
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="p-2.5 sm:p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.2)] flex-shrink-0">
+              <BookOpen className="h-6 w-6 sm:h-7 sm:w-7" />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                  MEMORY PALACE — CUNG ĐIỆN TỪ VỰNG
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <h1 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  CUNG ĐIỆN TỪ VỰNG
                 </h1>
                 <NeonBadge label="SEMANTIC MAPPING" color="cyan" pulse />
               </div>
               <p className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
-                Lưu trữ và kết nối các mắt xích từ vựng theo chuẩn CEFR quốc tế. Bấm vào biểu tượng loa để kích hoạt phát âm chuẩn bản xứ.
+                Lưu trữ và kết nối các mắt xích từ vựng theo chuẩn CEFR. Bấm loa để nghe phát âm.
               </p>
             </div>
           </div>
@@ -127,13 +127,13 @@ export const VocabularyTab: React.FC = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tra cứu từ vựng hoặc nghĩa tiếng Việt trong cung điện..."
-            className="w-full rounded-2xl border border-cyan-200 dark:border-cyan-500/30 bg-white/90 dark:bg-slate-900/90 py-2.5 pl-10 pr-4 text-sm font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 backdrop-blur-md shadow-xs dark:shadow-none"
+            placeholder="Tra cứu từ vựng hoặc nghĩa tiếng Việt..."
+            className="w-full rounded-2xl border border-cyan-200 dark:border-cyan-500/30 bg-white/90 dark:bg-slate-900/90 py-2.5 pl-10 pr-4 text-xs sm:text-sm font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 backdrop-blur-md shadow-xs dark:shadow-none"
           />
         </div>
 
         {/* CEFR Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 sm:pb-0">
           {cefrLevels.map((lvl) => (
             <button
               key={lvl}

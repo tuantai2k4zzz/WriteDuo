@@ -231,7 +231,7 @@ export const ParagraphChallenge: React.FC = () => {
           </div>
 
           {/* 4 Objective Stages */}
-          <div className="grid grid-cols-4 gap-2 text-center text-[10px] font-mono font-bold">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 text-center text-[10px] font-mono font-bold">
             <div className="p-1.5 rounded-lg bg-emerald-100/80 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400">
               1. TỪ VỰNG ✓
             </div>

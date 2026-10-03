@@ -49,7 +49,7 @@ export const DailyMission: React.FC<DailyMissionProps> = ({
   ];
 
   return (
-    <HolographicPanel glowColor="amber" className="p-6 mb-8">
+    <HolographicPanel glowColor="amber" className="p-4 sm:p-6 mb-6">
       <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
@@ -60,12 +60,12 @@ export const DailyMission: React.FC<DailyMissionProps> = ({
               NHIỆM VỤ HÔM NAY
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Tiến độ mục tiêu ngày của Tuấn Tài
+              Tiến độ rèn luyện mỗi ngày
             </p>
           </div>
         </div>
 
-        <NeonBadge label={`${xpPercent}% HOÀN THÀNH`} color="amber" pulse />
+        <NeonBadge label={`${xpPercent}%`} color="amber" pulse />
       </div>
 
       {/* Main XP Progress Bar */}
@@ -86,20 +86,20 @@ export const DailyMission: React.FC<DailyMissionProps> = ({
               playSound('click');
               onNavigateTab(m.tab);
             }}
-            className={`group flex items-center justify-between gap-3 rounded-xl p-3 cursor-pointer transition-all hover:scale-[1.01] border ${
+            className={`group flex items-center justify-between gap-2.5 rounded-xl p-3 cursor-pointer transition-all hover:scale-[1.01] border ${
               m.completed
                 ? 'bg-emerald-50/80 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/25'
                 : 'bg-slate-50/80 dark:bg-white/[0.03] border-slate-200/80 dark:border-white/[0.06]'
             }`}
           >
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
               {m.completed ? (
                 <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
               ) : (
                 <Circle className="h-4 w-4 text-slate-400 dark:text-slate-500 flex-shrink-0" />
               )}
-              <div>
-                <div className={`text-xs font-bold font-mono ${m.completed ? 'text-emerald-700 dark:text-emerald-300 line-through opacity-80' : 'text-slate-800 dark:text-slate-200'}`}>
+              <div className="min-w-0 flex-1">
+                <div className={`text-xs font-bold font-mono truncate ${m.completed ? 'text-emerald-700 dark:text-emerald-300 line-through opacity-80' : 'text-slate-800 dark:text-slate-200'}`}>
                   {m.title}
                 </div>
                 <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">

@@ -67,23 +67,23 @@ export const WeaknessesTab: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-5xl px-3 sm:px-6 py-4 sm:py-8">
       {/* ── HEADER BANNER ── */}
-      <HolographicPanel glowColor="rose" className="p-6 mb-8">
+      <HolographicPanel glowColor="rose" className="p-4 sm:p-6 mb-5 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.2)]">
-              <Dna className="h-7 w-7 animate-pulse" />
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="p-2.5 sm:p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.2)] flex-shrink-0">
+              <Dna className="h-6 w-6 sm:h-7 sm:w-7 animate-pulse" />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                  MISTAKE DNA — PHÂN TÍCH ĐIỂM YẾU
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <h1 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  PHÂN TÍCH ĐIỂM YẾU
                 </h1>
                 <NeonBadge label="NEURAL REPAIR" color="rose" pulse />
               </div>
               <p className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
-                Hệ thống tự động phát hiện các từ vựng và cấu trúc ngữ pháp bạn trả lời sai để lên lịch hồi tưởng ngắt quãng (SRS).
+                Tự động phát hiện từ vựng và cấu trúc ngữ pháp bạn làm sai để lên lịch ôn tập ngắt quãng (SRS).
               </p>
             </div>
           </div>
@@ -93,30 +93,30 @@ export const WeaknessesTab: React.FC = () => {
               playSound('click');
               loadData();
             }}
-            className="flex items-center gap-1.5 rounded-xl border border-rose-300 dark:border-rose-500/30 bg-rose-100/80 dark:bg-rose-500/10 px-4 py-2 text-xs font-mono font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-200 dark:hover:bg-rose-500/20 active:scale-95 transition-all cursor-pointer self-start sm:self-center"
+            className="flex items-center gap-1.5 rounded-xl border border-rose-300 dark:border-rose-500/30 bg-rose-100/80 dark:bg-rose-500/10 px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs font-mono font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-200 dark:hover:bg-rose-500/20 active:scale-95 transition-all cursor-pointer self-start sm:self-center"
             title="Làm mới ma trận lỗi"
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             <span>QUÉT LẠI</span>
           </button>
         </div>
       </HolographicPanel>
 
       {/* Sub-Tabs: Từ vựng yếu vs Ngữ pháp */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-3 mb-5 sm:mb-6">
         <button
           onClick={() => {
             playSound('click');
             setSubTab('words');
           }}
-          className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-black transition-all cursor-pointer ${
+          className={`flex items-center justify-center gap-1.5 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-xs font-black transition-all cursor-pointer text-center ${
             subTab === 'words'
               ? 'bg-rose-500 text-white shadow-md shadow-rose-500/30'
               : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
-          <BookX className="h-4 w-4" />
-          <span>TỪ VỰNG YẾU ({weakWords.length})</span>
+          <BookX className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+          <span className="truncate">TỪ VỰNG ({weakWords.length})</span>
         </button>
 
         <button
@@ -124,14 +124,14 @@ export const WeaknessesTab: React.FC = () => {
             playSound('click');
             setSubTab('grammar');
           }}
-          className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-black transition-all cursor-pointer ${
+          className={`flex items-center justify-center gap-1.5 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-xs font-black transition-all cursor-pointer text-center ${
             subTab === 'grammar'
               ? 'bg-purple-600 text-white shadow-md shadow-purple-500/30'
               : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
-          <Target className="h-4 w-4" />
-          <span>DỊ THƯỜNG NGỮ PHÁP ({weaknesses.length})</span>
+          <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+          <span className="truncate">NGỮ PHÁP ({weaknesses.length})</span>
         </button>
       </div>
 

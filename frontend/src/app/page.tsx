@@ -209,18 +209,18 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-slate-100/70 dark:bg-[#03070f] text-slate-800 dark:text-slate-100 transition-colors duration-300">
       <Header />
 
-      <main className="flex-1 pb-16">
+      <main className="flex-1 pb-24 sm:pb-16">
         {currentTab === 'vocab' && <VocabularyTab />}
         {currentTab === 'weakness' && <WeaknessesTab />}
 
         {currentTab === 'learn' && (
-          <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+          <div className="mx-auto max-w-6xl px-3 sm:px-6 py-4 sm:py-8">
 
             {/* ── EXCLUSIVE HOLOGRAPHIC BRAND SIGNBOARD FOR TUANTAIDZ ── */}
             <TuantaidzBrandPlate />
 
             {/* ── DASHBOARD GRID: NEURAL GALAXY & DAILY MISSION ── */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start mb-6 sm:mb-8">
               <div className="lg:col-span-7">
                 <LearningGalaxy skills={skillVector} />
               </div>
@@ -310,21 +310,21 @@ export default function Home() {
             )}
 
             {/* ── LEVEL FILTER BAR ── */}
-            <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
               <div className="flex items-center gap-2">
                 <Compass className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
-                <h2 className="text-base font-black text-slate-900 dark:text-white tracking-tight font-mono">
+                <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight font-mono">
                   LỘ TRÌNH BÀI ĐỌC
-                  <span className="ml-2 text-cyan-600 dark:text-cyan-400/80 text-sm">({lessons.length})</span>
+                  <span className="ml-2 text-cyan-600 dark:text-cyan-400/80 text-xs sm:text-sm">({lessons.length})</span>
                 </h2>
               </div>
 
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto pb-1 sm:pb-0">
                 {levelOptions.map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => setSelectedLevel(opt.value)}
-                    className={`rounded-lg px-3 py-1.5 text-[11px] font-black transition-all font-mono whitespace-nowrap cursor-pointer border ${
+                    className={`rounded-lg px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-[11px] font-black transition-all font-mono whitespace-nowrap cursor-pointer border flex-shrink-0 ${
                       selectedLevel === opt.value
                         ? 'bg-cyan-500/15 border-cyan-500 text-cyan-700 dark:text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.2)]'
                         : 'bg-white/90 dark:bg-white/[0.04] border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-white/20'

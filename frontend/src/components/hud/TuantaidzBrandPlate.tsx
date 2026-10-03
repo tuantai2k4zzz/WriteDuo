@@ -29,7 +29,7 @@ export const TuantaidzBrandPlate: React.FC<{ compact?: boolean }> = ({ compact =
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
-      className="relative overflow-hidden rounded-3xl p-6 sm:p-7 mb-8 backdrop-blur-2xl bg-gradient-to-br from-cyan-50/80 via-white/90 to-blue-50/80 dark:from-[#030a1c]/95 dark:via-[#071230]/92 dark:to-[#0c1840]/95 border border-cyan-200/90 dark:border-cyan-500/45 shadow-sm dark:shadow-[0_0_60px_rgba(6,182,212,0.15)]"
+      className="relative overflow-hidden rounded-3xl p-4 sm:p-7 mb-6 sm:mb-8 backdrop-blur-2xl bg-gradient-to-br from-cyan-50/80 via-white/90 to-blue-50/80 dark:from-[#030a1c]/95 dark:via-[#071230]/92 dark:to-[#0c1840]/95 border border-cyan-200/90 dark:border-cyan-500/45 shadow-sm dark:shadow-[0_0_60px_rgba(6,182,212,0.15)]"
     >
       {/* ── TOP NEON LASER STRIP ── */}
       <div
@@ -53,21 +53,21 @@ export const TuantaidzBrandPlate: React.FC<{ compact?: boolean }> = ({ compact =
         TUANTAIDZ
       </div>
 
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
         {/* Left Info: Neon Signboard Plate */}
-        <div className="flex items-start gap-4 sm:gap-5">
+        <div className="flex items-start gap-3 sm:gap-5">
           {/* Cyber Insignia Core */}
-          <div className="relative flex h-16 w-16 sm:h-18 sm:w-18 flex-shrink-0 items-center justify-center rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-500/15 via-blue-500/10 to-amber-500/15 dark:from-cyan-500/20 dark:to-amber-500/20 border-2 border-cyan-400 dark:border-cyan-500/60 shadow-md shadow-cyan-500/20">
+          <div className="relative flex h-13 w-13 sm:h-18 sm:w-18 flex-shrink-0 items-center justify-center rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-500/15 via-blue-500/10 to-amber-500/15 dark:from-cyan-500/20 dark:to-amber-500/20 border-2 border-cyan-400 dark:border-cyan-500/60 shadow-md shadow-cyan-500/20">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 16, repeat: Infinity, ease: 'linear' }}
               className="absolute inset-1 rounded-xl border border-dashed border-cyan-400/50"
             />
             <div className="flex flex-col items-center justify-center">
-              <span className="text-2xl sm:text-3xl font-black font-mono tracking-tighter text-cyan-700 dark:text-white drop-shadow-[0_0_12px_#06b6d4]">
+              <span className="text-xl sm:text-3xl font-black font-mono tracking-tighter text-cyan-700 dark:text-white drop-shadow-[0_0_12px_#06b6d4]">
                 T
               </span>
-              <span className="text-[8px] font-mono font-bold text-amber-600 dark:text-amber-400 tracking-widest -mt-1">
+              <span className="text-[7px] sm:text-[8px] font-mono font-bold text-amber-600 dark:text-amber-400 tracking-widest -mt-0.5 sm:-mt-1">
                 DZ
               </span>
             </div>
@@ -75,24 +75,24 @@ export const TuantaidzBrandPlate: React.FC<{ compact?: boolean }> = ({ compact =
 
           <div>
             {/* System Status Ticker */}
-            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
               <span
-                className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-black font-mono tracking-wider uppercase text-cyan-700 dark:text-cyan-300 backdrop-blur-md bg-cyan-100/70 dark:bg-cyan-500/12 border border-cyan-200 dark:border-cyan-500/35"
+                className="inline-flex items-center gap-1 sm:gap-1.5 rounded-full px-2 sm:px-2.5 py-0.5 text-[9px] sm:text-[10px] font-black font-mono tracking-wider uppercase text-cyan-700 dark:text-cyan-300 backdrop-blur-md bg-cyan-100/70 dark:bg-cyan-500/12 border border-cyan-200 dark:border-cyan-500/35"
               >
-                <Radio className="h-3 w-3 text-cyan-600 dark:text-cyan-400 animate-pulse" />
-                <span>TUANTAIDZ LEARNING OS · 2026</span>
+                <Radio className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-cyan-600 dark:text-cyan-400 animate-pulse" />
+                <span>TUANTAIDZ OS</span>
               </span>
 
               <span
-                className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold font-mono text-emerald-700 dark:text-emerald-400 bg-emerald-100/70 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30"
+                className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] sm:text-[9px] font-bold font-mono text-emerald-700 dark:text-emerald-400 bg-emerald-100/70 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-ping mr-0.5" />
-                NEURAL ENGINE ONLINE
+                ONLINE
               </span>
             </div>
 
             {/* Glowing Main Title */}
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5 flex-wrap">
+            <h2 className="text-lg sm:text-2xl lg:text-4xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2 flex-wrap">
               <span>TRUNG TÂM ĐIỀU HÀNH</span>
               <span
                 className="font-mono text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-sky-600 to-amber-600 dark:from-cyan-300 dark:via-sky-400 dark:to-amber-400 filter drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]"
@@ -101,33 +101,33 @@ export const TuantaidzBrandPlate: React.FC<{ compact?: boolean }> = ({ compact =
               </span>
             </h2>
 
-            <p className="mt-1 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300/80 max-w-xl">
-              Hệ điều hành huấn luyện phản xạ tiếng Anh tự thích ứng: Phân tích cú pháp sâu · Trí nhớ dài hạn SRS · Thách thức ngôn ngữ tương tác.
+            <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300/80 max-w-xl leading-relaxed">
+              Hệ thống huấn luyện phản xạ tiếng Anh tự thích ứng: Phân tích cú pháp sâu · Trí nhớ dài hạn SRS.
             </p>
           </div>
         </div>
 
         {/* Right HUD Hardware Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 flex-shrink-0 md:max-w-xs w-full">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 flex-shrink-0 md:max-w-xs w-full">
           <div
-            className="rounded-xl p-2.5 text-center bg-white/80 dark:bg-white/[0.03] border border-cyan-200 dark:border-cyan-500/20 shadow-xs dark:shadow-none"
+            className="rounded-xl p-2 sm:p-2.5 text-center bg-white/80 dark:bg-white/[0.03] border border-cyan-200 dark:border-cyan-500/20 shadow-xs dark:shadow-none"
           >
-            <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">CHỈ HUY</div>
-            <div className="text-xs font-black font-mono text-cyan-700 dark:text-cyan-300">TUẤN TÀI DZ</div>
+            <div className="text-[9px] sm:text-[10px] font-mono text-slate-500 dark:text-slate-400">CHỈ HUY</div>
+            <div className="text-[11px] sm:text-xs font-black font-mono text-cyan-700 dark:text-cyan-300 truncate">TUẤN TÀI</div>
           </div>
 
           <div
-            className="rounded-xl p-2.5 text-center bg-white/80 dark:bg-white/[0.03] border border-amber-200 dark:border-amber-500/20 shadow-xs dark:shadow-none"
+            className="rounded-xl p-2 sm:p-2.5 text-center bg-white/80 dark:bg-white/[0.03] border border-amber-200 dark:border-amber-500/20 shadow-xs dark:shadow-none"
           >
-            <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">GIAO THỨC</div>
-            <div className="text-xs font-black font-mono text-amber-700 dark:text-amber-300">QUANTUM AI</div>
+            <div className="text-[9px] sm:text-[10px] font-mono text-slate-500 dark:text-slate-400">GIAO THỨC</div>
+            <div className="text-[11px] sm:text-xs font-black font-mono text-amber-700 dark:text-amber-300 truncate">QUANTUM</div>
           </div>
 
           <div
-            className="rounded-xl p-2.5 text-center col-span-2 sm:col-span-1 bg-white/80 dark:bg-white/[0.03] border border-emerald-200 dark:border-emerald-500/20 shadow-xs dark:shadow-none"
+            className="rounded-xl p-2 sm:p-2.5 text-center bg-white/80 dark:bg-white/[0.03] border border-emerald-200 dark:border-emerald-500/20 shadow-xs dark:shadow-none"
           >
-            <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">TRẠNG THÁI</div>
-            <div className="text-xs font-black font-mono text-emerald-700 dark:text-emerald-300">SẴN SÀNG</div>
+            <div className="text-[9px] sm:text-[10px] font-mono text-slate-500 dark:text-slate-400">TRẠNG THÁI</div>
+            <div className="text-[11px] sm:text-xs font-black font-mono text-emerald-700 dark:text-emerald-300 truncate">SẴN SÀNG</div>
           </div>
         </div>
       </div>
