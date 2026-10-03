@@ -35,6 +35,7 @@ export const WordModal: React.FC = () => {
     }
 
     setResolvedToken(activeToken);
+    speakEnglish(activeToken.text);
 
     // Check if current user already saved this word
     if (user) {
@@ -125,10 +126,18 @@ export const WordModal: React.FC = () => {
           {/* Top Bar */}
           <div className="flex items-start justify-between">
             <div>
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                   {tokenToDisplay.text}
                 </h3>
+                <button
+                  type="button"
+                  onClick={() => speakEnglish(tokenToDisplay.text)}
+                  className="p-1.5 rounded-xl bg-cyan-50 dark:bg-cyan-950/60 border border-cyan-200 dark:border-cyan-800 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-100 transition-all active:scale-95 cursor-pointer"
+                  title="Nghe phát âm từ này"
+                >
+                  <Volume2 className="h-4 w-4" />
+                </button>
                 {tokenToDisplay.cefr && (
                   <span className="rounded-md bg-emerald-100 dark:bg-emerald-950 px-2 py-0.5 text-[11px] font-black text-emerald-700 dark:text-emerald-300">
                     {tokenToDisplay.cefr}

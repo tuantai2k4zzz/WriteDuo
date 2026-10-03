@@ -53,9 +53,13 @@ export const InteractiveSentence: React.FC = () => {
   } = useLearningStore();
 
   const [isRecording, setIsRecording] = useState(false);
+  const [speechError, setSpeechError] = useState<string | null>(null);
+  const [interimTranscript, setInterimTranscript] = useState('');
   const [showHint, setShowHint] = useState(false);
   const [optimisticStatus, setOptimisticStatus] = useState<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const interimHolderRef = useRef<string>('');
 
   const sentence = sentences[currentSentenceIndex];
   const isViToEn = exerciseMode === 'vi_to_en';
@@ -64,21 +68,40 @@ export const InteractiveSentence: React.FC = () => {
   useEffect(() => {
     setShowHint(false);
     setOptimisticStatus(null);
+    setSpeechError(null);
+    setInterimTranscript('');
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort();
+      } catch {}
+      recognitionRef.current = null;
+    }
   }, [currentSentenceIndex, exerciseMode]);
 
-  // Auto-speak prompt on sentence change
+  // Safely auto-speak prompt on sentence change (without blocking subsequent gestures)
   useEffect(() => {
     if (sentence) {
-      if (isViToEn) {
-        speakVietnamese(sentence.primaryTranslationVi);
-      } else {
-        speakEnglish(sentence.textEn, 0.95);
-      }
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
+      try {
+        if (isViToEn) {
+          speakVietnamese(sentence.primaryTranslationVi);
+        } else {
+          speakEnglish(sentence.textEn, 0.95);
+        }
+      } catch {}
     }
   }, [sentence, isViToEn]);
+
+  // Clean up speech recognition on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch {}
+        recognitionRef.current = null;
+      }
+    };
+  }, []);
 
   if (!activeLesson || !sentence) return null;
 
@@ -154,47 +177,121 @@ export const InteractiveSentence: React.FC = () => {
     }
   };
 
-  // Speech Recognition (Voice Input adapted to mode)
+  // Speech Recognition (Voice Input adapted to mode & mobile)
   const toggleRecording = () => {
+    setSpeechError(null);
+
+    // If already recording, stop it cleanly
+    if (isRecording) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {}
+      }
+      setIsRecording(false);
+      setInterimTranscript('');
+      return;
+    }
+
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert(
-        'Trình duyệt của bạn chưa hỗ trợ nhận diện giọng nói (Web Speech API). Hãy thử trên Google Chrome.',
-      );
-      return;
-    }
-
-    if (isRecording) {
-      setIsRecording(false);
+      if (typeof window !== 'undefined' && !window.isSecureContext) {
+        setSpeechError(
+          'Trên điện thoại, trình duyệt yêu cầu HTTPS để bật Micro. Hãy đảm bảo bạn truy cập web qua HTTPS (hoặc localhost).',
+        );
+      } else {
+        setSpeechError(
+          'Trình duyệt này chưa hỗ trợ nhận diện giọng nói. Hãy mở trang trên Safari (iOS) hoặc Google Chrome (Android).',
+        );
+      }
       return;
     }
 
     try {
       const recognition = new SpeechRecognition();
+      recognitionRef.current = recognition;
       recognition.lang = isViToEn ? 'en-US' : 'vi-VN';
-      recognition.interimResults = false;
+      recognition.interimResults = true;
       recognition.maxAlternatives = 1;
+      recognition.continuous = false; // Most stable across mobile browsers
 
-      recognition.onstart = () => setIsRecording(true);
-      recognition.onend = () => setIsRecording(false);
-      recognition.onerror = () => setIsRecording(false);
+      recognition.onstart = () => {
+        setIsRecording(true);
+        setSpeechError(null);
+        setInterimTranscript('');
+        interimHolderRef.current = '';
+      };
 
       recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        if (transcript) {
-          setUserAnswerInput(
-            userAnswerInput ? `${userAnswerInput} ${transcript}` : transcript,
-          );
+        let finalChunk = '';
+        let interimChunk = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const item = event.results[i];
+          const text = item[0]?.transcript || '';
+          if (item.isFinal) {
+            finalChunk += text;
+          } else {
+            interimChunk += text;
+          }
+        }
+
+        if (interimChunk) {
+          setInterimTranscript(interimChunk);
+          interimHolderRef.current = interimChunk;
+        }
+
+        if (finalChunk.trim()) {
+          setUserAnswerInput((prev) => {
+            const trimmed = prev.trim();
+            const chunkTrimmed = finalChunk.trim();
+            return trimmed ? `${trimmed} ${chunkTrimmed}` : chunkTrimmed;
+          });
+          setInterimTranscript('');
+          interimHolderRef.current = '';
           playSound('click');
         }
       };
 
+      recognition.onerror = (event: any) => {
+        console.warn('Speech recognition error:', event.error);
+        setIsRecording(false);
+        setInterimTranscript('');
+
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          setSpeechError(
+            'Quyền Micro bị từ chối. Vui lòng cho phép quyền Microphone trong Cài đặt trình duyệt để nói.',
+          );
+        } else if (event.error === 'network') {
+          setSpeechError('Lỗi kết nối mạng khi nhận diện giọng nói. Vui lòng kiểm tra Internet.');
+        } else if (event.error === 'no-speech') {
+          // No speech detected, quietly finish
+        } else {
+          setSpeechError(`Lỗi micro (${event.error}). Vui lòng bấm thử lại.`);
+        }
+      };
+
+      recognition.onend = () => {
+        setIsRecording(false);
+        // If any non-final transcript remained when recognition finished, append it
+        if (interimHolderRef.current.trim()) {
+          const remaining = interimHolderRef.current.trim();
+          setUserAnswerInput((prev) => {
+            const trimmed = prev.trim();
+            return trimmed ? `${trimmed} ${remaining}` : remaining;
+          });
+          interimHolderRef.current = '';
+        }
+        setInterimTranscript('');
+      };
+
       recognition.start();
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error('Failed to start speech recognition:', err);
       setIsRecording(false);
+      setSpeechError('Không thể bật micro. Vui lòng cấp quyền micro và thử lại.');
     }
   };
 
@@ -434,7 +531,10 @@ export const InteractiveSentence: React.FC = () => {
                             <button
                               type="button"
                               key={i}
-                              onClick={() => openWordModal(token)}
+                              onClick={() => {
+                                speakEnglish(token.text);
+                                openWordModal(token);
+                              }}
                               className="interactive-token group relative rounded-xl border-b-2 border-dashed border-cyan-400/50 dark:border-cyan-400/60 px-1.5 py-0.5 text-lg sm:text-xl font-black text-slate-900 dark:text-white transition-all hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-950/40 hover:text-cyan-600 dark:hover:text-cyan-300 cursor-pointer"
                             >
                               <span>{token.text}</span>
@@ -463,7 +563,7 @@ export const InteractiveSentence: React.FC = () => {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
-                  <span>{isViToEn ? '🇬🇧 Viết lại bằng tiếng Anh' : '🇻🇳 Chạm từ để tra từ điển'}</span>
+                  <span>{isViToEn ? '🇬🇧 Viết lại bằng tiếng Anh' : '🇻🇳 Chạm từ để tra từ & nghe phát âm'}</span>
                   <span className="font-mono text-[10px] text-cyan-600 dark:text-cyan-400 font-bold">
                     {sentence.grammarAnalysis?.tense || 'Chuẩn'}
                   </span>
@@ -497,30 +597,53 @@ export const InteractiveSentence: React.FC = () => {
                     disabled={isEvaluating}
                     placeholder={
                       isViToEn
-                        ? 'Gõ câu tiếng Anh tương ứng...'
-                        : 'Dịch câu trên sang tiếng Việt tự nhiên nhất...'
+                        ? 'Gõ câu tiếng Anh tương ứng (hoặc bấm Nói để nói)...'
+                        : 'Dịch câu trên sang tiếng Việt tự nhiên nhất (hoặc bấm Nói)...'
                     }
                     rows={4}
                     className="w-full flex-1 resize-none text-base sm:text-lg font-bold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent focus:outline-none"
                   />
 
-                  {/* Voice Dictation Toolbar */}
-                  <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800/80">
-                    <button
-                      type="button"
-                      onClick={toggleRecording}
-                      className={`flex items-center gap-1.5 rounded-xl px-2.5 py-1 text-xs font-bold transition-all active:scale-95 cursor-pointer ${
-                        isRecording
-                          ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_15px_#f43f5e]'
-                          : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200'
-                      }`}
-                      title={isViToEn ? 'Nói tiếng Anh' : 'Nói tiếng Việt'}
-                    >
-                      {isRecording ? <Mic className="h-3.5 w-3.5" /> : <MicOff className="h-3.5 w-3.5" />}
-                      <span>{isRecording ? 'Đang nghe...' : `Nói (${isViToEn ? 'EN' : 'VI'})`}</span>
-                    </button>
+                  {/* Speech Error Banner if permission or network issue */}
+                  {speechError && (
+                    <div className="my-2 flex items-start justify-between gap-2 p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs">
+                      <span>⚠️ {speechError}</span>
+                      <button
+                        type="button"
+                        onClick={() => setSpeechError(null)}
+                        className="p-0.5 text-rose-500 hover:text-rose-700 cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
 
-                    <span className="text-[11px] font-mono text-slate-400">
+                  {/* Voice Dictation Toolbar */}
+                  <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800/80 gap-2">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <button
+                        type="button"
+                        onClick={toggleRecording}
+                        className={`flex items-center gap-1.5 rounded-xl px-2.5 py-1 text-xs font-bold transition-all active:scale-95 cursor-pointer flex-shrink-0 ${
+                          isRecording
+                            ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_15px_#f43f5e]'
+                            : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200'
+                        }`}
+                        title={isViToEn ? 'Nói tiếng Anh' : 'Nói tiếng Việt'}
+                      >
+                        {isRecording ? <Mic className="h-3.5 w-3.5" /> : <MicOff className="h-3.5 w-3.5" />}
+                        <span>{isRecording ? 'Đang nghe...' : `Nói (${isViToEn ? 'EN' : 'VI'})`}</span>
+                      </button>
+
+                      {/* Live Interim Transcript */}
+                      {isRecording && interimTranscript && (
+                        <span className="text-xs font-mono text-cyan-600 dark:text-cyan-400 italic truncate animate-pulse">
+                          "{interimTranscript}"
+                        </span>
+                      )}
+                    </div>
+
+                    <span className="text-[11px] font-mono text-slate-400 flex-shrink-0">
                       {userAnswerInput.trim().split(/\s+/).filter(Boolean).length} từ
                     </span>
                   </div>

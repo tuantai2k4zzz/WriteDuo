@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLearningStore } from '../lib/store';
 import { api } from '../lib/api';
 import { playSound, speakEnglish, speakVietnamese } from '../lib/audio';
@@ -8,6 +8,7 @@ import { ParagraphEvaluationResponse } from '../types';
 import {
   Volume2,
   Mic,
+  MicOff,
   Send,
   Sparkles,
   ArrowRight,
@@ -23,6 +24,7 @@ import {
   Target,
   Layers,
   Award,
+  X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -40,6 +42,22 @@ export const ParagraphChallenge: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<ParagraphEvaluationResponse | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [speechError, setSpeechError] = useState<string | null>(null);
+  const [interimTranscript, setInterimTranscript] = useState('');
+  const recognitionRef = useRef<any>(null);
+  const interimHolderRef = useRef<string>('');
+
+  // Stop recording on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch {}
+        recognitionRef.current = null;
+      }
+    };
+  }, []);
 
   if (!activeLesson || sentences.length === 0) return null;
 
@@ -66,6 +84,14 @@ export const ParagraphChallenge: React.FC = () => {
     toggleExerciseMode();
     setUserInput('');
     setResult(null);
+    setSpeechError(null);
+    setInterimTranscript('');
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort();
+      } catch {}
+      recognitionRef.current = null;
+    }
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
@@ -187,39 +213,117 @@ export const ParagraphChallenge: React.FC = () => {
   };
 
   const toggleVoiceRecording = () => {
+    setSpeechError(null);
+
+    if (isRecording) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {}
+      }
+      setIsRecording(false);
+      setInterimTranscript('');
+      return;
+    }
+
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert('Trình duyệt chưa hỗ trợ Web Speech API.');
-      return;
-    }
-
-    if (isRecording) {
-      setIsRecording(false);
+      if (typeof window !== 'undefined' && !window.isSecureContext) {
+        setSpeechError(
+          'Trên điện thoại, trình duyệt yêu cầu HTTPS để bật Micro. Hãy đảm bảo bạn truy cập web qua HTTPS (hoặc localhost).',
+        );
+      } else {
+        setSpeechError(
+          'Trình duyệt này chưa hỗ trợ nhận diện giọng nói. Hãy mở trang trên Safari (iOS) hoặc Google Chrome (Android).',
+        );
+      }
       return;
     }
 
     try {
       const recognition = new SpeechRecognition();
+      recognitionRef.current = recognition;
       recognition.lang = isViToEn ? 'en-US' : 'vi-VN';
-      recognition.interimResults = false;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+      recognition.continuous = false;
 
-      recognition.onstart = () => setIsRecording(true);
-      recognition.onend = () => setIsRecording(false);
-      recognition.onerror = () => setIsRecording(false);
+      recognition.onstart = () => {
+        setIsRecording(true);
+        setSpeechError(null);
+        setInterimTranscript('');
+        interimHolderRef.current = '';
+      };
 
       recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        if (transcript) {
-          setUserInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        let finalChunk = '';
+        let interimChunk = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const item = event.results[i];
+          const text = item[0]?.transcript || '';
+          if (item.isFinal) {
+            finalChunk += text;
+          } else {
+            interimChunk += text;
+          }
+        }
+
+        if (interimChunk) {
+          setInterimTranscript(interimChunk);
+          interimHolderRef.current = interimChunk;
+        }
+
+        if (finalChunk.trim()) {
+          setUserInput((prev) => {
+            const trimmed = prev.trim();
+            const chunkTrimmed = finalChunk.trim();
+            return trimmed ? `${trimmed} ${chunkTrimmed}` : chunkTrimmed;
+          });
+          setInterimTranscript('');
+          interimHolderRef.current = '';
           playSound('click');
         }
       };
 
+      recognition.onerror = (event: any) => {
+        console.warn('Speech recognition error in paragraph challenge:', event.error);
+        setIsRecording(false);
+        setInterimTranscript('');
+
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          setSpeechError(
+            'Quyền Micro bị từ chối. Vui lòng cho phép quyền Microphone trong Cài đặt trình duyệt để nói.',
+          );
+        } else if (event.error === 'network') {
+          setSpeechError('Lỗi kết nối mạng khi nhận diện giọng nói. Vui lòng kiểm tra Internet.');
+        } else if (event.error === 'no-speech') {
+          // No speech detected, quietly finish
+        } else {
+          setSpeechError(`Lỗi micro (${event.error}). Vui lòng bấm thử lại.`);
+        }
+      };
+
+      recognition.onend = () => {
+        setIsRecording(false);
+        if (interimHolderRef.current.trim()) {
+          const remaining = interimHolderRef.current.trim();
+          setUserInput((prev) => {
+            const trimmed = prev.trim();
+            return trimmed ? `${trimmed} ${remaining}` : remaining;
+          });
+          interimHolderRef.current = '';
+        }
+        setInterimTranscript('');
+      };
+
       recognition.start();
-    } catch {
+    } catch (err: any) {
+      console.error('Failed to start paragraph voice recognition:', err);
       setIsRecording(false);
+      setSpeechError('Không thể bật micro. Vui lòng cấp quyền micro và thử lại.');
     }
   };
 
@@ -381,22 +485,45 @@ export const ParagraphChallenge: React.FC = () => {
                   placeholder={targetPlaceholder}
                   className="w-full flex-1 resize-none bg-transparent text-base sm:text-lg leading-relaxed font-semibold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
                 />
+
+                {/* Speech Error Banner if permission or network issue */}
+                {speechError && (
+                  <div className="my-2 flex items-start justify-between gap-2 p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs">
+                    <span>⚠️ {speechError}</span>
+                    <button
+                      type="button"
+                      onClick={() => setSpeechError(null)}
+                      className="p-0.5 text-rose-500 hover:text-rose-700 cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Action Toolbar */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-4">
-                <button
-                  type="button"
-                  onClick={toggleVoiceRecording}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    isRecording
-                      ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_15px_#f43f5e]'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-cyan-500'
-                  }`}
-                >
-                  <Mic className="h-4 w-4" />
-                  <span>{isRecording ? 'Đang nghe...' : 'Nói'}</span>
-                </button>
+              <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-4 gap-3">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <button
+                    type="button"
+                    onClick={toggleVoiceRecording}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
+                      isRecording
+                        ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_15px_#f43f5e]'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-cyan-500'
+                    }`}
+                  >
+                    {isRecording ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+                    <span>{isRecording ? 'Đang nghe...' : 'Nói'}</span>
+                  </button>
+
+                  {/* Live Interim Transcript Preview */}
+                  {isRecording && interimTranscript && (
+                    <span className="text-xs font-mono text-cyan-600 dark:text-cyan-400 italic truncate animate-pulse">
+                      "{interimTranscript}"
+                    </span>
+                  )}
+                </div>
 
                 <button
                   onClick={() => handleSubmit()}

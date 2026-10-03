@@ -68,7 +68,7 @@ interface LearningState {
   // Actions
   startLesson: (lesson: Lesson, sentences: Sentence[]) => void;
   exitLesson: () => void;
-  setUserAnswerInput: (val: string) => void;
+  setUserAnswerInput: (val: string | ((prev: string) => string)) => void;
   setEvaluating: (loading: boolean) => void;
   setEvaluationResult: (res: AnswerEvaluationResponse | null) => void;
   nextSentence: () => void;
@@ -248,7 +248,10 @@ export const useLearningStore = create<LearningState>((set, get) => ({
       paragraphEvaluationResponse: null,
     }),
 
-  setUserAnswerInput: (val) => set({ userAnswerInput: val }),
+  setUserAnswerInput: (val) =>
+    set((state) => ({
+      userAnswerInput: typeof val === 'function' ? val(state.userAnswerInput) : val,
+    })),
 
   setEvaluating: (loading) => set({ isEvaluating: loading }),
 

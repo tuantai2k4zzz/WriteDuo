@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sentence, Token, GrammarComponent } from '../../types';
-import { playSound } from '../../lib/audio';
-import { Layers, Info, Lock, Unlock, Eye, EyeOff } from 'lucide-react';
+import { playSound, speakEnglish } from '../../lib/audio';
+import { Layers, Info, Lock, Unlock, Eye, EyeOff, Volume2 } from 'lucide-react';
 
 interface SentenceReactorProps {
   sentence: Sentence;
@@ -137,6 +137,7 @@ export const SentenceReactor: React.FC<SentenceReactorProps> = ({
                     handleToggleUnlock(idx, e);
                   } else {
                     playSound('click');
+                    speakEnglish(comp.text);
                     setActiveComponent(isSelected ? null : comp);
                   }
                 }}
@@ -191,6 +192,7 @@ export const SentenceReactor: React.FC<SentenceReactorProps> = ({
                     handleToggleUnlock(idx);
                   } else {
                     playSound('click');
+                    speakEnglish(token.text);
                     onTokenClick?.(token);
                   }
                 }}
@@ -233,11 +235,21 @@ export const SentenceReactor: React.FC<SentenceReactorProps> = ({
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden rounded-xl p-3.5 mt-2 bg-cyan-50/90 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-500/35 shadow-xs"
           >
-            <div className="flex items-center gap-2 mb-1">
-              <Info className="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" />
-              <span className="text-xs font-mono font-black text-cyan-700 dark:text-cyan-300">
-                VAI TRÒ: {activeComponent.role.toUpperCase()} ({activeComponent.text})
-              </span>
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <div className="flex items-center gap-2">
+                <Info className="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" />
+                <span className="text-xs font-mono font-black text-cyan-700 dark:text-cyan-300">
+                  VAI TRÒ: {activeComponent.role.toUpperCase()} ({activeComponent.text})
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => speakEnglish(activeComponent.text)}
+                className="p-1 rounded-lg bg-cyan-100 dark:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-200 transition"
+                title="Nghe phát âm cụm từ này"
+              >
+                <Volume2 className="h-3.5 w-3.5" />
+              </button>
             </div>
             <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 leading-relaxed">
               {activeComponent.noteVi ||
