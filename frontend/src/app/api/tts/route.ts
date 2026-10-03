@@ -5,8 +5,8 @@ export async function GET(req: NextRequest) {
   const text = searchParams.get('text');
   const lang = searchParams.get('lang') || 'en';
 
-  if (!text || !text.trim()) {
-    return new NextResponse('Missing text', { status: 400 });
+  if (!text || !text.trim() || text.trim().toLowerCase() === 'undefined' || text.trim().toLowerCase() === 'null') {
+    return new NextResponse('Invalid or missing text parameter', { status: 400 });
   }
 
   const cleanText = text.trim().slice(0, 200);

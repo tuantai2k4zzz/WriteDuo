@@ -35,7 +35,7 @@ export const WordModal: React.FC = () => {
     }
 
     setResolvedToken(activeToken);
-    speakEnglish(activeToken.text);
+    // Note: Pronunciation is played on token click; modal provides on-demand speaker button.
 
     // Check if current user already saved this word
     if (user) {

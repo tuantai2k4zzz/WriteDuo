@@ -82,9 +82,9 @@ export const InteractiveSentence: React.FC = () => {
   useEffect(() => {
     if (sentence) {
       try {
-        if (isViToEn) {
+        if (isViToEn && sentence.primaryTranslationVi) {
           speakVietnamese(sentence.primaryTranslationVi);
-        } else {
+        } else if (!isViToEn && sentence.textEn) {
           speakEnglish(sentence.textEn, 0.95);
         }
       } catch {}
@@ -467,8 +467,8 @@ export const InteractiveSentence: React.FC = () => {
                         type="button"
                         onClick={() =>
                           isViToEn
-                            ? speakVietnamese(sentence.primaryTranslationVi)
-                            : speakEnglish(sentence.textEn, 0.95)
+                            ? speakVietnamese(sentence.primaryTranslationVi || '')
+                            : speakEnglish(sentence.textEn || '', 0.95)
                         }
                         className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan-500 text-white shadow-sm hover:bg-cyan-400 active:scale-95 transition-all cursor-pointer"
                         title="Nghe phát âm chuẩn (1.0x)"
@@ -479,7 +479,7 @@ export const InteractiveSentence: React.FC = () => {
                       {!isViToEn && (
                         <button
                           type="button"
-                          onClick={() => speakEnglish(sentence.textEn, 0.65)}
+                          onClick={() => speakEnglish(sentence.textEn || '', 0.65)}
                           className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 active:scale-95 transition-all cursor-pointer"
                           title="Nghe tốc độ chậm (0.65x)"
                         >
@@ -532,7 +532,9 @@ export const InteractiveSentence: React.FC = () => {
                               type="button"
                               key={i}
                               onClick={() => {
-                                speakEnglish(token.text);
+                                if (token?.text) {
+                                  speakEnglish(token.text);
+                                }
                                 openWordModal(token);
                               }}
                               className="interactive-token group relative rounded-xl border-b-2 border-dashed border-cyan-400/50 dark:border-cyan-400/60 px-1.5 py-0.5 text-lg sm:text-xl font-black text-slate-900 dark:text-white transition-all hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-950/40 hover:text-cyan-600 dark:hover:text-cyan-300 cursor-pointer"

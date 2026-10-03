@@ -22,8 +22,8 @@ export class AppController {
     @Query('lang') lang: string,
     @Res() res: Response,
   ) {
-    if (!text || !text.trim()) {
-      return res.status(HttpStatus.BAD_REQUEST).send('Missing text query parameter');
+    if (!text || !text.trim() || text.trim().toLowerCase() === 'undefined' || text.trim().toLowerCase() === 'null') {
+      return res.status(HttpStatus.BAD_REQUEST).send('Invalid or missing text query parameter');
     }
 
     const cleanText = text.trim().slice(0, 200);

@@ -1,6 +1,7 @@
 // Web Speech Synthesis & Web Audio Sound Effects (Mobile & Desktop Optimized)
 
 let currentAudio: HTMLAudioElement | null = null;
+let currentSessionId = 0;
 
 // Global reference to prevent WebKit/Android GC from destroying SpeechSynthesisUtterance mid-speech
 declare global {
@@ -18,7 +19,9 @@ function isMobileBrowser(): boolean {
  * Split long text into <= 150 char chunks at natural punctuation boundaries
  */
 function chunkText(text: string, maxLen = 150): string[] {
+  if (!text || typeof text !== 'string') return [];
   const clean = text.trim();
+  if (!clean || clean.toLowerCase() === 'undefined' || clean.toLowerCase() === 'null') return [];
   if (clean.length <= maxLen) return [clean];
 
   const sentences = clean.match(/[^.!?,\n]+[.!?,\n]+|[^.!?,\n]+$/g) || [clean];
@@ -27,7 +30,7 @@ function chunkText(text: string, maxLen = 150): string[] {
 
   for (const part of sentences) {
     const trimmed = part.trim();
-    if (!trimmed) continue;
+    if (!trimmed || trimmed.toLowerCase() === 'undefined' || trimmed.toLowerCase() === 'null') continue;
     if ((current + ' ' + trimmed).trim().length <= maxLen) {
       current = (current ? current + ' ' : '') + trimmed;
     } else {
@@ -51,13 +54,15 @@ function chunkText(text: string, maxLen = 150): string[] {
     }
   }
   if (current) chunks.push(current);
-  return chunks.length > 0 ? chunks : [clean];
+  return chunks.filter((c) => c && c.trim() && c.toLowerCase() !== 'undefined' && c.toLowerCase() !== 'null');
 }
 
 /**
  * Stop any current speech synthesis or HTML5 audio playback
  */
 export function stopAllSpeech() {
+  currentSessionId++;
+
   if (typeof window === 'undefined') return;
 
   if (window.speechSynthesis) {
@@ -69,10 +74,13 @@ export function stopAllSpeech() {
 
   if (currentAudio) {
     try {
+      currentAudio.onended = null;
+      currentAudio.onerror = null;
       currentAudio.pause();
       currentAudio.currentTime = 0;
-      currentAudio = null;
+      currentAudio.src = '';
     } catch {}
+    currentAudio = null;
   }
 }
 
@@ -80,10 +88,17 @@ export function stopAllSpeech() {
  * Play high-fidelity TTS audio stream via /api/tts proxy (works on all mobile & desktop browsers)
  */
 function playStreamingTTS(text: string, lang: 'en' | 'vi', rate: number = 1.0): Promise<void> {
+  if (!text || typeof text !== 'string') return Promise.resolve();
+  const cleanText = text.trim();
+  if (!cleanText || cleanText.toLowerCase() === 'undefined' || cleanText.toLowerCase() === 'null') {
+    return Promise.resolve();
+  }
+
   return new Promise((resolve) => {
     stopAllSpeech();
+    const sessionId = currentSessionId;
 
-    const chunks = chunkText(text);
+    const chunks = chunkText(cleanText);
     if (chunks.length === 0) {
       resolve();
       return;
@@ -91,12 +106,32 @@ function playStreamingTTS(text: string, lang: 'en' | 'vi', rate: number = 1.0): 
 
     let currentIndex = 0;
     const playNext = () => {
-      if (currentIndex >= chunks.length) {
-        currentAudio = null;
+      // Abort if a newer speech session was initiated
+      if (sessionId !== currentSessionId) {
         resolve();
+        return;
       }
 
-      const chunk = chunks[currentIndex++];
+      // Finish when all chunks played
+      if (currentIndex >= chunks.length) {
+        if (currentAudio) {
+          currentAudio = null;
+        }
+        resolve();
+        return; // Essential return to avoid playing chunks[out_of_bounds] as "undefined"
+      }
+
+      const rawChunk = chunks[currentIndex++];
+      if (!rawChunk || typeof rawChunk !== 'string') {
+        playNext();
+        return;
+      }
+      const chunk = rawChunk.trim();
+      if (!chunk || chunk.toLowerCase() === 'undefined' || chunk.toLowerCase() === 'null') {
+        playNext();
+        return;
+      }
+
       // Primary: Local Next.js route handler /api/tts
       const primaryUrl = `/api/tts?text=${encodeURIComponent(chunk)}&lang=${lang}`;
       const audio = new Audio(primaryUrl);
@@ -104,10 +139,12 @@ function playStreamingTTS(text: string, lang: 'en' | 'vi', rate: number = 1.0): 
       audio.playbackRate = Math.max(0.6, Math.min(1.5, rate));
 
       audio.onended = () => {
+        if (sessionId !== currentSessionId) return;
         playNext();
       };
 
       audio.onerror = () => {
+        if (sessionId !== currentSessionId) return;
         // Fallback: try backend API /api/v1/tts if Next.js route fails
         const backendBase = (
           process.env.NEXT_PUBLIC_API_URL || 'https://write-duo-ye5x-peach.vercel.app/api/v1'
@@ -118,20 +155,35 @@ function playStreamingTTS(text: string, lang: 'en' | 'vi', rate: number = 1.0): 
         currentAudio = fallbackAudio;
         fallbackAudio.playbackRate = Math.max(0.6, Math.min(1.5, rate));
 
-        fallbackAudio.onended = () => playNext();
+        fallbackAudio.onended = () => {
+          if (sessionId !== currentSessionId) return;
+          playNext();
+        };
         fallbackAudio.onerror = () => {
+          if (sessionId !== currentSessionId) return;
           // If both streaming routes fail, fallback to local Web Speech API
-          playWebSpeechFallback(chunk, lang, rate).then(() => playNext());
+          playWebSpeechFallback(chunk, lang, rate, sessionId).then(() => {
+            if (sessionId !== currentSessionId) return;
+            playNext();
+          });
         };
 
         fallbackAudio.play().catch(() => {
-          playWebSpeechFallback(chunk, lang, rate).then(() => playNext());
+          if (sessionId !== currentSessionId) return;
+          playWebSpeechFallback(chunk, lang, rate, sessionId).then(() => {
+            if (sessionId !== currentSessionId) return;
+            playNext();
+          });
         });
       };
 
       audio.play().catch(() => {
+        if (sessionId !== currentSessionId) return;
         // Autoplay policy or error, fallback to Web Speech API
-        playWebSpeechFallback(chunk, lang, rate).then(() => playNext());
+        playWebSpeechFallback(chunk, lang, rate, sessionId).then(() => {
+          if (sessionId !== currentSessionId) return;
+          playNext();
+        });
       });
     };
 
@@ -142,9 +194,9 @@ function playStreamingTTS(text: string, lang: 'en' | 'vi', rate: number = 1.0): 
 /**
  * Local Web Speech API playback fallback
  */
-function playWebSpeechFallback(text: string, lang: 'en' | 'vi', rate: number = 1.0): Promise<void> {
+function playWebSpeechFallback(text: string, lang: 'en' | 'vi', rate: number = 1.0, sessionId?: number): Promise<void> {
   return new Promise((resolve) => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) {
+    if (typeof window === 'undefined' || !window.speechSynthesis || (sessionId !== undefined && sessionId !== currentSessionId)) {
       resolve();
       return;
     }
@@ -186,8 +238,9 @@ function playWebSpeechFallback(text: string, lang: 'en' | 'vi', rate: number = 1
  * Speak English text with mobile-first audio stream and desktop WebSpeech
  */
 export function speakEnglish(text: string, rate: number = 0.95) {
-  if (typeof window === 'undefined' || !text?.trim()) return;
+  if (typeof window === 'undefined' || !text || typeof text !== 'string') return;
   const cleanText = text.trim();
+  if (!cleanText || cleanText.toLowerCase() === 'undefined' || cleanText.toLowerCase() === 'null') return;
 
   // On mobile browsers, always use our reliable high-fidelity MP3 audio stream
   if (isMobileBrowser()) {
@@ -251,8 +304,9 @@ export function speakEnglish(text: string, rate: number = 0.95) {
  * Speak Vietnamese text (uses high-fidelity streaming TTS since native Vietnamese voice is rare on OS)
  */
 export function speakVietnamese(text: string, rate: number = 1.0) {
-  if (typeof window === 'undefined' || !text?.trim()) return;
+  if (typeof window === 'undefined' || !text || typeof text !== 'string') return;
   const cleanText = text.trim();
+  if (!cleanText || cleanText.toLowerCase() === 'undefined' || cleanText.toLowerCase() === 'null') return;
 
   // On both mobile and desktop, streaming Google TTS provides fluent, natural Vietnamese
   playStreamingTTS(cleanText, 'vi', rate);
