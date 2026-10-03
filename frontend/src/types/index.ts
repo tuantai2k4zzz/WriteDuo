@@ -205,6 +205,18 @@ export interface ParagraphMetrics {
   completeness: number;
 }
 
+export interface ParagraphSentenceResult {
+  sentenceIndex: number;
+  userText: string;
+  referenceText: string;
+  score: number;
+  status: 'correct' | 'almost_correct' | 'incorrect';
+  feedback?: string;
+  metrics?: ParagraphMetrics;
+  strengths?: string[];
+  improvements?: string[];
+}
+
 export interface ParagraphEvaluationResponse {
   score: number;
   status: 'correct' | 'almost_correct' | 'incorrect';
@@ -217,6 +229,7 @@ export interface ParagraphEvaluationResponse {
   referenceParagraph: string;
   xpBonus: number;
   mode: 'en_to_vi' | 'vi_to_en';
+  sentenceResults?: ParagraphSentenceResult[];
 }
 
 export interface UserProgressData {

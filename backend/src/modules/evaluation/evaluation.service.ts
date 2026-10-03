@@ -512,12 +512,21 @@ export class EvaluationService {
   }
 
   // --- PARAGRAPH EVALUATION (POST-LESSON BOSS CHALLENGE) ---
+  // --- PARAGRAPH EVALUATION (POST-LESSON BOSS CHALLENGE) ---
   async evaluateParagraph(dto: EvaluateParagraphDto, userId?: string) {
-    let fullEn = dto.fullEn?.trim();
-    let fullVi = dto.fullVi?.trim();
+    let targetSentences: Array<{
+      textEn: string;
+      primaryTranslationVi: string;
+      alternativeTranslations?: string[];
+    }> = [];
 
-    // If client didn't supply fullEn and fullVi directly, look up reading & sentences from DB
-    if (!fullEn || !fullVi) {
+    if (dto.sentences && dto.sentences.length > 0) {
+      targetSentences = dto.sentences.map((s) => ({
+        textEn: s.textEn.trim(),
+        primaryTranslationVi: s.primaryTranslationVi.trim(),
+        alternativeTranslations: s.alternativeTranslations || [],
+      }));
+    } else {
       try {
         const isObjectId = Types.ObjectId.isValid(dto.lessonId);
         const reading = isObjectId
@@ -525,123 +534,166 @@ export class EvaluationService {
           : await this.readingModel.findOne({ slug: dto.lessonId });
 
         if (reading) {
-          const sentences = await this.sentenceModel
+          const sList = await this.sentenceModel
             .find({ readingId: reading._id })
             .sort({ paragraphIndex: 1, sentenceIndex: 1 });
 
-          if (!fullEn && sentences.length > 0) {
-            fullEn = sentences.map((s) => s.textEn.trim()).join(' ');
-          }
-          if (!fullVi && sentences.length > 0) {
-            fullVi = sentences.map((s) => s.primaryTranslationVi.trim()).join(' ');
-          }
+          targetSentences = sList.map((s) => ({
+            textEn: s.textEn.trim(),
+            primaryTranslationVi: s.primaryTranslationVi.trim(),
+            alternativeTranslations: s.alternativeTranslations || [],
+          }));
         }
       } catch (err: any) {
-        this.logger.warn(`Could not load reading from DB for paragraph eval: ${err.message}`);
+        this.logger.warn(`Could not load sentences from DB: ${err.message}`);
+      }
+    }
+
+    let fullEn = dto.fullEn?.trim();
+    let fullVi = dto.fullVi?.trim();
+
+    if (targetSentences.length > 0) {
+      if (!fullEn) fullEn = targetSentences.map((s) => s.textEn).join(' ');
+      if (!fullVi) fullVi = targetSentences.map((s) => s.primaryTranslationVi).join(' ');
+    } else {
+      // Fallback if no individual sentences provided
+      if (!fullEn) fullEn = dto.userParagraph.trim() || 'This is a practice reading lesson.';
+      if (!fullVi) fullVi = dto.userParagraph.trim() || 'Đây là một bài học đọc luyện tập.';
+
+      // Split fullEn and fullVi into sentences
+      const enSplits = fullEn.split(/(?<=[.!?])\s+/).filter(Boolean);
+      const viSplits = fullVi.split(/(?<=[.!?])\s+/).filter(Boolean);
+      const maxLen = Math.max(enSplits.length, viSplits.length, 1);
+
+      for (let i = 0; i < maxLen; i++) {
+        targetSentences.push({
+          textEn: enSplits[i] || enSplits[enSplits.length - 1] || fullEn,
+          primaryTranslationVi: viSplits[i] || viSplits[viSplits.length - 1] || fullVi,
+        });
       }
     }
 
     const mode = dto.mode || 'en_to_vi';
     const userTrimmed = dto.userParagraph.trim();
-
-    // Safe fallbacks to prevent crash if lesson is virtual
-    if (!fullEn) fullEn = userTrimmed || 'This is a practice reading lesson.';
-    if (!fullVi) fullVi = userTrimmed || 'Đây là một bài học đọc luyện tập.';
-
-    const target = mode === 'vi_to_en' ? fullEn : fullVi;
+    const targetParagraph = mode === 'vi_to_en' ? fullEn : fullVi;
     const promptText = mode === 'vi_to_en' ? fullVi : fullEn;
 
-    const userNorm = this.norm(userTrimmed);
-    const targetNorm = this.norm(target);
+    // Split user paragraph into sentences
+    const userRawSentences = userTrimmed
+      .split(/(?<=[.!?\n])\s+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
 
-    // 1. Exact match check (Instant 100% Evaluation)
-    if (userNorm === targetNorm) {
-      if (userId && Types.ObjectId.isValid(userId)) {
-        this.awardParagraphXpAsync(userId);
+    // Align user sentences to target sentences
+    const alignedUserParts: string[] = [];
+    const N = targetSentences.length;
+
+    if (userRawSentences.length === N) {
+      for (let i = 0; i < N; i++) {
+        alignedUserParts.push(userRawSentences[i]);
       }
-
-      return {
-        score: 100,
-        status: 'correct' as const,
-        overview: 'Tuyệt đỉnh xuất sắc! Bạn đã dịch trọn vẹn toàn bộ đoạn văn hoàn toàn chuẩn xác 100%.',
-        metrics: {
-          meaning: 100,
-          grammar: 100,
-          vocabulary: 100,
-          naturalness: 100,
-          completeness: 100,
-        },
-        strengths: [
-          'Nắm trọn vẹn thông điệp toàn bài đọc',
-          'Dịch chính xác 100% ngữ pháp và cấu trúc các câu',
-          'Văn phong tự nhiên, đúng thì và đúng ngữ cảnh',
-        ],
-        improvements: [],
-        promptText,
-        referenceParagraph: target,
-        xpBonus: 50,
-        mode,
-      };
-    }
-
-    // 2. Semantic Analysis across the whole paragraph (matching single sentence evaluation logic)
-    const analysis = SemanticAnalyzer.analyzeTokens(userTrimmed, target);
-    const scores = analysis.scores;
-
-    let overallScore = 75;
-    let status: 'correct' | 'almost_correct' | 'incorrect' = 'almost_correct';
-    let overview = '';
-    const strengths: string[] = [];
-    const improvements: string[] = [];
-
-    if (analysis.overallStatus === 'EXACT_MATCH') {
-      overallScore = 100;
-      status = 'correct';
-      overview = 'Xuất sắc! Bạn đã dịch trọn vẹn đoạn văn khớp hoàn hảo 100%.';
-      strengths.push('Dịch chính xác hoàn hảo 100% toàn bộ đoạn văn');
-      strengths.push('Văn phong tự nhiên, đúng thì và đúng ngữ pháp');
-    } else if (analysis.overallStatus === 'SEMANTICALLY_CORRECT') {
-      overallScore = Math.max(88, Math.min(98, Math.round(scores.semanticMeaning)));
-      status = 'correct';
-      overview = 'Xuất sắc! Ý nghĩa toàn đoạn văn hoàn toàn chuẩn xác và diễn đạt tự nhiên.';
-      strengths.push('Nắm trọn vẹn thông điệp và chủ đề bài đọc');
-      if (analysis.alternatives.length > 0) {
-        strengths.push('Sử dụng cách diễn đạt tương đương rất tự nhiên');
+    } else if (userRawSentences.length > N) {
+      // User has more sentences than target: partition or merge
+      const ratio = userRawSentences.length / N;
+      for (let i = 0; i < N; i++) {
+        const start = Math.floor(i * ratio);
+        const end = i === N - 1 ? userRawSentences.length : Math.floor((i + 1) * ratio);
+        alignedUserParts.push(userRawSentences.slice(start, end).join(' '));
       }
-    } else if (analysis.overallStatus === 'PARTIALLY_CORRECT') {
-      overallScore = Math.max(
-        65,
-        Math.min(
-          84,
-          Math.round(scores.semanticMeaning * 0.6 + scores.grammarAccuracy * 0.25 + scores.completeness * 0.15),
-        ),
+    } else if (userRawSentences.length > 0) {
+      // User has fewer sentences (e.g. 1 long paragraph without period, or missed a sentence)
+      // Partition user text by word tokens proportionally to target sentences
+      const userWords = userTrimmed.split(/\s+/).filter(Boolean);
+      const targetLengths = targetSentences.map(
+        (s) => (mode === 'vi_to_en' ? s.textEn : s.primaryTranslationVi).split(/\s+/).length,
       );
-      status = overallScore >= 80 ? 'correct' : 'almost_correct';
-      overview = 'Khá tốt! Bạn đã nắm được phần lớn ý nghĩa của toàn bài đọc.';
-      if (scores.semanticMeaning >= 70) strengths.push('Truyền đạt được ý nghĩa cốt lõi của đoạn văn');
-      if (scores.completeness >= 80) strengths.push('Dịch đầy đủ không bỏ sót câu nào');
-      improvements.push('Cần chú ý liên kết thì và giới từ giữa các câu');
+      const totalTargetWords = targetLengths.reduce((a, b) => a + b, 0) || 1;
+
+      let currentWordIdx = 0;
+      for (let i = 0; i < N; i++) {
+        const proportion = targetLengths[i] / totalTargetWords;
+        const count = i === N - 1 ? userWords.length - currentWordIdx : Math.round(proportion * userWords.length);
+        const chunk = userWords.slice(currentWordIdx, currentWordIdx + Math.max(1, count)).join(' ');
+        alignedUserParts.push(chunk);
+        currentWordIdx += Math.max(1, count);
+      }
     } else {
-      overallScore = Math.max(
-        25,
-        Math.min(64, Math.round(scores.semanticMeaning * 0.5 + scores.completeness * 0.3)),
-      );
-      status = 'incorrect';
-      overview = 'Cần luyện tập thêm để kết nối các câu trong đoạn văn mượt mà hơn.';
-      improvements.push('Cần dịch bám sát nội dung đoạn văn hơn');
-      if (analysis.missingElements.length > 0) {
-        improvements.push(
-          `Chú ý các phần nội dung chưa hoàn chỉnh: ${analysis.missingElements.slice(0, 2).map((m) => m.word).join(', ')}`,
-        );
+      for (let i = 0; i < N; i++) {
+        alignedUserParts.push('');
       }
     }
 
-    if (strengths.length === 0) {
-      strengths.push('Đã nỗ lực hoàn thành bản dịch toàn bài');
+    // Evaluate each individual sentence using the EXACT single sentence checking logic!
+    const sentenceResults: Array<{
+      sentenceIndex: number;
+      score: number;
+      status: 'correct' | 'almost_correct' | 'incorrect';
+      userText: string;
+      referenceText: string;
+      feedback: string;
+      metrics: { meaning: number; grammar: number; vocabulary: number; naturalness: number; completeness: number };
+      strengths: string[];
+      improvements: string[];
+    }> = [];
+
+    for (let i = 0; i < N; i++) {
+      const targetUnit = targetSentences[i];
+      const userUnit = alignedUserParts[i] || '';
+      const refText = mode === 'vi_to_en' ? targetUnit.textEn : targetUnit.primaryTranslationVi;
+
+      const evalUnit = await this.evaluateSingleSentenceCore(userUnit, targetUnit, mode);
+      sentenceResults.push({
+        sentenceIndex: i + 1,
+        score: evalUnit.score,
+        status: evalUnit.status,
+        userText: userUnit,
+        referenceText: refText,
+        feedback: evalUnit.overview,
+        metrics: evalUnit.metrics,
+        strengths: evalUnit.strengths,
+        improvements: evalUnit.improvements,
+      });
     }
-    if (improvements.length === 0 && overallScore < 95) {
-      improvements.push('Văn phong có thể trau chuốt thêm để đạt độ lưu loát cao hơn');
+
+    // Aggregate individual sentence results!
+    const totalScore = sentenceResults.reduce((acc, r) => acc + r.score, 0);
+    const overallScore = Math.round(totalScore / N);
+
+    const overallMeaning = Math.round(sentenceResults.reduce((acc, r) => acc + r.metrics.meaning, 0) / N);
+    const overallGrammar = Math.round(sentenceResults.reduce((acc, r) => acc + r.metrics.grammar, 0) / N);
+    const overallVocab = Math.round(sentenceResults.reduce((acc, r) => acc + r.metrics.vocabulary, 0) / N);
+    const overallNaturalness = Math.round(sentenceResults.reduce((acc, r) => acc + r.metrics.naturalness, 0) / N);
+    const overallCompleteness = Math.round(sentenceResults.reduce((acc, r) => acc + r.metrics.completeness, 0) / N);
+
+    const aggregatedStrengths: string[] = [];
+    const aggregatedImprovements: string[] = [];
+
+    sentenceResults.forEach((r) => {
+      if (r.score >= 80) {
+        aggregatedStrengths.push(`Câu ${r.sentenceIndex}: ${r.feedback}`);
+      } else {
+        aggregatedImprovements.push(`Câu ${r.sentenceIndex}: ${r.improvements[0] || r.feedback}`);
+      }
+    });
+
+    if (aggregatedStrengths.length === 0) {
+      aggregatedStrengths.push('Đã nỗ lực dịch trọn vẹn toàn bộ đoạn văn');
     }
+    if (aggregatedImprovements.length === 0 && overallScore < 95) {
+      aggregatedImprovements.push('Văn phong có thể trau chuốt thêm để đạt độ tự nhiên cao hơn');
+    }
+
+    const overallStatus: 'correct' | 'almost_correct' | 'incorrect' =
+      overallScore >= 80 ? 'correct' : overallScore >= 50 ? 'almost_correct' : 'incorrect';
+
+    const overview =
+      overallScore >= 95
+        ? 'Tuyệt đỉnh! Toàn bộ các câu trong bài đều được dịch xuất sắc và chuẩn xác 100%.'
+        : overallScore >= 80
+        ? `Rất tốt! Bạn đạt ${overallScore}/100 điểm tổng kết toàn bài đọc.`
+        : overallScore >= 50
+        ? `Khá ổn! Đạt ${overallScore}/100 điểm, hãy xem chi tiết từng câu bên dưới để cải thiện.`
+        : `Cần luyện thêm! Đạt ${overallScore}/100 điểm, hãy chú ý đối chiếu từng câu với bài mẫu.`;
 
     // Award 50 XP bonus asynchronously if user is logged in
     if (userId && Types.ObjectId.isValid(userId)) {
@@ -650,21 +702,131 @@ export class EvaluationService {
 
     return {
       score: overallScore,
-      status,
+      status: overallStatus,
       overview,
       metrics: {
-        meaning: scores.semanticMeaning,
-        grammar: scores.grammarAccuracy,
-        vocabulary: scores.wordAccuracy,
-        naturalness: scores.naturalness,
-        completeness: scores.completeness,
+        meaning: overallMeaning,
+        grammar: overallGrammar,
+        vocabulary: overallVocab,
+        naturalness: overallNaturalness,
+        completeness: overallCompleteness,
       },
-      strengths,
-      improvements,
+      strengths: aggregatedStrengths,
+      improvements: aggregatedImprovements,
       promptText,
-      referenceParagraph: target,
+      referenceParagraph: targetParagraph,
       xpBonus: 50,
       mode,
+      sentenceResults: sentenceResults.map((r) => ({
+        sentenceIndex: r.sentenceIndex,
+        userText: r.userText,
+        referenceText: r.referenceText,
+        score: r.score,
+        status: r.status,
+        feedback: r.feedback,
+        metrics: r.metrics,
+        strengths: r.strengths,
+        improvements: r.improvements,
+      })),
+    };
+  }
+
+  private async evaluateSingleSentenceCore(
+    userText: string,
+    sentence: {
+      textEn: string;
+      primaryTranslationVi: string;
+      alternativeTranslations?: string[];
+      grammarAnalysis?: any;
+      tokens?: any;
+    },
+    mode: 'en_to_vi' | 'vi_to_en',
+  ): Promise<{
+    score: number;
+    status: 'correct' | 'almost_correct' | 'incorrect';
+    metrics: { meaning: number; grammar: number; vocabulary: number; naturalness: number; completeness: number };
+    overview: string;
+    strengths: string[];
+    improvements: string[];
+  }> {
+    const userTrimmed = userText.trim();
+    const evalInput: EvaluationInput = {
+      sentenceEn: sentence.textEn,
+      userTranslationVi: userTrimmed,
+      referenceTranslationVi: sentence.primaryTranslationVi,
+      alternativeTranslations: sentence.alternativeTranslations,
+      grammarAnalysis: sentence.grammarAnalysis,
+      tokens: sentence.tokens,
+      mode,
+    };
+
+    let evalResult: EvaluationResult;
+    try {
+      evalResult = await this.mockProvider.evaluateTranslation(evalInput);
+    } catch {
+      // Local semantic analyzer fallback
+      const target = mode === 'vi_to_en' ? sentence.textEn : sentence.primaryTranslationVi;
+      const analysis = SemanticAnalyzer.analyzeTokens(userTrimmed, target);
+      evalResult = {
+        score: analysis.overallStatus === 'EXACT_MATCH' ? 100 : analysis.overallStatus === 'SEMANTICALLY_CORRECT' ? 95 : 70,
+        status: analysis.overallStatus === 'EXACT_MATCH' || analysis.overallStatus === 'SEMANTICALLY_CORRECT' ? 'correct' : 'almost_correct',
+        semantic_similarity: 0.9,
+        overview: 'Đã phân tích ngữ nghĩa câu dịch.',
+        explanation: 'Khớp ngữ nghĩa cốt lõi.',
+        whatYouGotRight: ['Hiểu được ý chính câu'],
+        specificMistakes: [],
+        missing_information: [],
+        extra_information: [],
+        semanticAnalysis: analysis,
+      };
+    }
+
+    const scores = evalResult.semanticAnalysis?.scores;
+    const meaning = scores?.semanticMeaning ?? evalResult.score;
+    const grammar = scores?.grammarAccuracy ?? evalResult.score;
+    const vocab = scores?.wordAccuracy ?? evalResult.score;
+    const naturalness = scores?.naturalness ?? evalResult.score;
+    const completeness = scores?.completeness ?? evalResult.score;
+
+    const strengths: string[] =
+      evalResult.whatYouGotRight && evalResult.whatYouGotRight.length > 0
+        ? evalResult.whatYouGotRight
+        : [evalResult.overview || 'Dịch đúng cấu trúc và ý nghĩa'];
+
+    const improvements: string[] = [];
+    if (evalResult.specificMistakes && evalResult.specificMistakes.length > 0) {
+      evalResult.specificMistakes.forEach((m) => {
+        if (m.whyIncorrect) improvements.push(m.whyIncorrect);
+        else if (m.howToFix) improvements.push(m.howToFix);
+      });
+    }
+    if (evalResult.missing_information && evalResult.missing_information.length > 0) {
+      improvements.push(...evalResult.missing_information);
+    }
+    if (improvements.length === 0 && evalResult.score < 90) {
+      improvements.push('Cần chú ý trau chuốt cấu trúc từ vựng để câu tự nhiên hơn');
+    }
+
+    const normStatus: 'correct' | 'almost_correct' | 'incorrect' =
+      evalResult.status === 'correct'
+        ? 'correct'
+        : evalResult.status === 'almost_correct'
+        ? 'almost_correct'
+        : 'incorrect';
+
+    return {
+      score: evalResult.score,
+      status: normStatus,
+      metrics: {
+        meaning: Math.round(meaning),
+        grammar: Math.round(grammar),
+        vocabulary: Math.round(vocab),
+        naturalness: Math.round(naturalness),
+        completeness: Math.round(completeness),
+      },
+      overview: evalResult.overview || evalResult.explanation || 'Đã phân tích câu dịch.',
+      strengths,
+      improvements,
     };
   }
 

@@ -158,12 +158,18 @@ export const api = {
     mode?: 'en_to_vi' | 'vi_to_en',
     fullEn?: string,
     fullVi?: string,
+    sentences?: Array<{
+      _id?: string;
+      textEn: string;
+      primaryTranslationVi: string;
+      alternativeTranslations?: string[];
+    }>,
   ): Promise<import('../types').ParagraphEvaluationResponse> {
     return fetchJson<import('../types').ParagraphEvaluationResponse>(
       `${API_BASE_URL}/answers/evaluate-paragraph`,
       {
         method: 'POST',
-        body: JSON.stringify({ lessonId, userParagraph, mode, fullEn, fullVi }),
+        body: JSON.stringify({ lessonId, userParagraph, mode, fullEn, fullVi, sentences }),
       }
     );
   },

@@ -93,8 +93,8 @@ export interface EvaluationResult {
   explanation: string; // Lời nhận xét ngắn gọn
   whatYouGotRight: string[]; // Những điểm học viên đã hiểu đúng
   specificMistakes: SpecificMistake[]; // Chỉ ra lỗi sai cụ thể
-  grammarInsight: GrammarInsight; // Giải thích ngữ pháp liên quan trực tiếp
-  completeSentenceMemorize: CompleteSentenceMemorize; // Câu hoàn chỉnh cần ghi nhớ
+  grammarInsight?: GrammarInsight; // Giải thích ngữ pháp liên quan trực tiếp
+  completeSentenceMemorize?: CompleteSentenceMemorize; // Câu hoàn chỉnh cần ghi nhớ
   missing_information: string[];
   extra_information: string[];
   isCachedAlternative?: boolean;

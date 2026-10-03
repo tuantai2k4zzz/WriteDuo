@@ -81,6 +81,7 @@ export const ParagraphChallenge: React.FC = () => {
         exerciseMode,
         fullEn,
         fullVi,
+        sentences,
       );
       setResult(res);
       if (res.score >= 80) {
@@ -90,20 +91,60 @@ export const ParagraphChallenge: React.FC = () => {
       }
     } catch (err: any) {
       console.warn('API paragraph evaluation failed, using local engine:', err);
-      // Client-side fallback matching the same evaluation logic
-      const target = isViToEn ? fullEn : fullVi;
-      const cleanUser = userInput.trim().toLowerCase().replace(/[.,!?;:()"'`]/g, '');
-      const cleanTarget = target.trim().toLowerCase().replace(/[.,!?;:()"'`]/g, '');
+      // Client-side sentence-by-sentence evaluation fallback
+      const N = sentences.length;
+      const userSentences = userInput
+        .trim()
+        .split(/(?<=[.!?\n])\s+/)
+        .map((s) => s.trim())
+        .filter(Boolean);
 
-      const userTokens = cleanUser.split(/\s+/).filter(Boolean);
-      const targetTokens = cleanTarget.split(/\s+/).filter(Boolean);
+      const sentenceResults: Array<{
+        sentenceIndex: number;
+        userText: string;
+        referenceText: string;
+        score: number;
+        status: 'correct' | 'almost_correct' | 'incorrect';
+        feedback?: string;
+      }> = [];
 
-      let matches = 0;
-      for (const t of targetTokens) {
-        if (userTokens.includes(t)) matches++;
+      let totalScore = 0;
+      for (let i = 0; i < N; i++) {
+        const s = sentences[i];
+        const refText = isViToEn ? s.textEn.trim() : s.primaryTranslationVi.trim();
+        const userText = userSentences[i] || (userSentences.length === 1 && i === 0 ? userSentences[0] : '');
+
+        const cleanU = userText.toLowerCase().replace(/[.,!?;:()"'`]/g, '');
+        const cleanR = refText.toLowerCase().replace(/[.,!?;:()"'`]/g, '');
+
+        let sentScore = 70;
+        if (cleanU && cleanU === cleanR) {
+          sentScore = 100;
+        } else if (!cleanU) {
+          sentScore = 20;
+        } else {
+          const uWords = cleanU.split(/\s+/).filter(Boolean);
+          const rWords = cleanR.split(/\s+/).filter(Boolean);
+          let match = 0;
+          for (const w of rWords) {
+            if (uWords.includes(w)) match++;
+          }
+          sentScore = Math.min(100, Math.max(30, Math.round((match / Math.max(rWords.length, 1)) * 100)));
+        }
+
+        totalScore += sentScore;
+        sentenceResults.push({
+          sentenceIndex: i + 1,
+          userText,
+          referenceText: refText,
+          score: sentScore,
+          status: sentScore >= 80 ? 'correct' : sentScore >= 50 ? 'almost_correct' : 'incorrect',
+          feedback: sentScore >= 80 ? 'Dịch chính xác và tự nhiên' : 'Cần đối chiếu từ vựng và thì của câu này',
+        });
       }
-      const ratio = matches / Math.max(targetTokens.length, 1);
-      const score = cleanUser === cleanTarget ? 100 : Math.min(100, Math.max(30, Math.round(ratio * 100)));
+
+      const score = Math.round(totalScore / Math.max(N, 1));
+      const target = isViToEn ? fullEn : fullVi;
 
       const fallbackRes: ParagraphEvaluationResponse = {
         score,
@@ -117,14 +158,15 @@ export const ParagraphChallenge: React.FC = () => {
           grammar: Math.max(40, Math.min(100, Math.round(score * 0.95))),
           vocabulary: score,
           naturalness: Math.max(50, Math.min(100, Math.round(score * 0.9))),
-          completeness: Math.min(100, Math.round((userTokens.length / Math.max(targetTokens.length, 1)) * 100)),
+          completeness: Math.min(100, Math.round(score)),
         },
-        strengths: ['Nắm trọn vẹn thông điệp toàn bài đọc', 'Dịch đầy đủ các câu trong đoạn văn'],
-        improvements: score < 80 ? ['Chú ý các liên từ nối và cách dùng thì giữa các câu'] : [],
+        strengths: sentenceResults.filter((r) => r.score >= 80).map((r) => `Câu ${r.sentenceIndex}: ${r.feedback}`),
+        improvements: sentenceResults.filter((r) => r.score < 80).map((r) => `Câu ${r.sentenceIndex}: ${r.feedback}`),
         promptText,
         referenceParagraph: target,
         xpBonus: 50,
         mode: exerciseMode,
+        sentenceResults,
       };
       setResult(fallbackRes);
       if (score >= 80) {
@@ -501,6 +543,80 @@ export const ParagraphChallenge: React.FC = () => {
                 </ul>
               </div>
             </div>
+
+            {/* ── SENTENCE-BY-SENTENCE BREAKDOWN (KẾT QUẢ TỪNG CÂU) ── */}
+            {result.sentenceResults && result.sentenceResults.length > 0 && (
+              <div className="space-y-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-cyan-400 flex items-center gap-1.5 font-mono">
+                    <CheckCircle2 className="h-4 w-4 text-cyan-500" />
+                    <span>CHI TIẾT ĐÁNH GIÁ TỪNG CÂU ({result.sentenceResults.length} CÂU)</span>
+                  </h4>
+                  <span className="text-[11px] text-slate-400 font-mono">
+                    Chấm theo logic kiểm tra từng câu riêng lẻ
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {result.sentenceResults.map((sent) => (
+                    <div
+                      key={sent.sentenceIndex}
+                      className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 space-y-2.5 transition-all hover:border-cyan-500/40"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-0.5 rounded-lg text-xs font-black font-mono bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+                            Câu {sent.sentenceIndex}
+                          </span>
+                          <span
+                            className={`px-2.5 py-0.5 rounded-lg text-xs font-black font-mono ${
+                              sent.score >= 80
+                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                : sent.score >= 50
+                                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                                : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+                            }`}
+                          >
+                            {sent.score}% · {sent.status === 'correct' ? 'Chuẩn xác' : sent.status === 'almost_correct' ? 'Khá tốt' : 'Cần sửa'}
+                          </span>
+                        </div>
+
+                        <button
+                          onClick={() => (isViToEn ? speakEnglish(sent.referenceText) : speakVietnamese(sent.referenceText))}
+                          className="flex items-center gap-1 text-[11px] font-bold text-cyan-600 dark:text-cyan-400 hover:underline p-1 cursor-pointer"
+                          title="Nghe câu mẫu"
+                        >
+                          <Volume2 className="h-3.5 w-3.5" />
+                          <span className="hidden sm:inline">Nghe mẫu</span>
+                        </button>
+                      </div>
+
+                      <div className="space-y-1.5 text-xs sm:text-sm">
+                        <div className="flex items-start gap-2">
+                          <span className="text-slate-400 font-mono text-[11px] shrink-0 w-16">Bạn dịch:</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">
+                            {sent.userText ? `"${sent.userText}"` : <span className="text-rose-500 italic">(Chưa dịch câu này)</span>}
+                          </span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-cyan-500 font-mono text-[11px] shrink-0 w-16">Đáp án:</span>
+                          <span className="font-semibold text-cyan-700 dark:text-cyan-300">
+                            "{sent.referenceText}"
+                          </span>
+                        </div>
+                      </div>
+
+                      {sent.feedback && (
+                        <div className="text-xs text-slate-600 dark:text-slate-300 bg-white/60 dark:bg-slate-900/50 p-2.5 rounded-xl border border-slate-200/50 dark:border-slate-800 flex items-start gap-1.5">
+                          <span className="text-cyan-500 font-bold">ℹ</span>
+                          <span>{sent.feedback}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Reference Complete Passage */}
             <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">

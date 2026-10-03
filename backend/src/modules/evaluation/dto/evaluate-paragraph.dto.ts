@@ -24,4 +24,12 @@ export class EvaluateParagraphDto {
   @IsOptional()
   @IsString()
   fullVi?: string;
+
+  @IsOptional()
+  sentences?: Array<{
+    _id?: string;
+    textEn: string;
+    primaryTranslationVi: string;
+    alternativeTranslations?: string[];
+  }>;
 }
