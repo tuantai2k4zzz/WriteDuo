@@ -5,17 +5,49 @@ import {
   UserProgressData,
   GrammarWeakness,
   SavedWord,
+  AuthUser,
+  WeakVocabularyItem,
 } from '../types';
+
 const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://write-duo-ye5x-peach.vercel.app/api/v1';
 export const API_BASE_URL = RAW_API_URL.replace(/\/+$/, '');
 
+const TOKEN_KEY = 'writeduo_auth_token';
+
+export function getStoredToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return localStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setStoredToken(token: string | null): void {
+  if (typeof window === 'undefined') return;
+  try {
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+    } else {
+      localStorage.removeItem(TOKEN_KEY);
+    }
+  } catch {}
+}
+
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
+  const token = getStoredToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options?.headers as Record<string, string>),
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(url, {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
+    headers,
   });
 
   if (!res.ok) {
@@ -26,14 +58,59 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
     } catch {
       // ignore json parse error
     }
+    if (res.status === 401 && typeof window !== 'undefined') {
+      // If token is invalid or expired, clear it
+      setStoredToken(null);
+    }
     throw new Error(errorMsg);
   }
 
   const json = await res.json();
-  return json.data;
+  return json.data !== undefined ? json.data : json;
 }
 
 export const api = {
+  // Auth
+  async login(email: string, password: string): Promise<{ success: boolean; token: string; user: AuthUser }> {
+    const data = await fetchJson<{ success: boolean; token: string; user: AuthUser }>(
+      `${API_BASE_URL}/auth/login`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      }
+    );
+    if (data.token) {
+      setStoredToken(data.token);
+    }
+    return data;
+  },
+
+  async register(email: string, password: string, name: string): Promise<{ success: boolean; token: string; user: AuthUser }> {
+    const data = await fetchJson<{ success: boolean; token: string; user: AuthUser }>(
+      `${API_BASE_URL}/auth/register`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ email, password, name }),
+      }
+    );
+    if (data.token) {
+      setStoredToken(data.token);
+    }
+    return data;
+  },
+
+  async getMe(): Promise<AuthUser> {
+    return fetchJson<AuthUser>(`${API_BASE_URL}/users/me`);
+  },
+
+  async getStats(): Promise<AuthUser> {
+    return fetchJson<AuthUser>(`${API_BASE_URL}/users/me`);
+  },
+
+  logout(): void {
+    setStoredToken(null);
+  },
+
   // Lessons
   async getLessons(level?: string): Promise<Lesson[]> {
     const url = level && level !== 'ALL'
@@ -94,6 +171,24 @@ export const api = {
     return fetchJson<UserProgressData>(`${API_BASE_URL}/progress`);
   },
 
+  async completeLesson(lessonId: string, score: number = 100): Promise<any> {
+    return fetchJson(`${API_BASE_URL}/progress/complete`, {
+      method: 'POST',
+      body: JSON.stringify({ lessonId, score }),
+    });
+  },
+
+  async getLessonProgress(lessonId: string): Promise<{
+    lessonId: string;
+    completed: boolean;
+    progress: number;
+    score: number;
+    attempts: number;
+    lastAttemptAt: string | null;
+  }> {
+    return fetchJson(`${API_BASE_URL}/progress/${encodeURIComponent(lessonId)}`);
+  },
+
   async getGrammarWeaknesses(): Promise<GrammarWeakness[]> {
     return fetchJson<GrammarWeakness[]>(`${API_BASE_URL}/grammar/weaknesses`);
   },
@@ -104,7 +199,16 @@ export const api = {
     if (query) params.append('q', query);
     if (cefr && cefr !== 'ALL') params.append('cefr', cefr);
     const queryString = params.toString() ? `?${params.toString()}` : '';
-    return fetchJson<{ items: SavedWord[]; totalCount: number }>(`${API_BASE_URL}/vocabulary${queryString}`);
+    return fetchJson<{ items: SavedWord[]; totalCount: number }>(`${API_BASE_URL}/vocabulary/saved${queryString}`);
+  },
+
+  async getWeakVocabulary(): Promise<WeakVocabularyItem[]> {
+    return fetchJson<WeakVocabularyItem[]>(`${API_BASE_URL}/vocabulary/weak`);
+  },
+
+  async checkWordSaved(word: string): Promise<{ isSaved: boolean; id: string | null }> {
+    const params = new URLSearchParams({ word });
+    return fetchJson<{ isSaved: boolean; id: string | null }>(`${API_BASE_URL}/vocabulary/check?${params.toString()}`);
   },
 
   async saveVocabulary(data: {
@@ -114,8 +218,9 @@ export const api = {
     ipa?: string;
     cefr?: string;
     exampleEn?: string;
+    exampleVi?: string;
   }): Promise<SavedWord> {
-    return fetchJson<SavedWord>(`${API_BASE_URL}/vocabulary/save`, {
+    return fetchJson<SavedWord>(`${API_BASE_URL}/vocabulary/saved`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -129,7 +234,7 @@ export const api = {
 
   async deleteWord(id: string): Promise<{ success: boolean; deletedId: string }> {
     return fetchJson<{ success: boolean; deletedId: string }>(
-      `${API_BASE_URL}/vocabulary/${encodeURIComponent(id)}`,
+      `${API_BASE_URL}/vocabulary/saved/${encodeURIComponent(id)}`,
       { method: 'DELETE' }
     );
   },

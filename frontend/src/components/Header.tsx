@@ -3,13 +3,16 @@
 import React from 'react';
 import { useLearningStore } from '../lib/store';
 import { playSound } from '../lib/audio';
-import { Flame, Zap, BookOpen, BookmarkCheck, Target, Sun, Moon, Shield } from 'lucide-react';
+import { Flame, Zap, BookOpen, BookmarkCheck, Target, Sun, Moon, LogIn, LogOut, UserCheck } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const {
     currentTab,
     setCurrentTab,
     userProgress,
+    user,
+    openAuthModal,
+    logout,
     activeLesson,
     themeMode,
     toggleThemeMode,
@@ -19,8 +22,8 @@ export const Header: React.FC = () => {
     return null;
   }
 
-  const xp = userProgress?.xp ?? 140;
-  const streak = userProgress?.streakCount ?? 3;
+  const xp = user ? (user.xp ?? userProgress?.xp ?? 0) : (userProgress?.xp ?? 0);
+  const streak = user ? (user.streak ?? userProgress?.streakCount ?? 0) : (userProgress?.streakCount ?? 0);
 
   const handleTabChange = (tab: 'learn' | 'vocab' | 'weakness') => {
     playSound('click');
@@ -99,7 +102,7 @@ export const Header: React.FC = () => {
           </button>
         </nav>
 
-        {/* Gamification Stats & Theme Mode Switcher */}
+        {/* Gamification Stats & User Session Control */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Theme Mode Toggle (Stark Dark vs Clean Light) */}
           <button
@@ -117,7 +120,7 @@ export const Header: React.FC = () => {
           {/* Streak */}
           <div
             className="flex items-center gap-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 px-3 py-1.5 border border-amber-200 dark:border-amber-900/60 text-amber-700 dark:text-amber-300 shadow-xs"
-            title="Chuỗi ngày liên tiếp"
+            title="Chuỗi ngày liên tiếp của tài khoản hiện tại"
           >
             <Flame className="h-4 w-4 fill-amber-500 text-amber-500 animate-pulse" />
             <span className="text-xs font-black">{streak} ngày</span>
@@ -126,11 +129,54 @@ export const Header: React.FC = () => {
           {/* XP */}
           <div
             className="flex items-center gap-1.5 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 px-3 py-1.5 border border-cyan-200 dark:border-cyan-900/60 text-cyan-700 dark:text-cyan-300 shadow-xs"
-            title="Kinh nghiệm tích luỹ"
+            title="Kinh nghiệm tích luỹ của tài khoản hiện tại"
           >
             <Zap className="h-4 w-4 fill-cyan-500 text-cyan-500" />
             <span className="text-xs font-black">{xp} XP</span>
           </div>
+
+          {/* User Session Profile / Login Button */}
+          {user ? (
+            <div className="flex items-center gap-1 sm:gap-2 pl-1">
+              <div
+                className="hidden sm:flex items-center gap-2 pl-2 pr-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 shadow-xs"
+                title={`Đang đăng nhập: ${user.email}`}
+              >
+                <img
+                  src={user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email}`}
+                  alt={user.name}
+                  className="h-6 w-6 rounded-lg bg-cyan-900/40 border border-cyan-400/40"
+                />
+                <span className="text-xs font-bold text-slate-800 dark:text-cyan-200 max-w-[90px] truncate">
+                  {user.name}
+                </span>
+              </div>
+
+              <button
+                onClick={() => {
+                  playSound('click');
+                  logout();
+                }}
+                className="flex items-center gap-1 rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 px-2.5 py-1.5 text-xs font-bold text-rose-600 dark:text-rose-400 transition-all cursor-pointer"
+                title="Đăng xuất tài khoản này"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Thoát</span>
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                playSound('click');
+                openAuthModal('login');
+              }}
+              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-3.5 py-1.5 text-xs font-black text-white shadow-md shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:from-cyan-400 hover:to-blue-500 active:scale-95 transition-all cursor-pointer"
+              title="Đăng nhập để lưu từ vựng và XP riêng biệt"
+            >
+              <LogIn className="h-3.5 w-3.5" />
+              <span>Đăng nhập</span>
+            </button>
+          )}
         </div>
       </div>
     </header>

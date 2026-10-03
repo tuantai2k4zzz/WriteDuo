@@ -15,6 +15,7 @@ import {
 } from '../../schemas';
 import { AIService } from '../ai/ai.service';
 import { MockAIProvider } from '../ai/providers/mock.provider';
+import { VocabularyService } from '../vocabulary/vocabulary.service';
 import { EvaluateAnswerDto } from './dto/evaluate-answer.dto';
 import { EvaluateParagraphDto } from './dto/evaluate-paragraph.dto';
 import { EvaluationResult, CompleteSentenceMemorize, GrammarInsight, EvaluationInput } from '../ai/ai.interface';
@@ -33,6 +34,7 @@ export class EvaluationService {
     @InjectModel(EvaluationCache.name) private cacheModel: Model<EvaluationCacheDocument>,
     private readonly aiService: AIService,
     private readonly mockProvider: MockAIProvider,
+    private readonly vocabularyService: VocabularyService,
   ) {}
 
   private norm(s: string): string {
@@ -43,8 +45,34 @@ export class EvaluationService {
       .trim();
   }
 
+  private calculateStreak(
+    lastActiveDate: Date | undefined,
+    currentStreak: number,
+  ): { streakCount: number; isNewDay: boolean } {
+    const now = new Date();
+    if (!lastActiveDate) {
+      return { streakCount: 1, isNewDay: true };
+    }
+    const nowDateStr = now.toISOString().slice(0, 10);
+    const lastDateStr = new Date(lastActiveDate).toISOString().slice(0, 10);
+
+    if (nowDateStr === lastDateStr) {
+      return { streakCount: currentStreak || 1, isNewDay: false };
+    }
+
+    const nowDayTime = new Date(nowDateStr).getTime();
+    const lastDayTime = new Date(lastDateStr).getTime();
+    const diffDays = Math.round((nowDayTime - lastDayTime) / (24 * 60 * 60 * 1000));
+
+    if (diffDays === 1) {
+      return { streakCount: (currentStreak || 0) + 1, isNewDay: true };
+    } else {
+      return { streakCount: 1, isNewDay: true };
+    }
+  }
+
   // --- MAIN EVALUATION (TIER 1 FAST RESPONSE + ASYNC DEEP ANALYSIS) ---
-  async evaluateAnswer(dto: EvaluateAnswerDto) {
+  async evaluateAnswer(dto: EvaluateAnswerDto, userId?: string) {
     if (!Types.ObjectId.isValid(dto.sentenceId)) {
       throw new NotFoundException(`Invalid sentence ID: ${dto.sentenceId}`);
     }
@@ -64,7 +92,7 @@ export class EvaluationService {
       const cached = this.evalCache.get(cacheKey)!;
       if (cached.evaluation?.semanticAnalysis?.tokenDiffs && cached.evaluation.semanticAnalysis.tokenDiffs.length > 0) {
         this.logger.log(`Instant Memory Cache Hit (0ms) for: "${userTrimmed}" (Deep: ${cached.isDeep})`);
-        this.persistProgressAndMistakesAsync(cached.evaluation, sentence, userTrimmed, mode);
+        this.persistProgressAndMistakesAsync(cached.evaluation, sentence, userTrimmed, mode, userId);
         return this.formatResponse(cached.evaluation, sentence, userTrimmed, mode, cached.isDeep, 'memory_cache');
       } else {
         this.evalCache.delete(cacheKey);
@@ -77,7 +105,7 @@ export class EvaluationService {
       if (dbCached && dbCached.evaluation?.semanticAnalysis?.tokenDiffs && dbCached.evaluation.semanticAnalysis.tokenDiffs.length > 0) {
         this.logger.log(`Persistent DB Cache Hit (<15ms) for: "${userTrimmed}"`);
         this.evalCache.set(cacheKey, { evaluation: dbCached.evaluation, isDeep: dbCached.isDeepAnalysis });
-        this.persistProgressAndMistakesAsync(dbCached.evaluation, sentence, userTrimmed, mode);
+        this.persistProgressAndMistakesAsync(dbCached.evaluation, sentence, userTrimmed, mode, userId);
         return this.formatResponse(dbCached.evaluation, sentence, userTrimmed, mode, dbCached.isDeepAnalysis, 'db_cache');
       } else if (dbCached) {
         // Invalidate legacy cache without semantic analysis
@@ -176,7 +204,7 @@ export class EvaluationService {
       // Save to memory cache & persistent cache
       this.evalCache.set(cacheKey, { evaluation: exactEvaluation, isDeep: true });
       this.saveToPersistentCacheAsync(cacheKey, sentence._id, mode, userNorm, userTrimmed, exactEvaluation, true);
-      this.persistProgressAndMistakesAsync(exactEvaluation, sentence, userTrimmed, mode);
+      this.persistProgressAndMistakesAsync(exactEvaluation, sentence, userTrimmed, mode, userId);
 
       return this.formatResponse(exactEvaluation, sentence, userTrimmed, mode, true, 'exact_match');
     }
@@ -223,7 +251,7 @@ export class EvaluationService {
     }
 
     // Asynchronous Persistence of Progress & Mistakes
-    this.persistProgressAndMistakesAsync(finalEvaluation, sentence, userTrimmed, mode);
+    this.persistProgressAndMistakesAsync(finalEvaluation, sentence, userTrimmed, mode, userId);
 
     // Auto-cache acceptable alternative translation in DB
     if (mode === 'en_to_vi' && finalEvaluation.score >= 92 && !sentence.alternativeTranslations.includes(userTrimmed)) {
@@ -368,38 +396,63 @@ export class EvaluationService {
     sentence: SentenceDocument,
     userTrimmed: string,
     mode: 'en_to_vi' | 'vi_to_en',
+    userId?: string,
   ) {
+    if (!userId || !Types.ObjectId.isValid(userId)) {
+      return; // Do not mutate database for unauthenticated guest
+    }
+
     setImmediate(async () => {
       try {
-        let progress = await this.progressModel.findOne();
+        const userObjectId = new Types.ObjectId(userId);
+        let progress = await this.progressModel.findOne({ userId: userObjectId });
         if (!progress) {
           progress = await this.progressModel.create({
-            userId: new Types.ObjectId(),
+            userId: userObjectId,
             xp: 0,
-            streakCount: 1,
+            streakCount: 0,
             hearts: 5,
             currentLevel: 'A1',
+            dailyGoalXp: 50,
+            todayXp: 0,
+            completedReadings: [],
+            completedSentences: [],
           });
         }
 
+        // Streak update
+        const { streakCount, isNewDay } = this.calculateStreak(progress.lastActiveDate, progress.streakCount);
+        progress.streakCount = streakCount;
+        progress.lastActiveDate = new Date();
+
+        let earnedXp = 0;
         if (evaluation.status === 'correct') {
-          progress.xp += 10;
-          progress.todayXp = (progress.todayXp || 0) + 10;
-          if (!progress.completedSentences.includes(sentence._id as Types.ObjectId)) {
+          earnedXp = 10;
+          const isAlreadyCompleted = progress.completedSentences.some((id) => id.equals(sentence._id as Types.ObjectId));
+          if (!isAlreadyCompleted) {
             progress.completedSentences.push(sentence._id as Types.ObjectId);
           }
         } else if (evaluation.status === 'almost_correct') {
-          progress.xp += 7;
-          progress.todayXp = (progress.todayXp || 0) + 7;
+          earnedXp = 7;
         } else if (evaluation.status === 'missing_info') {
-          progress.xp += 4;
-          progress.todayXp = (progress.todayXp || 0) + 4;
+          earnedXp = 4;
+        } else {
+          earnedXp = 2;
         }
+
+        if (isNewDay) {
+          progress.todayXp = earnedXp;
+        } else {
+          progress.todayXp = (progress.todayXp || 0) + earnedXp;
+        }
+        progress.xp = (progress.xp || 0) + earnedXp;
+
+        await progress.save();
 
         // Auto Spaced Repetition (SRS)
         const tag = sentence.grammarAnalysis?.tense || 'General Syntax';
         const existingMistake = await this.mistakeModel.findOne({
-          userId: progress.userId,
+          userId: userObjectId,
           sentenceId: sentence._id,
         });
 
@@ -422,7 +475,7 @@ export class EvaluationService {
             await existingMistake.save();
           } else {
             await this.mistakeModel.create({
-              userId: progress.userId,
+              userId: userObjectId,
               sentenceId: sentence._id,
               category: 'grammar',
               tag: tag,
@@ -436,8 +489,21 @@ export class EvaluationService {
           }
         }
 
-        progress.lastActiveDate = new Date();
-        await progress.save();
+        // Automatic Weak Vocabulary detection based on learner mistakes/correct words
+        if (evaluation.semanticAnalysis?.tokenDiffs && evaluation.semanticAnalysis.tokenDiffs.length > 0) {
+          for (const diff of evaluation.semanticAnalysis.tokenDiffs) {
+            if (diff.status === 'EXACT_CORRECT' && diff.learnerToken) {
+              await this.vocabularyService.recordWordAttempt(userId, diff.learnerToken, true, sentence.textEn);
+            } else if (
+              ['WRONG_FORM', 'REPLACE_SUGGESTION', 'EXTRA', 'MISSING'].includes(diff.status)
+            ) {
+              const targetWord = diff.referenceToken || diff.learnerToken;
+              if (targetWord) {
+                await this.vocabularyService.recordWordAttempt(userId, targetWord, false, sentence.textEn);
+              }
+            }
+          }
+        }
       } catch (err: any) {
         this.logger.warn(`Failed async progress persistence: ${err.message}`);
       }
@@ -445,7 +511,7 @@ export class EvaluationService {
   }
 
   // --- PARAGRAPH EVALUATION (POST-LESSON BOSS CHALLENGE) ---
-  async evaluateParagraph(dto: EvaluateParagraphDto) {
+  async evaluateParagraph(dto: EvaluateParagraphDto, userId?: string) {
     const isObjectId = Types.ObjectId.isValid(dto.lessonId);
     const reading = isObjectId
       ? await this.readingModel.findById(dto.lessonId)
@@ -506,14 +572,24 @@ export class EvaluationService {
     if (naturalnessScore < 80) improvements.push('Văn phong có thể diễn đạt tự nhiên hơn, tránh dịch thô');
     if (strengths.length === 0) strengths.push('Đã cố gắng hoàn thành bản dịch toàn bài');
 
-    // Award 50 XP bonus asynchronously
-    this.progressModel.findOne().then((progress) => {
-      if (progress) {
-        progress.xp += 50;
-        progress.todayXp = (progress.todayXp || 0) + 50;
-        progress.save().catch(() => {});
-      }
-    }).catch(() => {});
+    // Award 50 XP bonus asynchronously if user is logged in
+    if (userId && Types.ObjectId.isValid(userId)) {
+      const userObjectId = new Types.ObjectId(userId);
+      this.progressModel.findOne({ userId: userObjectId }).then((progress) => {
+        if (progress) {
+          const { streakCount, isNewDay } = this.calculateStreak(progress.lastActiveDate, progress.streakCount);
+          progress.streakCount = streakCount;
+          progress.lastActiveDate = new Date();
+          progress.xp += 50;
+          if (isNewDay) {
+            progress.todayXp = 50;
+          } else {
+            progress.todayXp = (progress.todayXp || 0) + 50;
+          }
+          progress.save().catch(() => {});
+        }
+      }).catch(() => {});
+    }
 
     return {
       score: overallScore,

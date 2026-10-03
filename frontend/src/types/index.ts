@@ -270,3 +270,37 @@ export interface ReviewQueueItem {
   stressWords: string[];
   linkingRules: LinkingRule[];
 }
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  avatar: string;
+  xp?: number;
+  streak?: number;
+  hearts?: number;
+  currentLevel?: string;
+  dailyGoalXp?: number;
+  todayXp?: number;
+  savedWordsCount?: number;
+  weakWordsCount?: number;
+  completedLessonsCount?: number;
+  completedSentencesCount?: number;
+}
+
+export interface WeakVocabularyItem {
+  _id: string;
+  userId: string;
+  word: string;
+  meaningVi: string;
+  ipa?: string;
+  pos?: string;
+  cefr?: string;
+  sampleSentence?: string;
+  correctCount: number;
+  wrongCount: number;
+  accuracy: number;
+  mistakeCount: number;
+  lastReviewedAt?: string;
+  nextReviewAt?: string;
+}

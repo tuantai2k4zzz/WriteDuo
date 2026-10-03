@@ -5,3 +5,5 @@ export * from './user-progress.schema';
 export * from './user-mistake.schema';
 export * from './user-vocabulary.schema';
 export * from './evaluation-cache.schema';
+export * from './lesson-progress.schema';
+export * from './weak-vocabulary.schema';

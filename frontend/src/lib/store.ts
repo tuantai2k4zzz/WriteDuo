@@ -6,7 +6,9 @@ import {
   ParagraphEvaluationResponse,
   UserProgressData,
   Token,
+  AuthUser,
 } from '../types';
+import { api, getStoredToken } from './api';
 
 interface LearningState {
   currentTab: 'learn' | 'vocab' | 'weakness';
@@ -24,6 +26,17 @@ interface LearningState {
   themeMode: 'dark' | 'light';
   initTheme: () => void;
   toggleThemeMode: () => void;
+
+  // Auth & Multi-User State
+  user: AuthUser | null;
+  setUser: (user: AuthUser | null) => void;
+  isAuthModalOpen: boolean;
+  authModalMode: 'login' | 'register';
+  openAuthModal: (mode?: 'login' | 'register') => void;
+  closeAuthModal: () => void;
+  loadUser: () => Promise<AuthUser | null>;
+  refreshUserData: () => Promise<void>;
+  logout: () => void;
 
   // Active Lesson
   activeLesson: Lesson | null;
@@ -110,6 +123,79 @@ export const useLearningStore = create<LearningState>((set, get) => ({
       } catch (e) {}
     }
     set({ themeMode: nextTheme });
+  },
+
+  // Auth & Multi-User Implementation
+  user: null,
+  setUser: (user) => set({ user }),
+  isAuthModalOpen: false,
+  authModalMode: 'login',
+  openAuthModal: (mode = 'login') => set({ isAuthModalOpen: true, authModalMode: mode }),
+  closeAuthModal: () => set({ isAuthModalOpen: false }),
+
+  loadUser: async () => {
+    const token = getStoredToken();
+    if (!token) {
+      set({ user: null, userProgress: null });
+      return null;
+    }
+    try {
+      const me = await api.getMe();
+      set({
+        user: me,
+        userProgress: {
+          xp: me.xp || 0,
+          streakCount: me.streak || 0,
+          hearts: me.hearts ?? 5,
+          currentLevel: me.currentLevel || 'A1',
+          dailyGoalXp: me.dailyGoalXp || 50,
+          todayXp: me.todayXp || 0,
+          totalReadings: 27,
+          totalSentences: 484,
+          completedReadingsCount: me.completedLessonsCount || 0,
+          completedSentencesCount: me.completedSentencesCount || 0,
+        },
+      });
+      return me;
+    } catch (err) {
+      console.warn('Authentication token invalid or expired:', err);
+      api.logout();
+      set({ user: null, userProgress: null });
+      return null;
+    }
+  },
+
+  refreshUserData: async () => {
+    const token = getStoredToken();
+    if (!token) return;
+    try {
+      const me = await api.getMe();
+      set({
+        user: me,
+        userProgress: {
+          xp: me.xp || 0,
+          streakCount: me.streak || 0,
+          hearts: me.hearts ?? 5,
+          currentLevel: me.currentLevel || 'A1',
+          dailyGoalXp: me.dailyGoalXp || 50,
+          todayXp: me.todayXp || 0,
+          totalReadings: 27,
+          totalSentences: 484,
+          completedReadingsCount: me.completedLessonsCount || 0,
+          completedSentencesCount: me.completedSentencesCount || 0,
+        },
+      });
+    } catch {}
+  },
+
+  logout: () => {
+    api.logout();
+    set({
+      user: null,
+      userProgress: null,
+      activeLesson: null,
+      currentTab: 'learn',
+    });
   },
 
   activeLesson: null,

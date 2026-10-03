@@ -5,10 +5,10 @@ export type UserVocabularyDocument = UserVocabulary & Document;
 
 @Schema({ timestamps: true })
 export class UserVocabulary {
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true, index: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
-  @Prop({ required: true, index: true })
+  @Prop({ required: true })
   word: string;
 
   @Prop({ default: '' })

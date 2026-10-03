@@ -10,6 +10,7 @@ import { InteractiveSentence } from '../components/InteractiveSentence';
 import { FeedbackDrawer } from '../components/FeedbackDrawer';
 import { WordModal } from '../components/WordModal';
 import { LessonCompleteModal } from '../components/LessonCompleteModal';
+import { AuthModal } from '../components/AuthModal';
 import { VocabularyTab } from '../components/VocabularyTab';
 import { WeaknessesTab } from '../components/WeaknessesTab';
 import { ParagraphChallenge } from '../components/ParagraphChallenge';
@@ -31,6 +32,8 @@ export default function Home() {
     startLesson,
     userProgress,
     setUserProgress,
+    user,
+    loadUser,
     initTheme,
   } = useLearningStore();
 
@@ -40,23 +43,22 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [selectingLessonId, setSelectingLessonId] = useState<string | null>(null);
 
-  // Initialize theme mode from localStorage on mount
+  // Initialize theme mode and load user session on mount
   useEffect(() => {
     initTheme();
-  }, [initTheme]);
+    loadUser();
+  }, [initTheme, loadUser]);
 
-  // Load progress, lessons, weaknesses, and proactive review queue on mount
+  // Load progress, lessons, weaknesses, and proactive review queue on mount or user switch
   useEffect(() => {
     async function initData() {
       try {
         setLoading(true);
-        const [progressData, lessonsData, reviewData, weaknessesData] = await Promise.all([
-          api.getProgress(),
+        const [lessonsData, reviewData, weaknessesData] = await Promise.all([
           api.getLessons(selectedLevel),
-          api.getSmartReviewQueue(),
-          api.getGrammarWeaknesses().catch(() => []),
+          api.getSmartReviewQueue().catch(() => ({ dueCount: 0, items: [] })),
+          user ? api.getGrammarWeaknesses().catch(() => []) : Promise.resolve([]),
         ]);
-        setUserProgress(progressData);
         setLessons(lessonsData);
         setReviewItems(reviewData.items || []);
         setWeaknesses(weaknessesData || []);
@@ -67,7 +69,7 @@ export default function Home() {
       }
     }
     initData();
-  }, [selectedLevel, setUserProgress]);
+  }, [selectedLevel, user]);
 
   const skillVector = computeSkillVector(userProgress, weaknesses);
   const recommendation = getAdaptiveRecommendation(skillVector, reviewItems.length);
@@ -198,6 +200,7 @@ export default function Home() {
         <FeedbackDrawer />
         <WordModal />
         <LessonCompleteModal />
+        <AuthModal />
       </div>
     );
   }
@@ -224,8 +227,8 @@ export default function Home() {
 
               <div className="lg:col-span-5">
                 <DailyMission
-                  todayXp={userProgress?.todayXp ?? 35}
-                  goalXp={userProgress?.dailyGoalXp ?? 50}
+                  todayXp={user ? (user.todayXp ?? userProgress?.todayXp ?? 0) : 0}
+                  goalXp={user ? (user.dailyGoalXp ?? userProgress?.dailyGoalXp ?? 50) : 50}
                   weaknessCount={weaknesses.length}
                   onNavigateTab={setCurrentTab}
                 />
@@ -363,6 +366,9 @@ export default function Home() {
 
       {/* Global Word Modal for Word Click */}
       <WordModal />
+
+      {/* Global Auth Modal for Multi-User Login & Registration */}
+      <AuthModal />
     </div>
   );
 }

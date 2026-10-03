@@ -16,6 +16,12 @@ import {
   UserMistakeSchema,
   UserVocabulary,
   UserVocabularySchema,
+  WeakVocabulary,
+  WeakVocabularySchema,
+  LessonProgress,
+  LessonProgressSchema,
+  EvaluationCache,
+  EvaluationCacheSchema,
 } from './schemas';
 
 import { AIModule } from './modules/ai/ai.module';
@@ -24,6 +30,8 @@ import { EvaluationModule } from './modules/evaluation/evaluation.module';
 import { ProgressModule } from './modules/progress/progress.module';
 import { VocabularyModule } from './modules/vocabulary/vocabulary.module';
 import { ReviewModule } from './modules/review/review.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -58,7 +66,12 @@ import { ReviewModule } from './modules/review/review.module';
       { name: UserProgress.name, schema: UserProgressSchema },
       { name: UserMistake.name, schema: UserMistakeSchema },
       { name: UserVocabulary.name, schema: UserVocabularySchema },
+      { name: WeakVocabulary.name, schema: WeakVocabularySchema },
+      { name: LessonProgress.name, schema: LessonProgressSchema },
+      { name: EvaluationCache.name, schema: EvaluationCacheSchema },
     ]),
+    AuthModule,
+    UsersModule,
     AIModule,
     LessonsModule,
     EvaluationModule,

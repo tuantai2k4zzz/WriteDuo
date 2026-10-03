@@ -9,7 +9,17 @@ import { Volume2, Bookmark, Check, X, Sparkles, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const WordModal: React.FC = () => {
-  const { activeToken, isWordModalOpen, closeWordModal, sentences, currentSentenceIndex } = useLearningStore();
+  const {
+    activeToken,
+    isWordModalOpen,
+    closeWordModal,
+    sentences,
+    currentSentenceIndex,
+    user,
+    openAuthModal,
+    refreshUserData,
+  } = useLearningStore();
+
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [resolvedToken, setResolvedToken] = useState<Token | null>(null);
@@ -20,10 +30,18 @@ export const WordModal: React.FC = () => {
   useEffect(() => {
     if (!activeToken) {
       setResolvedToken(null);
+      setIsSaved(false);
       return;
     }
 
     setResolvedToken(activeToken);
+
+    // Check if current user already saved this word
+    if (user) {
+      api.checkWordSaved(activeToken.text)
+        .then((res) => setIsSaved(res.isSaved))
+        .catch(() => {});
+    }
 
     // If meaningVi is missing or default placeholder, call on-demand AI & dictionary lookup!
     if (!activeToken.meaningVi || activeToken.meaningVi.trim() === '' || activeToken.meaningVi.includes('Đang cập nhật')) {
@@ -49,7 +67,7 @@ export const WordModal: React.FC = () => {
     } else {
       setIsLookingUp(false);
     }
-  }, [activeToken, currentSentence]);
+  }, [activeToken, currentSentence, user]);
 
   if (!isWordModalOpen || !activeToken) return null;
 
@@ -59,21 +77,33 @@ export const WordModal: React.FC = () => {
   const exampleVi = (!isSynthetic && tokenToDisplay.exampleVi) || currentSentence?.primaryTranslationVi;
 
   const handleSave = async () => {
+    if (!user) {
+      playSound('click');
+      openAuthModal('login');
+      return;
+    }
+
     try {
       setIsSaving(true);
-      await api.saveVocabulary({
-        word: tokenToDisplay.text,
-        meaningVi: tokenToDisplay.meaningVi,
-        pos: tokenToDisplay.pos,
-        ipa: tokenToDisplay.ipa,
-        cefr: tokenToDisplay.cefr,
-        exampleEn: tokenToDisplay.exampleEn || currentSentence?.textEn,
-      });
-      setIsSaved(true);
-      playSound('click');
-      setTimeout(() => setIsSaved(false), 2500);
+      if (isSaved) {
+        await api.deleteWord(tokenToDisplay.text);
+        setIsSaved(false);
+        playSound('click');
+      } else {
+        await api.saveVocabulary({
+          word: tokenToDisplay.text,
+          meaningVi: tokenToDisplay.meaningVi,
+          pos: tokenToDisplay.pos,
+          ipa: tokenToDisplay.ipa,
+          cefr: tokenToDisplay.cefr,
+          exampleEn: tokenToDisplay.exampleEn || currentSentence?.textEn,
+        });
+        setIsSaved(true);
+        playSound('click');
+      }
+      refreshUserData();
     } catch (err) {
-      console.error('Failed to save word:', err);
+      console.error('Failed to save/unsave word:', err);
     } finally {
       setIsSaving(false);
     }
@@ -175,17 +205,23 @@ export const WordModal: React.FC = () => {
 
             <button
               onClick={handleSave}
-              disabled={isSaving || isSaved || !tokenToDisplay.meaningVi}
-              className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-3 px-4 text-xs font-bold transition-all shadow-sm ${
+              disabled={isSaving || !tokenToDisplay.meaningVi}
+              className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-3 px-4 text-xs font-bold transition-all shadow-sm cursor-pointer ${
                 isSaved
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                  ? 'bg-amber-600 hover:bg-amber-700 text-white'
+                  : 'bg-emerald-500 hover:bg-emerald-600 text-white'
               }`}
+              title={isSaved ? 'Bấm để huỷ lưu từ này' : 'Lưu từ vào sổ tay cá nhân'}
             >
-              {isSaved ? (
+              {isSaving ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Đang xử lý...</span>
+                </>
+              ) : isSaved ? (
                 <>
                   <Check className="h-4 w-4" />
-                  <span>Đã Lưu!</span>
+                  <span>Đã Lưu (Bỏ lưu)</span>
                 </>
               ) : (
                 <>

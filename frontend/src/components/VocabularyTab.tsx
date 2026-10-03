@@ -8,13 +8,22 @@ import { Search, Volume2, BookmarkCheck, Trash2, Heart, Layers, Sparkles, BookOp
 import { motion, AnimatePresence } from 'framer-motion';
 import { HolographicPanel, NeonBadge } from './hud/HUDPrimitives';
 
+import { useLearningStore } from '../lib/store';
+import { LogIn } from 'lucide-react';
+
 export const VocabularyTab: React.FC = () => {
+  const { user, openAuthModal, refreshUserData } = useLearningStore();
   const [words, setWords] = useState<SavedWord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedCefr, setSelectedCefr] = useState('ALL');
 
   const loadWords = async () => {
+    if (!user) {
+      setWords([]);
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       const res = await api.getVocabulary(search, selectedCefr);
@@ -28,12 +37,13 @@ export const VocabularyTab: React.FC = () => {
 
   useEffect(() => {
     loadWords();
-  }, [search, selectedCefr]);
+  }, [search, selectedCefr, user]);
 
   const handleDelete = async (id: string) => {
     try {
       await api.deleteWord(id);
       setWords(words.filter((w) => w._id !== id));
+      refreshUserData();
       playSound('click');
     } catch (err) {
       console.error(err);
@@ -51,6 +61,32 @@ export const VocabularyTab: React.FC = () => {
   };
 
   const cefrLevels = ['ALL', 'A1', 'A2', 'B1', 'B2', 'C1'];
+
+  if (!user) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 text-center">
+        <HolographicPanel glowColor="cyan" className="p-10 max-w-lg mx-auto">
+          <BookmarkCheck className="h-14 w-14 text-cyan-500 mx-auto mb-4" />
+          <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
+            CUNG ĐIỆN TỪ VỰNG CÁ NHÂN
+          </h2>
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 mb-6 leading-relaxed">
+            Mỗi tài khoản có một kho từ vựng riêng biệt được lưu trữ trên máy chủ đám mây. Vui lòng đăng nhập để xem và quản lý các từ của bạn.
+          </p>
+          <button
+            onClick={() => {
+              playSound('click');
+              openAuthModal('login');
+            }}
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-xs font-black text-white shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:from-cyan-400 hover:to-blue-500 active:scale-95 transition-all cursor-pointer"
+          >
+            <LogIn className="h-4 w-4" />
+            <span>ĐĂNG NHẬP NGAY</span>
+          </button>
+        </HolographicPanel>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">

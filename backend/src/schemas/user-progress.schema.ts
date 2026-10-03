@@ -5,7 +5,7 @@ export type UserProgressDocument = UserProgress & Document;
 
 @Schema({ timestamps: true })
 export class UserProgress {
-  @Prop({ type: Types.ObjectId, ref: 'User', default: () => new Types.ObjectId(), index: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
   @Prop({ default: 0 })
@@ -40,3 +40,4 @@ export class UserProgress {
 }
 
 export const UserProgressSchema = SchemaFactory.createForClass(UserProgress);
+UserProgressSchema.index({ userId: 1 }, { unique: true });
