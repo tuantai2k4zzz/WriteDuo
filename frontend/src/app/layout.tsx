@@ -24,6 +24,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/dog.png", sizes: "192x192", type: "image/png" },
       { url: "/icon.png", sizes: "192x192", type: "image/png" },
     ],
     shortcut: "/favicon.ico",
@@ -35,6 +36,13 @@ export const metadata: Metadata = {
     url: "https://learnen-five.vercel.app",
     siteName: "Write Duo",
     images: [
+      {
+        url: "/dog.png",
+        width: 640,
+        height: 640,
+        alt: "Write Duo - Chú cún chăm chỉ nỗ lực học tiếng Anh mỗi ngày",
+        type: "image/png",
+      },
       {
         url: "/og-image.jpg",
         width: 1200,
@@ -50,7 +58,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Write Duo — Cùng Cố Gắng Học Tiếng Anh Mỗi Ngày",
     description: "Cùng nỗ lực giỏi tiếng Anh mỗi ngày! Luyện dịch & viết câu phản xạ cùng chú cún chăm chỉ và gia sư AI chấm điểm thông minh.",
-    images: ["/og-image.jpg"],
+    images: ["/dog.png"],
   },
 };
 
