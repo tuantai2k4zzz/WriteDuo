@@ -18,8 +18,39 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Write Duo — Học Tiếng Anh Tương Tác Qua Reading & Writing",
-  description: "Giao diện Stark Tech 2026 học tiếng Anh tương tác phong cách Ironman HUD hiện đại.",
+  metadataBase: new URL("https://learnen-five.vercel.app"),
+  title: "Write Duo — Học Tiếng Anh Cố Gắng Mỗi Ngày",
+  description: "Cùng nỗ lực giỏi tiếng Anh mỗi ngày! Học tương tác Reading & Writing với AI chấm điểm thông minh.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/icon.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
+  openGraph: {
+    title: "Write Duo — Học Tiếng Anh Cố Gắng Mỗi Ngày",
+    description: "Cùng nỗ lực giỏi tiếng Anh mỗi ngày! Học tương tác qua Reading & Writing với gia sư AI chấm điểm chi tiết.",
+    url: "https://learnen-five.vercel.app",
+    siteName: "Write Duo",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Write Duo - Chú chó cố gắng học tiếng Anh chăm chỉ",
+      },
+    ],
+    locale: "vi_VN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Write Duo — Học Tiếng Anh Cố Gắng Mỗi Ngày",
+    description: "Cùng nỗ lực giỏi tiếng Anh mỗi ngày! Học tương tác qua Reading & Writing với gia sư AI chấm điểm chi tiết.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
