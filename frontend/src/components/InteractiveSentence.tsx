@@ -337,204 +337,221 @@ export const InteractiveSentence: React.FC = () => {
             )}
 
             {/* ── QUESTION CARD WITH 3D FLIP ANIMATION ── */}
-            <motion.div
-              key={`${sentence._id}-${exerciseMode}`}
-              initial={{ rotateY: 35, opacity: 0 }}
-              animate={{ rotateY: 0, opacity: 1 }}
-              exit={{ rotateY: -35, opacity: 0 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="relative overflow-hidden rounded-3xl border border-slate-200/90 dark:border-cyan-500/30 bg-white dark:bg-slate-900/90 p-6 sm:p-8 shadow-lg shadow-slate-200/40 dark:shadow-cyan-500/5 backdrop-blur-xl"
-              style={{
-                perspective: '1000px',
-              }}
-            >
-              {/* Corner Accents */}
-              <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-3xl" />
-              <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-500/40 rounded-tr-3xl" />
-
-              {/* Card Header: Mode Label & Audio Controls */}
-              <div className="flex items-center justify-between gap-3 mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 font-mono">
-                    {isViToEn ? 'CÂU HỎI TIẾNG VIỆT' : 'CÂU HỎI TIẾNG ANH'}
-                  </span>
-                  <span className="text-xs text-slate-400 font-semibold hidden sm:inline">
-                    {isViToEn ? 'Viết lại bằng tiếng Anh chuẩn' : 'Tra cứu từng từ nếu cần'}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {/* Pronounce Button */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      isViToEn
-                        ? speakVietnamese(sentence.primaryTranslationVi)
-                        : speakEnglish(sentence.textEn, 0.95)
-                    }
-                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-500 text-white shadow-md shadow-cyan-500/25 hover:bg-cyan-400 active:scale-95 transition-all"
-                    title="Nghe phát âm chuẩn (1.0x)"
-                  >
-                    <Volume2 className="h-4 w-4" />
-                  </button>
-
-                  {!isViToEn && (
-                    <button
-                      type="button"
-                      onClick={() => speakEnglish(sentence.textEn, 0.65)}
-                      className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 active:scale-95 transition-all"
-                      title="Nghe tốc độ chậm (0.65x)"
-                    >
-                      <Turtle className="h-4 w-4 text-amber-500" />
-                    </button>
-                  )}
-
-                  {/* Hint Toggle */}
-                  <button
-                    type="button"
-                    onClick={() => setShowHint(!showHint)}
-                    className={`flex h-9 px-2.5 items-center gap-1 rounded-xl text-xs font-bold border transition-all active:scale-95 ${
-                      showHint
-                        ? 'bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-300'
-                        : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
-                    }`}
-                    title="Xem gợi ý nếu bị kẹt"
-                  >
-                    <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
-                    <span>{showHint ? 'Ẩn Gợi Ý' : 'Gợi Ý'}</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Prompt Text Display */}
-              {isViToEn ? (
-                /* VI -> EN Prompt */
-                <div className="space-y-3">
-                  <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-relaxed">
-                    {sentence.primaryTranslationVi}
-                  </p>
-                  {showHint && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="rounded-xl p-3 bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-xs font-semibold"
-                    >
-                      💡 Gợi ý ngữ pháp: Sử dụng thì{' '}
-                      <strong>{sentence.grammarAnalysis?.tense || 'chuẩn'}</strong>. Trật tự câu: S + V + O.
-                    </motion.div>
-                  )}
-                </div>
-              ) : (
-                /* EN -> VI Interactive Tokens */
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-2.5">
-                    {sentence.tokens && sentence.tokens.length > 0 ? (
-                      sentence.tokens.map((token, i) => (
-                        <button
-                          type="button"
-                          key={i}
-                          onClick={() => openWordModal(token)}
-                          className="interactive-token group relative rounded-xl border-b-2 border-dashed border-cyan-400/50 dark:border-cyan-400/60 px-1.5 py-0.5 text-xl sm:text-2xl font-black text-slate-900 dark:text-white transition-all hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-950/40 hover:text-cyan-600 dark:hover:text-cyan-300"
-                        >
-                          <span>{token.text}</span>
-                          <span className="absolute -top-7 left-1/2 -translate-x-1/2 rounded-md bg-slate-900 px-2 py-0.5 text-[10px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-sm z-10">
-                            {token.meaningVi || 'Tra từ'}
-                          </span>
-                        </button>
-                      ))
-                    ) : (
-                      <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-                        {sentence.textEn}
-                      </span>
-                    )}
-                  </div>
-                  {showHint && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="rounded-xl p-3 bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-xs font-semibold"
-                    >
-                      💡 Gợi ý dịch: Hãy chú ý cấu trúc "{sentence.grammarAnalysis?.tense || 'câu'}". Dịch tự nhiên theo văn phong tiếng Việt.
-                    </motion.div>
-                  )}
-                </div>
-              )}
-            </motion.div>
-
-            {/* ── SENTENCE REACTOR (HOLOGRAPHIC SYNTACTIC MAP) ── */}
+            {/* ── SENTENCE REACTOR (HOLOGRAPHIC SYNTACTIC MAP) - LÊN TRÊN CÙNG ── */}
             <SentenceReactor sentence={sentence} onTokenClick={openWordModal} />
 
-            {/* ── ANSWER INPUT FORM (OPTIMISTIC UI) ── */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div
-                className={`relative rounded-3xl border-2 transition-all duration-300 bg-white dark:bg-slate-900/90 shadow-sm ${
-                  isEvaluating
-                    ? 'border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.25)]'
-                    : 'border-slate-200 dark:border-slate-800 focus-within:border-cyan-500 focus-within:shadow-[0_0_20px_rgba(6,182,212,0.15)]'
-                }`}
+            {/* ── CÂU HỎI VÀ TRẢ LỜI CẠNH NHAU (SIDE BY SIDE TRÊN DESKTOP, LIỀN KỀ TRÊN MOBILE) ── */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 items-stretch">
+              {/* ── QUESTION CARD ── */}
+              <motion.div
+                key={`${sentence._id}-${exerciseMode}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="relative flex flex-col justify-between rounded-3xl border border-slate-200/90 dark:border-cyan-500/30 bg-white dark:bg-slate-900/90 p-5 sm:p-6 shadow-sm backdrop-blur-xl h-full"
               >
-                <textarea
-                  ref={inputRef}
-                  value={userAnswerInput}
-                  onChange={(e) => setUserAnswerInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  disabled={isEvaluating}
-                  placeholder={
-                    isViToEn
-                      ? 'Gõ câu tiếng Anh tương ứng (ví dụ: She has been working here...)'
-                      : 'Dịch câu trên sang tiếng Việt tự nhiên nhất...'
-                  }
-                  rows={3}
-                  className="w-full resize-none rounded-3xl p-5 text-base sm:text-lg font-bold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent focus:outline-none"
-                />
+                {/* Corner Accents */}
+                <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-3xl" />
+                <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-500/40 rounded-tr-3xl" />
 
-                {/* Voice Dictation Toolbar */}
-                <div className="flex items-center justify-between px-4 py-2.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 rounded-b-3xl">
-                  <button
-                    type="button"
-                    onClick={toggleRecording}
-                    className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all active:scale-95 ${
-                      isRecording
-                        ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_15px_#f43f5e]'
-                        : 'text-slate-500 hover:bg-slate-200/60 dark:hover:bg-slate-700/60 hover:text-slate-700 dark:hover:text-slate-200'
-                    }`}
-                    title={isViToEn ? 'Nói tiếng Anh' : 'Nói tiếng Việt'}
-                  >
-                    {isRecording ? <Mic className="h-3.5 w-3.5" /> : <MicOff className="h-3.5 w-3.5" />}
-                    <span>{isRecording ? 'Đang lắng nghe...' : `Nói (${isViToEn ? 'EN' : 'VI'})`}</span>
-                  </button>
+                <div>
+                  {/* Card Header: Mode Label & Audio Controls */}
+                  <div className="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 font-mono">
+                        {isViToEn ? 'CÂU HỎI TIẾNG VIỆT' : 'CÂU HỎI TIẾNG ANH'}
+                      </span>
+                    </div>
 
-                  <span className="text-[11px] font-mono font-semibold text-slate-400">
-                    Nhấn <kbd className="rounded border bg-white dark:bg-slate-700 px-1 py-0.5 text-[10px]">Enter</kbd> để kiểm tra
+                    <div className="flex items-center gap-1.5">
+                      {/* Pronounce Button */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          isViToEn
+                            ? speakVietnamese(sentence.primaryTranslationVi)
+                            : speakEnglish(sentence.textEn, 0.95)
+                        }
+                        className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan-500 text-white shadow-sm hover:bg-cyan-400 active:scale-95 transition-all cursor-pointer"
+                        title="Nghe phát âm chuẩn (1.0x)"
+                      >
+                        <Volume2 className="h-3.5 w-3.5" />
+                      </button>
+
+                      {!isViToEn && (
+                        <button
+                          type="button"
+                          onClick={() => speakEnglish(sentence.textEn, 0.65)}
+                          className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 active:scale-95 transition-all cursor-pointer"
+                          title="Nghe tốc độ chậm (0.65x)"
+                        >
+                          <Turtle className="h-3.5 w-3.5 text-amber-500" />
+                        </button>
+                      )}
+
+                      {/* Hint Toggle */}
+                      <button
+                        type="button"
+                        onClick={() => setShowHint(!showHint)}
+                        className={`flex h-8 px-2 items-center gap-1 rounded-xl text-[11px] font-bold border transition-all active:scale-95 cursor-pointer ${
+                          showHint
+                            ? 'bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-300'
+                            : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                        }`}
+                        title="Xem gợi ý nếu bị kẹt"
+                      >
+                        <Lightbulb className="h-3 w-3 text-amber-500" />
+                        <span>{showHint ? 'Ẩn' : 'Gợi Ý'}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Prompt Text Display */}
+                  {isViToEn ? (
+                    /* VI -> EN Prompt */
+                    <div className="space-y-3">
+                      <p className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-relaxed">
+                        {sentence.primaryTranslationVi}
+                      </p>
+                      {showHint && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="rounded-xl p-3 bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-xs font-semibold"
+                        >
+                          💡 Gợi ý ngữ pháp: Sử dụng thì{' '}
+                          <strong>{sentence.grammarAnalysis?.tense || 'chuẩn'}</strong>. Trật tự câu: S + V + O.
+                        </motion.div>
+                      )}
+                    </div>
+                  ) : (
+                    /* EN -> VI Interactive Tokens */
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-2.5">
+                        {sentence.tokens && sentence.tokens.length > 0 ? (
+                          sentence.tokens.map((token, i) => (
+                            <button
+                              type="button"
+                              key={i}
+                              onClick={() => openWordModal(token)}
+                              className="interactive-token group relative rounded-xl border-b-2 border-dashed border-cyan-400/50 dark:border-cyan-400/60 px-1.5 py-0.5 text-lg sm:text-xl font-black text-slate-900 dark:text-white transition-all hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-950/40 hover:text-cyan-600 dark:hover:text-cyan-300 cursor-pointer"
+                            >
+                              <span>{token.text}</span>
+                              <span className="absolute -top-7 left-1/2 -translate-x-1/2 rounded-md bg-slate-900 px-2 py-0.5 text-[10px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-sm z-10">
+                                {token.meaningVi || 'Tra từ'}
+                              </span>
+                            </button>
+                          ))
+                        ) : (
+                          <span className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+                            {sentence.textEn}
+                          </span>
+                        )}
+                      </div>
+                      {showHint && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="rounded-xl p-3 bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-xs font-semibold"
+                        >
+                          💡 Gợi ý dịch: Hãy chú ý cấu trúc "{sentence.grammarAnalysis?.tense || 'câu'}". Dịch tự nhiên theo văn phong tiếng Việt.
+                        </motion.div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
+                  <span>{isViToEn ? '🇬🇧 Viết lại bằng tiếng Anh' : '🇻🇳 Chạm từ để tra từ điển'}</span>
+                  <span className="font-mono text-[10px] text-cyan-600 dark:text-cyan-400 font-bold">
+                    {sentence.grammarAnalysis?.tense || 'Chuẩn'}
                   </span>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* ── ACTION SUBMIT BUTTON WITH OPTIMISTIC UI ── */}
-              <button
-                type="submit"
-                disabled={!userAnswerInput.trim() || isEvaluating}
-                className={`w-full flex items-center justify-center gap-2.5 rounded-2xl py-4 text-sm font-black tracking-wider uppercase transition-all duration-300 font-mono active:scale-[0.98] ${
-                  isEvaluating
-                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
-                    : userAnswerInput.trim()
-                    ? 'bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 text-white hover:from-cyan-400 hover:to-indigo-500 shadow-lg shadow-cyan-500/25 hover:shadow-[0_0_25px_rgba(6,182,212,0.4)] cursor-pointer'
-                    : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none'
-                }`}
-              >
-                {isEvaluating ? (
-                  <>
-                    <Sparkles className="h-4 w-4 animate-spin text-cyan-200" />
-                    <span>{optimisticStatus || 'TUANTAIDZ AI Đang Chấm Điểm (< 1s)...'}</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="h-4 w-4" />
-                    <span>KIỂM TRA CÂU TRẢ LỜI</span>
-                  </>
-                )}
-              </button>
-            </form>
+              {/* ── ANSWER INPUT FORM (OPTIMISTIC UI) ── */}
+              <form onSubmit={handleSubmit} className="flex flex-col justify-between gap-3 h-full">
+                <div
+                  className={`relative flex-1 flex flex-col justify-between rounded-3xl border-2 transition-all duration-300 bg-white dark:bg-slate-900/90 p-4 sm:p-5 shadow-sm ${
+                    isEvaluating
+                      ? 'border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.25)]'
+                      : 'border-slate-200 dark:border-slate-800 focus-within:border-cyan-500 focus-within:shadow-[0_0_20px_rgba(6,182,212,0.15)]'
+                  }`}
+                >
+                  {/* Card Header for Answer */}
+                  <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100 dark:border-slate-800">
+                    <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
+                      {isViToEn ? 'CÂU TRẢ LỜI (TIẾNG ANH)' : 'CÂU TRẢ LỜI (TIẾNG VIỆT)'}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
+                      Enter ↵ để gửi
+                    </span>
+                  </div>
+
+                  <textarea
+                    ref={inputRef}
+                    value={userAnswerInput}
+                    onChange={(e) => setUserAnswerInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    disabled={isEvaluating}
+                    placeholder={
+                      isViToEn
+                        ? 'Gõ câu tiếng Anh tương ứng...'
+                        : 'Dịch câu trên sang tiếng Việt tự nhiên nhất...'
+                    }
+                    rows={4}
+                    className="w-full flex-1 resize-none text-base sm:text-lg font-bold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent focus:outline-none"
+                  />
+
+                  {/* Voice Dictation Toolbar */}
+                  <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800/80">
+                    <button
+                      type="button"
+                      onClick={toggleRecording}
+                      className={`flex items-center gap-1.5 rounded-xl px-2.5 py-1 text-xs font-bold transition-all active:scale-95 cursor-pointer ${
+                        isRecording
+                          ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_15px_#f43f5e]'
+                          : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200'
+                      }`}
+                      title={isViToEn ? 'Nói tiếng Anh' : 'Nói tiếng Việt'}
+                    >
+                      {isRecording ? <Mic className="h-3.5 w-3.5" /> : <MicOff className="h-3.5 w-3.5" />}
+                      <span>{isRecording ? 'Đang nghe...' : `Nói (${isViToEn ? 'EN' : 'VI'})`}</span>
+                    </button>
+
+                    <span className="text-[11px] font-mono text-slate-400">
+                      {userAnswerInput.trim().split(/\s+/).filter(Boolean).length} từ
+                    </span>
+                  </div>
+                </div>
+
+                {/* ── ACTION SUBMIT BUTTON WITH OPTIMISTIC UI ── */}
+                <button
+                  type="submit"
+                  disabled={!userAnswerInput.trim() || isEvaluating}
+                  className={`w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 text-xs sm:text-sm font-black tracking-wider uppercase transition-all duration-300 font-mono active:scale-[0.98] cursor-pointer ${
+                    isEvaluating
+                      ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
+                      : userAnswerInput.trim()
+                      ? 'bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 text-white hover:from-cyan-400 hover:to-indigo-500 shadow-md shadow-cyan-500/25 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)]'
+                      : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none'
+                  }`}
+                >
+                  {isEvaluating ? (
+                    <>
+                      <Sparkles className="h-4 w-4 animate-spin text-cyan-200" />
+                      <span>{optimisticStatus || 'TUANTAIDZ AI Đang Chấm Điểm (< 1s)...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      <span>KIỂM TRA CÂU TRẢ LỜI</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
           </main>
 
           {/* ── DESKTOP RIGHT SIDEBAR ── */}
