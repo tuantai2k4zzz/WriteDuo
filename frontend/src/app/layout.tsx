@@ -42,13 +42,6 @@ export const metadata: Metadata = {
         alt: "Write Duo - Chú cún chăm chỉ nỗ lực học tiếng Anh mỗi ngày",
         type: "image/jpeg",
       },
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Write Duo - Chú cún chăm chỉ nỗ lực học tiếng Anh mỗi ngày",
-        type: "image/png",
-      },
     ],
     locale: "vi_VN",
     type: "website",
@@ -73,20 +66,6 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://learnen-five.vercel.app" />
-        <meta property="og:title" content="Write Duo — Cùng Cố Gắng Học Tiếng Anh Mỗi Ngày" />
-        <meta property="og:description" content="Cùng nỗ lực giỏi tiếng Anh mỗi ngày! Luyện dịch & viết câu phản xạ cùng chú cún chăm chỉ và gia sư AI chấm điểm thông minh." />
-        <meta property="og:image" content="https://learnen-five.vercel.app/og-image.jpg" />
-        <meta property="og:image:secure_url" content="https://learnen-five.vercel.app/og-image.jpg" />
-        <meta property="og:image:type" content="image/jpeg" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="Write Duo - Chú cún chăm chỉ nỗ lực học tiếng Anh mỗi ngày" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Write Duo — Cùng Cố Gắng Học Tiếng Anh Mỗi Ngày" />
-        <meta name="twitter:description" content="Cùng nỗ lực giỏi tiếng Anh mỗi ngày! Luyện dịch & viết câu phản xạ cùng chú cún chăm chỉ và gia sư AI chấm điểm thông minh." />
-        <meta name="twitter:image" content="https://learnen-five.vercel.app/og-image.jpg" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
