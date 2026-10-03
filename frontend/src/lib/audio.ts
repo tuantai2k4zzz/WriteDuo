@@ -1,8 +1,6 @@
 // Web Speech Synthesis & Web Audio Sound Effects (Mobile & Desktop Optimized)
 
 let currentAudio: HTMLAudioElement | null = null;
-let audioQueue: string[] = [];
-let isPlayingQueue = false;
 
 // Global reference to prevent WebKit/Android GC from destroying SpeechSynthesisUtterance mid-speech
 declare global {
@@ -11,8 +9,13 @@ declare global {
   }
 }
 
+function isMobileBrowser(): boolean {
+  if (typeof window === 'undefined') return false;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 /**
- * Split long text into <= 150 char chunks at natural punctuation boundaries for Google TTS fallback
+ * Split long text into <= 150 char chunks at natural punctuation boundaries
  */
 function chunkText(text: string, maxLen = 150): string[] {
   const clean = text.trim();
@@ -30,7 +33,6 @@ function chunkText(text: string, maxLen = 150): string[] {
     } else {
       if (current) chunks.push(current);
       if (trimmed.length > maxLen) {
-        // Fallback: split by words
         const words = trimmed.split(/\s+/);
         let wordChunk = '';
         for (const w of words) {
@@ -72,14 +74,12 @@ export function stopAllSpeech() {
       currentAudio = null;
     } catch {}
   }
-  audioQueue = [];
-  isPlayingQueue = false;
 }
 
 /**
- * Play audio chunks sequentially using HTML5 Audio (Google TTS stream)
+ * Play high-fidelity TTS audio stream via /api/tts proxy (works on all mobile & desktop browsers)
  */
-function playGoogleTTSFallback(text: string, lang: 'en' | 'vi', rate: number = 1.0): Promise<void> {
+function playStreamingTTS(text: string, lang: 'en' | 'vi', rate: number = 1.0): Promise<void> {
   return new Promise((resolve) => {
     stopAllSpeech();
 
@@ -94,26 +94,44 @@ function playGoogleTTSFallback(text: string, lang: 'en' | 'vi', rate: number = 1
       if (currentIndex >= chunks.length) {
         currentAudio = null;
         resolve();
-        return;
       }
 
       const chunk = chunks[currentIndex++];
-      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang}&q=${encodeURIComponent(chunk)}`;
-      const audio = new Audio(url);
+      // Primary: Local Next.js route handler /api/tts
+      const primaryUrl = `/api/tts?text=${encodeURIComponent(chunk)}&lang=${lang}`;
+      const audio = new Audio(primaryUrl);
       currentAudio = audio;
       audio.playbackRate = Math.max(0.6, Math.min(1.5, rate));
 
       audio.onended = () => {
         playNext();
       };
+
       audio.onerror = () => {
-        // Skip to next chunk or resolve on error
-        playNext();
+        // Fallback: try backend API /api/v1/tts if Next.js route fails
+        const backendBase = (
+          process.env.NEXT_PUBLIC_API_URL || 'https://write-duo-ye5x-peach.vercel.app/api/v1'
+        ).replace(/\/+$/, '');
+        const fallbackUrl = `${backendBase}/tts?text=${encodeURIComponent(chunk)}&lang=${lang}`;
+
+        const fallbackAudio = new Audio(fallbackUrl);
+        currentAudio = fallbackAudio;
+        fallbackAudio.playbackRate = Math.max(0.6, Math.min(1.5, rate));
+
+        fallbackAudio.onended = () => playNext();
+        fallbackAudio.onerror = () => {
+          // If both streaming routes fail, fallback to local Web Speech API
+          playWebSpeechFallback(chunk, lang, rate).then(() => playNext());
+        };
+
+        fallbackAudio.play().catch(() => {
+          playWebSpeechFallback(chunk, lang, rate).then(() => playNext());
+        });
       };
 
       audio.play().catch(() => {
-        // Autoplay policy or network issue
-        resolve();
+        // Autoplay policy or error, fallback to Web Speech API
+        playWebSpeechFallback(chunk, lang, rate).then(() => playNext());
       });
     };
 
@@ -122,32 +140,72 @@ function playGoogleTTSFallback(text: string, lang: 'en' | 'vi', rate: number = 1
 }
 
 /**
- * Speak English text with mobile-safe SpeechSynthesis and Google TTS fallback
+ * Local Web Speech API playback fallback
  */
-export function speakEnglish(text: string, rate: number = 0.95) {
-  if (typeof window === 'undefined' || !text?.trim()) return;
+function playWebSpeechFallback(text: string, lang: 'en' | 'vi', rate: number = 1.0): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) {
+      resolve();
+      return;
+    }
 
-  const cleanText = text.trim();
-
-  // Try Web Speech API if supported
-  if (typeof window.speechSynthesis !== 'undefined') {
     try {
-      // Unfreeze paused speech synthesis on mobile browsers
       if (window.speechSynthesis.paused) {
         window.speechSynthesis.resume();
       }
 
-      // Avoid canceling immediately before speak in same tick
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === 'vi' ? 'vi-VN' : 'en-US';
+      utterance.rate = rate;
+
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const voice = voices.find((v) => v.lang.startsWith(lang));
+        if (voice) utterance.voice = voice;
       }
 
-      let started = false;
+      window.__vspeak_active_utterance = utterance;
+
+      utterance.onend = () => {
+        window.__vspeak_active_utterance = null;
+        resolve();
+      };
+      utterance.onerror = () => {
+        window.__vspeak_active_utterance = null;
+        resolve();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      resolve();
+    }
+  });
+}
+
+/**
+ * Speak English text with mobile-first audio stream and desktop WebSpeech
+ */
+export function speakEnglish(text: string, rate: number = 0.95) {
+  if (typeof window === 'undefined' || !text?.trim()) return;
+  const cleanText = text.trim();
+
+  // On mobile browsers, always use our reliable high-fidelity MP3 audio stream
+  if (isMobileBrowser()) {
+    playStreamingTTS(cleanText, 'en', rate);
+    return;
+  }
+
+  // On desktop, try Web Speech API first for instant latency, with streaming fallback
+  if (typeof window.speechSynthesis !== 'undefined') {
+    try {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+
       const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = 'en-US';
       utterance.rate = rate;
 
-      // Select high-quality English voice if available
       const voices = window.speechSynthesis.getVoices();
       if (voices.length > 0) {
         const preferredVoice = voices.find(
@@ -166,124 +224,38 @@ export function speakEnglish(text: string, rate: number = 0.95) {
         }
       }
 
-      // Retain reference on window to prevent aggressive WebKit garbage collection
       window.__vspeak_active_utterance = utterance;
-
-      let fallbackTimer: NodeJS.Timeout | null = null;
-
-      utterance.onstart = () => {
-        started = true;
-        if (fallbackTimer) clearTimeout(fallbackTimer);
-      };
 
       utterance.onend = () => {
         window.__vspeak_active_utterance = null;
-        if (fallbackTimer) clearTimeout(fallbackTimer);
       };
 
       utterance.onerror = (e) => {
         window.__vspeak_active_utterance = null;
-        if (fallbackTimer) clearTimeout(fallbackTimer);
-        // If canceled intentionally, do not trigger fallback
         if (e.error !== 'canceled' && e.error !== 'interrupted') {
-          playGoogleTTSFallback(cleanText, 'en', rate);
+          playStreamingTTS(cleanText, 'en', rate);
         }
       };
-
-      // Fallback timer: if onstart does not fire within 500ms (common on mobile when synthesis fails silently)
-      fallbackTimer = setTimeout(() => {
-        if (!started) {
-          try {
-            window.speechSynthesis.cancel();
-          } catch {}
-          window.__vspeak_active_utterance = null;
-          playGoogleTTSFallback(cleanText, 'en', rate);
-        }
-      }, 500);
 
       window.speechSynthesis.speak(utterance);
       return;
     } catch {
-      // Fallback below
+      // Fallback
     }
   }
 
-  // Fallback to HTML5 audio stream
-  playGoogleTTSFallback(cleanText, 'en', rate);
+  playStreamingTTS(cleanText, 'en', rate);
 }
 
 /**
- * Speak Vietnamese text with mobile-safe SpeechSynthesis and Google TTS fallback
+ * Speak Vietnamese text (uses high-fidelity streaming TTS since native Vietnamese voice is rare on OS)
  */
 export function speakVietnamese(text: string, rate: number = 1.0) {
   if (typeof window === 'undefined' || !text?.trim()) return;
-
   const cleanText = text.trim();
 
-  // On mobile, native Vietnamese TTS is frequently absent. We check if a Vietnamese voice exists.
-  if (typeof window.speechSynthesis !== 'undefined') {
-    try {
-      if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-      }
-
-      const voices = window.speechSynthesis.getVoices();
-      const viVoice = voices.find((v) => v.lang.startsWith('vi'));
-
-      // If a Vietnamese voice is confirmed installed in the browser:
-      if (viVoice) {
-        if (window.speechSynthesis.speaking) {
-          window.speechSynthesis.cancel();
-        }
-
-        let started = false;
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.lang = 'vi-VN';
-        utterance.voice = viVoice;
-        utterance.rate = rate;
-
-        window.__vspeak_active_utterance = utterance;
-
-        let fallbackTimer: NodeJS.Timeout | null = null;
-
-        utterance.onstart = () => {
-          started = true;
-          if (fallbackTimer) clearTimeout(fallbackTimer);
-        };
-
-        utterance.onend = () => {
-          window.__vspeak_active_utterance = null;
-          if (fallbackTimer) clearTimeout(fallbackTimer);
-        };
-
-        utterance.onerror = (e) => {
-          window.__vspeak_active_utterance = null;
-          if (fallbackTimer) clearTimeout(fallbackTimer);
-          if (e.error !== 'canceled' && e.error !== 'interrupted') {
-            playGoogleTTSFallback(cleanText, 'vi', rate);
-          }
-        };
-
-        fallbackTimer = setTimeout(() => {
-          if (!started) {
-            try {
-              window.speechSynthesis.cancel();
-            } catch {}
-            window.__vspeak_active_utterance = null;
-            playGoogleTTSFallback(cleanText, 'vi', rate);
-          }
-        }, 500);
-
-        window.speechSynthesis.speak(utterance);
-        return;
-      }
-    } catch {
-      // Fall through to Google TTS
-    }
-  }
-
-  // Google TTS provides natural Vietnamese audio stream on all mobile devices
-  playGoogleTTSFallback(cleanText, 'vi', rate);
+  // On both mobile and desktop, streaming Google TTS provides fluent, natural Vietnamese
+  playStreamingTTS(cleanText, 'vi', rate);
 }
 
 export function playSound(
