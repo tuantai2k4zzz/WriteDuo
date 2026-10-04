@@ -103,6 +103,10 @@ export const api = {
     return fetchJson<AuthUser>(`${API_BASE_URL}/users/me`);
   },
 
+  async getLearningProfile(): Promise<import('../types').PersonalLearningProfile> {
+    return fetchJson<import('../types').PersonalLearningProfile>(`${API_BASE_URL}/users/learning-profile`);
+  },
+
   async getStats(): Promise<AuthUser> {
     return fetchJson<AuthUser>(`${API_BASE_URL}/users/me`);
   },

@@ -12,20 +12,21 @@ export class ReviewService {
   ) {}
 
   async getSmartReviewQueue(userId?: string) {
-    const filter: Record<string, any> = {};
+    let sentenceIds: Types.ObjectId[] = [];
+
+    // 1. Find mistakes due for review STRICTLY for this specific user
     if (userId && Types.ObjectId.isValid(userId)) {
-      filter.userId = new Types.ObjectId(userId);
+      const dueMistakes = await this.mistakeModel
+        .find({ userId: new Types.ObjectId(userId) })
+        .sort({ nextReviewAt: 1, errorCount: -1 })
+        .limit(6)
+        .lean();
+      sentenceIds = dueMistakes.map((m) => m.sentenceId);
     }
 
-    // 1. Find mistakes due for review for this specific user
-    const dueMistakes = await this.mistakeModel
-      .find(filter)
-      .sort({ nextReviewAt: 1, errorCount: -1 })
-      .limit(6)
-      .lean();
-
-    const sentenceIds = dueMistakes.map((m) => m.sentenceId);
-    let sentences = await this.sentenceModel.find({ _id: { $in: sentenceIds } }).lean();
+    let sentences = sentenceIds.length > 0
+      ? await this.sentenceModel.find({ _id: { $in: sentenceIds } }).lean()
+      : [];
 
     // 2. If no mistakes due, pick 3 random sentences from any beginner/intermediate lessons for retention drill
     if (sentences.length < 3) {

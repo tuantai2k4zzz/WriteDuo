@@ -12,9 +12,9 @@ export class LessonsService {
     @InjectModel(UserProgress.name) private progressModel: Model<UserProgressDocument>,
   ) {}
 
-  async getAllLessons(level?: string) {
+  async getAllLessons(level?: string, userId?: string) {
     const filter: Record<string, any> = { isPublished: true };
-    if (level) {
+    if (level && level !== 'ALL') {
       filter.level = level.toUpperCase();
     }
 
@@ -24,10 +24,16 @@ export class LessonsService {
       .select('-paragraphs')
       .lean();
 
-    const progress = await this.progressModel.findOne().lean();
-    const completedSet = new Set(
-      (progress?.completedReadings || []).map((id) => id.toString()),
-    );
+    let completedSet = new Set<string>();
+
+    if (userId && Types.ObjectId.isValid(userId)) {
+      const progress = await this.progressModel
+        .findOne({ userId: new Types.ObjectId(userId) })
+        .lean();
+      completedSet = new Set(
+        (progress?.completedReadings || []).map((id) => id.toString()),
+      );
+    }
 
     return readings.map((r) => ({
       ...r,

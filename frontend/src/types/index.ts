@@ -284,6 +284,103 @@ export interface ReviewQueueItem {
   linkingRules: LinkingRule[];
 }
 
+export interface SkillMasteryScores {
+  grammar: number;
+  vocabulary: number;
+  translation: number;
+  pronunciation: number;
+  listening: number;
+  reading: number;
+  writing: number;
+  speaking: number;
+}
+
+export interface PersonalLearningProfile {
+  userId: string;
+  xp: number;
+  streak: number;
+  hearts: number;
+  currentLevel: string;
+  dailyGoalXp: number;
+  todayXp: number;
+  savedVocabulary: {
+    total: number;
+  };
+  weakVocabulary: {
+    total: number;
+    items: WeakVocabularyItem[];
+  };
+  grammarWeakness: Array<{
+    tag: string;
+    errorCount: number;
+    masteryScore: number;
+    explanation?: string;
+  }>;
+  pronunciationWeakness: Array<{
+    tag: string;
+    errorCount: number;
+    masteryScore: number;
+  }>;
+  listeningWeakness: any[];
+  readingProgress: {
+    completedCount: number;
+    totalCount: number;
+    percent: number;
+    completedReadings?: string[];
+  };
+  writingProgress: {
+    completedCount: number;
+    percent: number;
+  };
+  translationProgress: {
+    completedSentencesCount: number;
+    totalSentencesCount: number;
+    percent: number;
+    completedSentences?: string[];
+  };
+  lessonHistory: any[];
+  mastery: SkillMasteryScores;
+  learningStatistics: {
+    totalReadings: number;
+    totalSentences: number;
+    completedReadings: number;
+    completedSentences: number;
+    streakDays: number;
+    hasActivity: boolean;
+  };
+  adaptiveRecommendation?: {
+    priorityArea: string;
+    actionTitle: string;
+    actionDesc: string;
+  };
+}
+
+export type ExerciseType =
+  | 'EN_TO_VI'
+  | 'VI_TO_EN'
+  | 'VOCABULARY'
+  | 'GRAMMAR'
+  | 'LISTENING'
+  | 'READING'
+  | 'WRITING'
+  | 'REVERSE_TRANSLATION'
+  | 'PRONUNCIATION';
+
+export interface ExerciseItem {
+  id: string;
+  lessonId: string;
+  type: ExerciseType;
+  prompt: string;
+  promptVi?: string;
+  promptEn?: string;
+  expectedAnswer: string;
+  audioUrl?: string;
+  tokens?: Token[];
+  grammarAnalysis?: GrammarAnalysis;
+  pronunciationGuide?: PronunciationGuide;
+  metadata?: Record<string, any>;
+}
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -299,6 +396,7 @@ export interface AuthUser {
   weakWordsCount?: number;
   completedLessonsCount?: number;
   completedSentencesCount?: number;
+  learningProfile?: PersonalLearningProfile;
 }
 
 export interface WeakVocabularyItem {
@@ -317,3 +415,4 @@ export interface WeakVocabularyItem {
   lastReviewedAt?: string;
   nextReviewAt?: string;
 }
+

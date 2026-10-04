@@ -14,6 +14,12 @@ import {
   WeakVocabularySchema,
   LessonProgress,
   LessonProgressSchema,
+  UserMistake,
+  UserMistakeSchema,
+  Reading,
+  ReadingSchema,
+  Sentence,
+  SentenceSchema,
 } from '../../schemas';
 
 @Module({
@@ -25,6 +31,9 @@ import {
       { name: UserVocabulary.name, schema: UserVocabularySchema },
       { name: WeakVocabulary.name, schema: WeakVocabularySchema },
       { name: LessonProgress.name, schema: LessonProgressSchema },
+      { name: UserMistake.name, schema: UserMistakeSchema },
+      { name: Reading.name, schema: ReadingSchema },
+      { name: Sentence.name, schema: SentenceSchema },
     ]),
   ],
   controllers: [UsersController],

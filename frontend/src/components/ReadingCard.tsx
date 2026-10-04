@@ -3,7 +3,7 @@
 import React from 'react';
 import { Lesson } from '../types';
 import { BookOpen, CheckCircle, ArrowRight, Layers, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { DepthCard } from './motion/DepthCard';
 
 interface Props {
   lesson: Lesson;
@@ -30,14 +30,10 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
   const isCompleted = lesson.isCompleted;
 
   return (
-    <motion.div
-      whileHover={{ y: -6, scale: 1.015, transition: { duration: 0.2 } }}
-      whileTap={{ scale: 0.97 }}
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-5 transition-all duration-300 cursor-pointer backdrop-blur-md
-        ${isCompleted
-          ? 'border-emerald-500/30 bg-emerald-50/80 dark:bg-[#0a1a12]/90 shadow-sm dark:shadow-emerald-500/10'
-          : 'border-slate-200/90 dark:border-cyan-500/20 bg-white/95 dark:bg-[#060d1a]/95 hover:border-cyan-500/50 dark:hover:border-cyan-400/50 shadow-sm hover:shadow-md dark:hover:shadow-cyan-500/15'
-        }`}
+    <DepthCard
+      glowColor={isCompleted ? 'emerald' : 'cyan'}
+      onClick={() => onSelect(lesson)}
+      className="p-5 flex flex-col justify-between h-full cursor-pointer"
     >
       {/* Scan line top */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -79,9 +75,12 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
 
       {/* Action Button */}
       <button
-        onClick={() => onSelect(lesson)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelect(lesson);
+        }}
         disabled={isLoading}
-        className={`w-full flex items-center justify-center gap-2 rounded-xl py-2.5 px-4 text-xs font-black tracking-wider uppercase transition-all duration-200 active:scale-95 disabled:opacity-60 font-mono
+        className={`w-full flex items-center justify-center gap-2 rounded-xl py-2.5 px-4 text-xs font-black tracking-wider uppercase transition-all duration-200 active:scale-95 disabled:opacity-60 font-mono cursor-pointer
           ${isCompleted
             ? 'bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-300 dark:border-emerald-500/50 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-500/30'
             : 'bg-cyan-50 dark:bg-cyan-500/15 border border-cyan-300 dark:border-cyan-500/40 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-500/25 hover:border-cyan-400'
@@ -106,7 +105,7 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
       </button>
 
       {/* Corner accent */}
-      <div className="absolute bottom-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="absolute bottom-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
         <div className="absolute bottom-0 right-0 w-full h-full"
           style={{
             background: 'radial-gradient(circle at 100% 100%, rgba(6,182,212,0.08) 0%, transparent 70%)',
@@ -114,6 +113,6 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
         />
         <div className="absolute bottom-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-cyan-400/60" />
       </div>
-    </motion.div>
+    </DepthCard>
   );
 };

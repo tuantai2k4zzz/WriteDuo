@@ -17,6 +17,8 @@ import { ParagraphChallenge } from '../components/ParagraphChallenge';
 import { TuantaidzBrandPlate } from '../components/hud/TuantaidzBrandPlate';
 import { LearningGalaxy } from '../components/dashboard/LearningGalaxy';
 import { DailyMission } from '../components/dashboard/DailyMission';
+import { PersonalLearningProfile } from '../components/dashboard/PersonalLearningProfile';
+import { PageTransition } from '../components/motion/PageTransition';
 import { computeSkillVector, getAdaptiveRecommendation } from '../lib/adaptive';
 import { Sparkles, Compass, Brain, ArrowRight, ShieldCheck, Zap, Radio, Target } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -40,6 +42,7 @@ export default function Home() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [reviewItems, setReviewItems] = useState<ReviewQueueItem[]>([]);
   const [weaknesses, setWeaknesses] = useState<GrammarWeakness[]>([]);
+  const [learningProfile, setLearningProfile] = useState<import('../types').PersonalLearningProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectingLessonId, setSelectingLessonId] = useState<string | null>(null);
 
@@ -49,19 +52,21 @@ export default function Home() {
     loadUser();
   }, [initTheme, loadUser]);
 
-  // Load progress, lessons, weaknesses, and proactive review queue on mount or user switch
+  // Load progress, lessons, weaknesses, learning profile and proactive review queue on mount or user switch
   useEffect(() => {
     async function initData() {
       try {
         setLoading(true);
-        const [lessonsData, reviewData, weaknessesData] = await Promise.all([
+        const [lessonsData, reviewData, weaknessesData, profileData] = await Promise.all([
           api.getLessons(selectedLevel),
           api.getSmartReviewQueue().catch(() => ({ dueCount: 0, items: [] })),
           user ? api.getGrammarWeaknesses().catch(() => []) : Promise.resolve([]),
+          user ? api.getLearningProfile().catch(() => null) : Promise.resolve(null),
         ]);
         setLessons(lessonsData);
         setReviewItems(reviewData.items || []);
         setWeaknesses(weaknessesData || []);
+        setLearningProfile(profileData);
       } catch (err) {
         console.error('Failed to load initial data:', err);
       } finally {
@@ -191,42 +196,53 @@ export default function Home() {
   // If in an active learning session, render interactive screen
   if (activeLesson) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#060a12] transition-colors duration-300">
-        {isParagraphChallengeActive ? (
-          <ParagraphChallenge />
-        ) : (
-          <InteractiveSentence />
-        )}
-        <FeedbackDrawer />
-        <WordModal />
-        <LessonCompleteModal />
-        <AuthModal />
-      </div>
+      <PageTransition viewKey="active-lesson">
+        <div className="min-h-screen bg-slate-50 dark:bg-[#060a12] transition-colors duration-300">
+          {isParagraphChallengeActive ? (
+            <ParagraphChallenge />
+          ) : (
+            <InteractiveSentence />
+          )}
+          <FeedbackDrawer />
+          <WordModal />
+          <LessonCompleteModal />
+          <AuthModal />
+        </div>
+      </PageTransition>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-100/70 dark:bg-[#03070f] text-slate-800 dark:text-slate-100 transition-colors duration-300">
-      <Header />
+    <PageTransition viewKey={currentTab}>
+      <div className="min-h-screen flex flex-col bg-slate-100/70 dark:bg-[#03070f] text-slate-800 dark:text-slate-100 transition-colors duration-300">
+        <Header />
 
-      <main className="flex-1 pb-24 sm:pb-16">
-        {currentTab === 'vocab' && <VocabularyTab />}
-        {currentTab === 'weakness' && <WeaknessesTab />}
+        <main className="flex-1 pb-24 sm:pb-16">
+          {currentTab === 'vocab' && <VocabularyTab />}
+          {currentTab === 'weakness' && <WeaknessesTab />}
 
-        {currentTab === 'learn' && (
-          <div className="mx-auto max-w-6xl px-3 sm:px-6 py-4 sm:py-8">
+          {currentTab === 'learn' && (
+            <div className="mx-auto max-w-6xl px-3 sm:px-6 py-4 sm:py-8">
 
-            {/* ── EXCLUSIVE HOLOGRAPHIC BRAND SIGNBOARD FOR TUANTAIDZ ── */}
-            <TuantaidzBrandPlate />
+              {/* ── EXCLUSIVE HOLOGRAPHIC BRAND SIGNBOARD FOR TUANTAIDZ ── */}
+              <TuantaidzBrandPlate />
 
-            {/* ── DASHBOARD GRID: NEURAL GALAXY & DAILY MISSION ── */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start mb-6 sm:mb-8">
-              <div className="lg:col-span-7">
-                <LearningGalaxy skills={skillVector} />
-              </div>
+              {/* ── PERSONAL LEARNING PROFILE (COMMAND CENTER 2026) ── */}
+              <PersonalLearningProfile
+                profile={learningProfile}
+                onStartFirstLesson={() => lessons.length > 0 && handleSelectLesson(lessons[0])}
+                onOpenWeaknessTab={() => setCurrentTab('weakness')}
+                onOpenVocabTab={() => setCurrentTab('vocab')}
+              />
 
-              <div className="lg:col-span-5">
-                <DailyMission
+              {/* ── DASHBOARD GRID: NEURAL GALAXY & DAILY MISSION ── */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start mb-6 sm:mb-8">
+                <div className="lg:col-span-7">
+                  <LearningGalaxy skills={skillVector} />
+                </div>
+
+                <div className="lg:col-span-5">
+                  <DailyMission
                   todayXp={user ? (user.todayXp ?? userProgress?.todayXp ?? 0) : 0}
                   goalXp={user ? (user.dailyGoalXp ?? userProgress?.dailyGoalXp ?? 50) : 50}
                   weaknessCount={weaknesses.length}
@@ -370,5 +386,6 @@ export default function Home() {
       {/* Global Auth Modal for Multi-User Login & Registration */}
       <AuthModal />
     </div>
+    </PageTransition>
   );
 }

@@ -17,6 +17,16 @@ export class UsersController {
     };
   }
 
+  @Get('users/learning-profile')
+  @UseGuards(JwtAuthGuard)
+  async getLearningProfile(@CurrentUser('userId') userId: string) {
+    const data = await this.usersService.getLearningProfile(userId);
+    return {
+      success: true,
+      data,
+    };
+  }
+
   @Get('stats')
   @UseGuards(JwtAuthGuard)
   async getStats(@CurrentUser('userId') userId: string) {

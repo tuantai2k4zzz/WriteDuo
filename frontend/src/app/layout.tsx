@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { IronManCursor } from "../components/IronManCursor";
+import { MotionBackground } from "../components/motion/MotionBackground";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -89,7 +90,8 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col transition-colors duration-300">
+      <body className="min-h-full flex flex-col transition-colors duration-300 relative">
+        <MotionBackground />
         <IronManCursor />
         {children}
       </body>

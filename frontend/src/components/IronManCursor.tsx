@@ -118,7 +118,7 @@ export const IronManCursor: React.FC = () => {
     : '#06b6d4';
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
+    <div className="ironman-cursor pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
       {/* Central Core Laser Dot */}
       <div
         ref={dotRef}

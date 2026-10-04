@@ -1,13 +1,19 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { LessonsService } from './lessons.service';
+import { OptionalJwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @Controller('lessons')
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
 
   @Get()
-  async getLessons(@Query('level') level?: string) {
-    const lessons = await this.lessonsService.getAllLessons(level);
+  @UseGuards(OptionalJwtAuthGuard)
+  async getLessons(
+    @Query('level') level?: string,
+    @CurrentUser('userId') userId?: string,
+  ) {
+    const lessons = await this.lessonsService.getAllLessons(level, userId);
     return {
       success: true,
       data: lessons,
