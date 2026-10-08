@@ -63,11 +63,11 @@ export class LocalTutorGenerator {
 
     // 3. User asks why their answer is wrong ("Tại sao sai?", "Câu của tôi sai ở đâu?")
     if (
-      msg.includes('sai ở đâu') ||
-      msg.includes('tại sao sai') ||
-      msg.includes('vì sao sai') ||
-      msg.includes('why wrong') ||
-      msg.includes('sao lại sai')
+      msg.includes('sai') ||
+      msg.includes('wrong') ||
+      msg.includes('lỗi') ||
+      msg.includes('incorrect') ||
+      msg.includes('sao lại')
     ) {
       const userAns = context.userAnswer || '';
       const mistakes = context.mistakes || [];
@@ -153,7 +153,10 @@ export class LocalTutorGenerator {
     }
 
     // 6. Why "take" vs "go" (take someone for a walk vs go for a walk)
-    if (msg.includes('take') && (msg.includes('go') || msg.includes('tại sao') || msg.includes('vì sao'))) {
+    if (
+      (msg.includes('take') && (msg.includes('go') || msg.includes('tại sao') || msg.includes('vì sao') || msg.includes('why'))) ||
+      (msg.includes('go') && (targetEn.toLowerCase().includes('take') || msg.includes('không dùng') || msg.includes('why not') || msg.includes('walk')))
+    ) {
       return {
         answer: `### Vì sao?\nỞ đây dùng \`take\` vì cụm cố định là **\`take someone for a walk\`** = đưa/dắt ai đó đi dạo.\n\n### Trong câu này\nCâu có đối tượng được dẫn đi cùng, vì vậy cấu trúc bắt buộc là:\n\`take [đối tượng] for a walk\`.\n\n### So sánh\n- \`go for a walk\`: tự mình đi dạo (không nhận tân ngữ trực tiếp).\n- \`take someone for a walk\`: dắt hoặc đưa ai đó cùng đi dạo.\n\n### Ví dụ\n- ✓ *I go for a walk every morning.* (Tôi đi dạo mỗi sáng.)\n- ✓ *I take my dog for a walk every morning.* (Tôi dắt chó đi dạo mỗi sáng.)\n- ✗ *I go my dog for a walk.* (Sai cấu trúc)\n\n### Mẹo nhớ\n**GO = Mình tự đi**  \n**TAKE = Dắt ai đó đi cùng**`,
         keyPoint: 'take someone for a walk = dắt ai đi dạo; go for a walk = tự mình đi dạo.',
