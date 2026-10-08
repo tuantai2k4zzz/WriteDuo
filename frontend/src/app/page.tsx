@@ -224,30 +224,35 @@ export default function Home() {
           {currentTab === 'learn' && (
             <div className="mx-auto max-w-6xl px-3 sm:px-6 py-4 sm:py-8">
 
-              {/* ── EXCLUSIVE HOLOGRAPHIC BRAND SIGNBOARD FOR TUANTAIDZ ── */}
-              <TuantaidzBrandPlate />
+              {/* ── EXCLUSIVE HOLOGRAPHIC BRAND SIGNBOARD FOR TUANTAIDZ (Desktop/Laptop only) ── */}
+              <div className="hidden md:block">
+                <TuantaidzBrandPlate />
+              </div>
 
-              {/* ── PERSONAL LEARNING PROFILE (COMMAND CENTER 2026) ── */}
-              <PersonalLearningProfile
-                profile={learningProfile}
-                onStartFirstLesson={() => lessons.length > 0 && handleSelectLesson(lessons[0])}
-                onOpenWeaknessTab={() => setCurrentTab('weakness')}
-                onOpenVocabTab={() => setCurrentTab('vocab')}
-              />
+              {/* ── PERSONAL LEARNING PROFILE (COMMAND CENTER 2026 - Desktop/Laptop only) ── */}
+              <div className="hidden md:block">
+                <PersonalLearningProfile
+                  profile={learningProfile}
+                  onStartFirstLesson={() => lessons.length > 0 && handleSelectLesson(lessons[0])}
+                  onOpenWeaknessTab={() => setCurrentTab('weakness')}
+                  onOpenVocabTab={() => setCurrentTab('vocab')}
+                />
+              </div>
 
               {/* ── DASHBOARD GRID: NEURAL GALAXY & DAILY MISSION ── */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start mb-6 sm:mb-8">
-                <div className="lg:col-span-7">
+                {/* 3D Neural Galaxy (Chỉ hiển thị trên Laptop/Desktop để tối ưu hiệu năng và diện tích điện thoại) */}
+                <div className="hidden lg:block lg:col-span-7">
                   <LearningGalaxy skills={skillVector} />
                 </div>
 
-                <div className="lg:col-span-5">
+                <div className="w-full lg:col-span-5">
                   <DailyMission
-                  todayXp={user ? (user.todayXp ?? userProgress?.todayXp ?? 0) : 0}
-                  goalXp={user ? (user.dailyGoalXp ?? userProgress?.dailyGoalXp ?? 50) : 50}
-                  weaknessCount={weaknesses.length}
-                  onNavigateTab={setCurrentTab}
-                />
+                    todayXp={user ? (user.todayXp ?? userProgress?.todayXp ?? 0) : 0}
+                    goalXp={user ? (user.dailyGoalXp ?? userProgress?.dailyGoalXp ?? 50) : 50}
+                    weaknessCount={weaknesses.length}
+                    onNavigateTab={setCurrentTab}
+                  />
 
                 {/* ADAPTIVE RECOMMENDATION CARD */}
                 {recommendation && (

@@ -207,31 +207,33 @@ export const FeedbackDrawer: React.FC = () => {
             </div>
           )}
 
-          {/* ── TIME REWIND ERROR EXPERIENCE (< 1s Visual Anomaly Repair) ── */}
+          {/* ── TIME REWIND ERROR EXPERIENCE (Chỉ hiện trên Desktop/Tablet để tránh trùng lặp thông tin với khối WHAT/WHY/FIX trên điện thoại) ── */}
           {!isCorrect && specificMistakes.length > 0 && (
-            <TimeRewindRepair
-              userSnippet={
-                specificMistakes[0].where &&
-                !specificMistakes[0].where.startsWith('Thiếu') &&
-                !specificMistakes[0].where.includes('Chữ cái') &&
-                !specificMistakes[0].where.includes('Toàn câu')
-                  ? specificMistakes[0].where
-                  : exerciseMode === 'vi_to_en'
-                  ? '(Bỏ sót từ)'
-                  : specificMistakes[0].where || '(Bỏ sót)'
-              }
-              fixedSnippet={
-                exerciseMode === 'vi_to_en'
-                  ? specificMistakes[0].relatedEnglish ||
-                    specificMistakes[0].fixedSnippet ||
-                    referenceAnswer
-                  : specificMistakes[0].correctMeaning ||
-                    specificMistakes[0].fixedSnippet ||
-                    referenceAnswer
-              }
-              reason={specificMistakes[0].whyIncorrect}
-              rule={grammarInsight?.relevantRule || grammarAnalysis?.tense}
-            />
+            <div className="hidden sm:block">
+              <TimeRewindRepair
+                userSnippet={
+                  specificMistakes[0].where &&
+                  !specificMistakes[0].where.startsWith('Thiếu') &&
+                  !specificMistakes[0].where.includes('Chữ cái') &&
+                  !specificMistakes[0].where.includes('Toàn câu')
+                    ? specificMistakes[0].where
+                    : exerciseMode === 'vi_to_en'
+                    ? '(Bỏ sót từ)'
+                    : specificMistakes[0].where || '(Bỏ sót)'
+                }
+                fixedSnippet={
+                  exerciseMode === 'vi_to_en'
+                    ? specificMistakes[0].relatedEnglish ||
+                      specificMistakes[0].fixedSnippet ||
+                      referenceAnswer
+                    : specificMistakes[0].correctMeaning ||
+                      specificMistakes[0].fixedSnippet ||
+                      referenceAnswer
+                }
+                reason={specificMistakes[0].whyIncorrect}
+                rule={grammarInsight?.relevantRule || grammarAnalysis?.tense}
+              />
+            </div>
           )}
 
           {/* ── ERROR VISUALIZATION: SIDE-BY-SIDE COMPARISON ── */}

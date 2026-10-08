@@ -76,7 +76,7 @@ export const TutorHeader: React.FC = () => {
 
       {/* Subtitle & Depth toggle */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
-        <p className="text-xs text-slate-500 dark:text-slate-400">
+        <p className="hidden sm:block text-xs text-slate-500 dark:text-slate-400">
           AI hiểu bài học & câu bạn đang nhìn vào.
         </p>
 

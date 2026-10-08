@@ -94,7 +94,7 @@ export const TutorQuickActions: React.FC<TutorQuickActionsProps> = ({ sentence }
         <span>Gợi ý câu hỏi nhanh theo bài:</span>
       </div>
 
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-1.5 max-h-[68px] sm:max-h-none overflow-y-auto no-scrollbar">
         {chips.slice(0, 4).map((chip, idx) => (
           <button
             key={idx}

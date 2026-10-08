@@ -404,8 +404,8 @@ export const InteractiveSentence: React.FC = () => {
           <main className="lg:col-span-7 xl:col-span-8 flex flex-col max-w-2xl mx-auto w-full space-y-5">
 
             {/* ── TWO-WAY MODE SWITCHER (Segmented HUD Bar) ── */}
-            <div className="flex items-center justify-between gap-3 p-1.5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-cyan-500/20 shadow-sm backdrop-blur-md">
-              <div className="flex items-center gap-2 pl-2">
+            <div className="flex items-center justify-between gap-2 sm:gap-3 p-1.5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-cyan-500/20 shadow-sm backdrop-blur-md">
+              <div className="hidden sm:flex items-center gap-2 pl-2">
                 <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
                 <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
                   CHẾ ĐỘ HỌC
@@ -413,13 +413,13 @@ export const InteractiveSentence: React.FC = () => {
               </div>
 
               {/* Segmented Switch Buttons */}
-              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl">
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl w-full sm:w-auto justify-between sm:justify-start">
                 <button
                   type="button"
                   onClick={() => {
                     if (isViToEn) handleModeSwitch();
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                     !isViToEn
                       ? 'bg-white dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 shadow-sm border border-cyan-500/30'
                       : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
@@ -433,7 +433,7 @@ export const InteractiveSentence: React.FC = () => {
                   onClick={() => {
                     if (!isViToEn) handleModeSwitch();
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                     isViToEn
                       ? 'bg-white dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 shadow-sm border border-cyan-500/30'
                       : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
@@ -444,21 +444,23 @@ export const InteractiveSentence: React.FC = () => {
               </div>
             </div>
 
-            {/* SRS Recall Notification */}
+            {/* SRS Recall Notification (Gọn gàng trên Mobile) */}
             {sentence.isSpacedRecall && (
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-500/10 to-purple-500/10 dark:from-violet-950/40 dark:to-purple-950/40 px-4 py-2.5 text-xs font-black text-violet-700 dark:text-violet-300 border border-violet-300 dark:border-violet-800/60 shadow-xs"
+                className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-500/10 to-purple-500/10 dark:from-violet-950/40 dark:to-purple-950/40 px-3 sm:px-4 py-2 text-xs font-black text-violet-700 dark:text-violet-300 border border-violet-300 dark:border-violet-800/60 shadow-xs"
               >
-                <Sparkles className="h-4 w-4 text-violet-500 animate-spin" />
-                <span>HỒI TƯỞNG CHỦ ĐỘNG: Câu này được AI tự động đưa vào để chống quên!</span>
+                <Sparkles className="h-3.5 w-3.5 text-violet-500 animate-spin shrink-0" />
+                <span className="hidden sm:inline">HỒI TƯỞNG CHỦ ĐỘNG: Câu này được AI tự động đưa vào để chống quên!</span>
+                <span className="sm:hidden text-[11px]">⚡ HỒI TƯỞNG: Câu ôn tập chống quên</span>
               </motion.div>
             )}
 
-            {/* ── QUESTION CARD WITH 3D FLIP ANIMATION ── */}
-            {/* ── SENTENCE REACTOR (HOLOGRAPHIC SYNTACTIC MAP) - LÊN TRÊN CÙNG ── */}
-            <SentenceReactor sentence={sentence} onTokenClick={openWordModal} />
+            {/* ── SENTENCE REACTOR (HOLOGRAPHIC SYNTACTIC MAP) - CHỈ HIỂN THỊ TRÊN DESKTOP/LAPTOP ĐỂ KHÔNG CHOÁN MÀN HÌNH ĐIỆN THOẠI ── */}
+            <div className="hidden md:block">
+              <SentenceReactor sentence={sentence} onTokenClick={openWordModal} />
+            </div>
 
             {/* ── CÂU HỎI VÀ TRẢ LỜI CẠNH NHAU (SIDE BY SIDE TRÊN DESKTOP, LIỀN KỀ TRÊN MOBILE) ── */}
             <ExerciseTransition questionKey={`${sentence._id}-${exerciseMode}`}>
@@ -467,11 +469,11 @@ export const InteractiveSentence: React.FC = () => {
                 <div
                   onMouseUp={handleSelectionCheck}
                   onTouchEnd={handleSelectionCheck}
-                  className="relative flex flex-col justify-between rounded-3xl border border-slate-200/90 dark:border-cyan-500/30 bg-white dark:bg-slate-900/90 p-5 sm:p-6 shadow-sm backdrop-blur-xl h-full select-text"
+                  className="relative flex flex-col justify-between rounded-3xl border border-slate-200/90 dark:border-cyan-500/30 bg-white dark:bg-slate-900/90 p-4 sm:p-6 shadow-sm backdrop-blur-xl h-full select-text"
                 >
-                  {/* Corner Accents */}
-                  <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-3xl" />
-                  <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-500/40 rounded-tr-3xl" />
+                  {/* Corner Accents (Laptop/Desktop only) */}
+                  <div className="hidden sm:block absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-3xl" />
+                  <div className="hidden sm:block absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-500/40 rounded-tr-3xl" />
 
                   <div>
                     {/* Floating Selection Tooltip Action */}
