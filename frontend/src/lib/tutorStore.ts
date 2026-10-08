@@ -101,10 +101,22 @@ export const useTutorStore = create<TutorState>((set, get) => ({
     const q = question.trim();
     if (!q || get().status === 'thinking' || get().status === 'answering') return;
 
-    playSound('click');
-
     // Get current learning store snapshot
     const learningState = useLearningStore.getState();
+
+    // REQUIRE LOGIN: Chỉ khi đăng nhập tài khoản mới được hỏi AI!
+    if (!learningState.user) {
+      playSound('incorrect');
+      learningState.openAuthModal('login');
+      set({
+        error: 'Vui lòng đăng nhập tài khoản để sử dụng Gia Sư AI!',
+        status: 'error',
+      });
+      return;
+    }
+
+    playSound('click');
+
     const sentence = learningState.sentences[learningState.currentSentenceIndex];
     const lesson = learningState.activeLesson;
     const isViToEn = learningState.exerciseMode === 'vi_to_en';

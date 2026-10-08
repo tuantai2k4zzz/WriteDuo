@@ -32,6 +32,7 @@ import { VocabularyModule } from './modules/vocabulary/vocabulary.module';
 import { ReviewModule } from './modules/review/review.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { UsersModule } from './modules/users/users.module';
     ]),
     AuthModule,
     UsersModule,
+    AdminModule,
     AIModule,
     LessonsModule,
     EvaluationModule,

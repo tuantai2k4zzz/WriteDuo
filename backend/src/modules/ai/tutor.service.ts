@@ -1,5 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import { User, UserDocument } from '../../schemas';
 import {
   TutorChatRequest,
   TutorChatResponse,
@@ -20,12 +23,13 @@ export class TutorService {
   private responseCache = new Map<string, { data: TutorStructuredResponse; timestamp: number }>();
   private usageTracker = new Map<string, UsageRecord>();
 
-  // Max quota per day
-  private readonly GUEST_LIMIT = 50;
-  private readonly USER_LIMIT = 150;
+  private readonly STANDARD_USER_LIMIT = 50; // User thường chỉ được 50 câu/ngày
   private readonly CACHE_TTL_MS = 1000 * 60 * 60 * 6; // 6 hours
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    @Optional() @InjectModel(User.name) private userModel?: Model<UserDocument>,
+  ) {
     this.apiKey = this.configService.get<string>('GEMINI_API_KEY') || '';
   }
 
@@ -37,33 +41,112 @@ export class TutorService {
     return new Date().toISOString().slice(0, 10);
   }
 
-  private checkAndIncrementUsage(identifier: string, isAuth: boolean): { allowed: boolean; used: number; limit: number } {
+  private async checkAndIncrementUsage(userId?: string): Promise<{
+    allowed: boolean;
+    requiresAuth?: boolean;
+    used: number;
+    limit: number;
+    isUnlimited: boolean;
+    role: string;
+  }> {
+    // 1. Phải đăng nhập mới được hỏi AI!
+    if (!userId) {
+      return {
+        allowed: false,
+        requiresAuth: true,
+        used: 0,
+        limit: 0,
+        isUnlimited: false,
+        role: 'guest',
+      };
+    }
+
+    let role = 'user';
+    if (this.userModel && Types.ObjectId.isValid(userId)) {
+      try {
+        const user = await this.userModel.findById(userId).select('role').lean();
+        if (user && user.role) {
+          role = user.role;
+        }
+      } catch {}
+    }
+
     const today = this.getTodayKey();
-    const limit = isAuth ? this.USER_LIMIT : this.GUEST_LIMIT;
-    const record = this.usageTracker.get(identifier);
+    const isUnlimited = role === 'premium' || role === 'admin';
+    const limit = isUnlimited ? 999999 : this.STANDARD_USER_LIMIT;
+
+    const record = this.usageTracker.get(userId);
+    let usedToday = 1;
 
     if (!record || record.dateString !== today) {
-      this.usageTracker.set(identifier, { count: 1, dateString: today });
-      return { allowed: true, used: 1, limit };
+      this.usageTracker.set(userId, { count: 1, dateString: today });
+      usedToday = 1;
+    } else {
+      if (!isUnlimited && record.count >= limit) {
+        return {
+          allowed: false,
+          requiresAuth: false,
+          used: record.count,
+          limit,
+          isUnlimited,
+          role,
+        };
+      }
+      record.count += 1;
+      usedToday = record.count;
     }
 
-    if (record.count >= limit) {
-      return { allowed: false, used: record.count, limit };
+    // Increment overall database usage counter asynchronously
+    if (this.userModel && Types.ObjectId.isValid(userId)) {
+      this.userModel.findByIdAndUpdate(userId, { $inc: { aiQueriesCount: 1 } }).catch(() => {});
     }
 
-    record.count += 1;
-    return { allowed: true, used: record.count, limit };
+    return {
+      allowed: true,
+      requiresAuth: false,
+      used: usedToday,
+      limit,
+      isUnlimited,
+      role,
+    };
   }
 
-  public getQuota(identifier: string, isAuth: boolean) {
+  public async getQuota(userId?: string) {
+    if (!userId) {
+      return {
+        usedToday: 0,
+        limitToday: 0,
+        remaining: 0,
+        isUnlimited: false,
+        requiresAuth: true,
+        role: 'guest',
+      };
+    }
+
+    let role = 'user';
+    if (this.userModel && Types.ObjectId.isValid(userId)) {
+      try {
+        const user = await this.userModel.findById(userId).select('role').lean();
+        if (user && user.role) {
+          role = user.role;
+        }
+      } catch {}
+    }
+
     const today = this.getTodayKey();
-    const limit = isAuth ? this.USER_LIMIT : this.GUEST_LIMIT;
-    const record = this.usageTracker.get(identifier);
+    const isUnlimited = role === 'premium' || role === 'admin';
+    const limit = isUnlimited ? 999999 : this.STANDARD_USER_LIMIT;
+
+    const record = this.usageTracker.get(userId);
     const used = record && record.dateString === today ? record.count : 0;
+
     return {
       usedToday: used,
       limitToday: limit,
-      remaining: Math.max(0, limit - used),
+      remaining: isUnlimited ? 999999 : Math.max(0, limit - used),
+      isUnlimited,
+      requiresAuth: false,
+      role,
     };
   }
 
@@ -80,17 +163,38 @@ export class TutorService {
     userId?: string,
     clientIp: string = '127.0.0.1',
   ): Promise<TutorChatResponse> {
-    const identifier = userId || clientIp;
-    const isAuth = !!userId;
+    const effectiveUserId = userId || request.context?.userId;
 
-    // 1. Quota & Rate Limit verification
-    const quotaCheck = this.checkAndIncrementUsage(identifier, isAuth);
+    // 1. Quota & Authentication verification
+    const quotaCheck = await this.checkAndIncrementUsage(effectiveUserId);
+
+    if (quotaCheck.requiresAuth) {
+      return {
+        success: false,
+        requiresAuth: true,
+        data: {
+          answer: '🔒 **Bạn cần đăng nhập tài khoản để sử dụng Gia Sư AI.**\nVui lòng đăng nhập hoặc tạo tài khoản để nhận hỗ trợ giải thích ngữ pháp, từ vựng và chấm câu bài học nhé!',
+          keyPoint: 'Vui lòng đăng nhập để dùng Gia Sư AI.',
+          explanationType: 'general',
+          followUpSuggestions: ['Đăng nhập tài khoản'],
+        },
+        quota: {
+          usedToday: 0,
+          limitToday: 0,
+          remaining: 0,
+          isUnlimited: false,
+          requiresAuth: true,
+          role: 'guest',
+        },
+      };
+    }
+
     if (!quotaCheck.allowed) {
       return {
         success: false,
         data: {
-          answer: `Bạn đã đạt giới hạn câu hỏi miễn phí trong ngày (${quotaCheck.limit} câu/ngày). Hãy quay lại vào ngày mai hoặc đăng nhập tài khoản để tiếp tục nhận hỗ trợ từ AI Tutor nhé!`,
-          keyPoint: 'Đã đạt giới hạn câu hỏi trong ngày.',
+          answer: `⚠️ **Bạn đã sử dụng hết hạn mức ${quotaCheck.limit} câu hỏi AI hôm nay.**\nHãy quay lại vào ngày mai hoặc liên hệ Admin để nâng cấp lên tài khoản **Premium** sử dụng AI không giới hạn nhé!`,
+          keyPoint: `Đã đạt giới hạn ${quotaCheck.limit} câu hỏi hôm nay.`,
           explanationType: 'general',
           followUpSuggestions: ['Xem lại các câu hỏi trước'],
         },
@@ -98,6 +202,8 @@ export class TutorService {
           usedToday: quotaCheck.used,
           limitToday: quotaCheck.limit,
           remaining: 0,
+          isUnlimited: false,
+          role: quotaCheck.role,
         },
       };
     }
@@ -110,7 +216,7 @@ export class TutorService {
       return {
         success: true,
         data: cached.data,
-        quota: this.getQuota(identifier, isAuth),
+        quota: await this.getQuota(effectiveUserId),
       };
     }
 
@@ -123,7 +229,7 @@ export class TutorService {
           return {
             success: true,
             data: responseData,
-            quota: this.getQuota(identifier, isAuth),
+            quota: await this.getQuota(effectiveUserId),
           };
         }
       } catch (err: any) {
@@ -131,19 +237,17 @@ export class TutorService {
       }
     }
 
-    // 4. Resilient Pedagogical Fallback
-    const fallbackResponse = LocalTutorGenerator.generateResponse(
+    // 4. Local Generator Fallback
+    const fallbackData = LocalTutorGenerator.generateResponse(
       request.message,
       request.context,
       request.depthMode || 'normal',
     );
-
-    this.responseCache.set(cacheKey, { data: fallbackResponse, timestamp: Date.now() });
-
+    this.responseCache.set(cacheKey, { data: fallbackData, timestamp: Date.now() });
     return {
       success: true,
-      data: fallbackResponse,
-      quota: this.getQuota(identifier, isAuth),
+      data: fallbackData,
+      quota: await this.getQuota(effectiveUserId),
     };
   }
 

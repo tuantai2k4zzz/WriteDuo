@@ -17,8 +17,11 @@ export class User {
   @Prop({ default: 'https://api.dicebear.com/7.x/bottts/svg?seed=DuolingoLearner' })
   avatar: string;
 
-  @Prop({ default: 'user', enum: ['user', 'admin'] })
+  @Prop({ default: 'user', enum: ['user', 'premium', 'admin'] })
   role: string;
+
+  @Prop({ default: 0 })
+  aiQueriesCount: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

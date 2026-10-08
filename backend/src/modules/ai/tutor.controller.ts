@@ -22,17 +22,19 @@ export class TutorController {
   @UseGuards(OptionalJwtAuthGuard)
   async chat(
     @Body() dto: TutorChatDto,
-    @CurrentUser('userId') userId?: string,
+    @CurrentUser('userId') authUserId?: string,
     @Req() req?: Request,
   ) {
+    const effectiveUserId = authUserId || dto.context?.userId;
     const clientIp =
       (req?.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
       req?.socket?.remoteAddress ||
       '127.0.0.1';
 
-    const result = await this.tutorService.askTutor(dto, userId, clientIp);
+    const result = await this.tutorService.askTutor(dto, effectiveUserId, clientIp);
     return {
       success: result.success,
+      requiresAuth: result.requiresAuth,
       data: result.data,
       quota: result.quota,
     };
@@ -41,17 +43,10 @@ export class TutorController {
   @Get('quota')
   @UseGuards(OptionalJwtAuthGuard)
   async getQuota(
-    @CurrentUser('userId') userId?: string,
+    @CurrentUser('userId') authUserId?: string,
     @Req() req?: Request,
   ) {
-    const clientIp =
-      (req?.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
-      req?.socket?.remoteAddress ||
-      '127.0.0.1';
-
-    const identifier = userId || clientIp;
-    const isAuth = !!userId;
-    const quota = this.tutorService.getQuota(identifier, isAuth);
+    const quota = await this.tutorService.getQuota(authUserId);
 
     return {
       success: true,
@@ -64,9 +59,10 @@ export class TutorController {
   async streamChat(
     @Body() dto: TutorChatDto,
     @Res() res: Response,
-    @CurrentUser('userId') userId?: string,
+    @CurrentUser('userId') authUserId?: string,
     @Req() req?: Request,
   ) {
+    const effectiveUserId = authUserId || dto.context?.userId;
     const clientIp =
       (req?.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
       req?.socket?.remoteAddress ||
@@ -79,7 +75,7 @@ export class TutorController {
     res.flushHeaders?.();
 
     try {
-      const result = await this.tutorService.askTutor(dto, userId, clientIp);
+      const result = await this.tutorService.askTutor(dto, effectiveUserId, clientIp);
 
       if (!result.success) {
         res.write(`event: error\ndata: ${JSON.stringify(result.data)}\n\n`);

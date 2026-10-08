@@ -390,5 +390,27 @@ export const api = {
       }
     }
   },
+
+  // Admin Endpoints
+  async adminGetStats(): Promise<import('../types').AdminStats> {
+    const res = await fetchJson<{ success: boolean; data: import('../types').AdminStats }>(
+      `${API_BASE_URL}/admin/stats`,
+    );
+    return res.data;
+  },
+
+  async adminGetUsers(): Promise<import('../types').AdminUserItem[]> {
+    const res = await fetchJson<{ success: boolean; data: import('../types').AdminUserItem[] }>(
+      `${API_BASE_URL}/admin/users`,
+    );
+    return res.data;
+  },
+
+  async adminUpdateUserRole(userId: string, role: string): Promise<any> {
+    return fetchJson(`${API_BASE_URL}/admin/users/${encodeURIComponent(userId)}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+    });
+  },
 };
 

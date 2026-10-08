@@ -2,16 +2,25 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useTutorStore } from '../../lib/tutorStore';
-import { Send, Sparkles, Loader2 } from 'lucide-react';
+import { useLearningStore } from '../../lib/store';
+import { playSound } from '../../lib/audio';
+import { Send, Sparkles, Loader2, Lock } from 'lucide-react';
 
 export const TutorInput: React.FC = () => {
   const { askTutor, status } = useTutorStore();
+  const { user, openAuthModal } = useLearningStore();
   const [text, setText] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const isBusy = status === 'thinking' || status === 'answering';
 
   const handleSend = () => {
+    if (!user) {
+      playSound('incorrect');
+      openAuthModal('login');
+      return;
+    }
+
     if (!text.trim() || isBusy) return;
     const query = text.trim();
     setText('');
@@ -29,6 +38,10 @@ export const TutorInput: React.FC = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!user) {
+      openAuthModal('login');
+      return;
+    }
     setText(e.target.value);
     // Auto grow textarea height up to 120px
     if (textareaRef.current) {

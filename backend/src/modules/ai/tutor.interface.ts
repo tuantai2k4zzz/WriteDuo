@@ -108,10 +108,14 @@ export interface TutorStructuredResponse {
 
 export interface TutorChatResponse {
   success: boolean;
+  requiresAuth?: boolean;
   data: TutorStructuredResponse;
   quota?: {
     usedToday: number;
     limitToday: number;
     remaining: number;
+    isUnlimited?: boolean;
+    role?: string;
+    requiresAuth?: boolean;
   };
 }

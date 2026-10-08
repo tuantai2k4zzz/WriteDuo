@@ -3,6 +3,8 @@ import {
   ConflictException,
   UnauthorizedException,
   NotFoundException,
+  OnModuleInit,
+  Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -14,12 +16,43 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(UserProgress.name) private progressModel: Model<UserProgressDocument>,
     private configService: ConfigService,
   ) {}
+
+  async onModuleInit() {
+    try {
+      const adminExists = await this.userModel.findOne({ role: 'admin' });
+      if (!adminExists) {
+        const defaultAdminEmail = 'admin@writeduo.com';
+        const passwordHash = await bcrypt.hash('admin123', 10);
+        const adminUser = await this.userModel.create({
+          email: defaultAdminEmail,
+          name: 'Quản Trị Viên (Admin)',
+          passwordHash,
+          avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=AdminWriteDuo',
+          role: 'admin',
+        });
+        await this.progressModel.create({
+          userId: adminUser._id,
+          xp: 9999,
+          streakCount: 30,
+          hearts: 5,
+          currentLevel: 'C1',
+          dailyGoalXp: 100,
+          todayXp: 100,
+        });
+        this.logger.log(`Initialized default admin account: ${defaultAdminEmail} (password: admin123)`);
+      }
+    } catch (err: any) {
+      this.logger.warn(`Admin seed check skipped: ${err?.message}`);
+    }
+  }
 
   private getJwtSecret(): string {
     return this.configService.get<string>('JWT_SECRET') || 'write_duo_secret_key_2026';
@@ -79,6 +112,8 @@ export class AuthService {
         email: user.email,
         name: user.name,
         avatar: user.avatar,
+        role: user.role || 'user',
+        createdAt: (user as any).createdAt,
       },
     };
   }
@@ -122,6 +157,8 @@ export class AuthService {
         email: user.email,
         name: user.name,
         avatar: user.avatar,
+        role: user.role || 'user',
+        createdAt: (user as any).createdAt,
       },
     };
   }
@@ -155,6 +192,8 @@ export class AuthService {
       email: user.email,
       name: user.name,
       avatar: user.avatar,
+      role: (user as any).role || 'user',
+      createdAt: (user as any).createdAt,
       xp: progress.xp || 0,
       streak: progress.streakCount || 0,
       hearts: progress.hearts ?? 5,

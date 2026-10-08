@@ -386,6 +386,8 @@ export interface AuthUser {
   email: string;
   name: string;
   avatar: string;
+  role?: 'user' | 'premium' | 'admin';
+  createdAt?: string;
   xp?: number;
   streak?: number;
   hearts?: number;
@@ -530,11 +532,36 @@ export interface TutorQuota {
   usedToday: number;
   limitToday: number;
   remaining: number;
+  isUnlimited?: boolean;
+  requiresAuth?: boolean;
+  role?: string;
 }
 
 export interface TutorChatResponse {
   success: boolean;
+  requiresAuth?: boolean;
   data: TutorStructuredResponse;
   quota?: TutorQuota;
+}
+
+export interface AdminStats {
+  totalUsers: number;
+  standardUsers: number;
+  premiumUsers: number;
+  adminUsers: number;
+  totalAiQueries: number;
+}
+
+export interface AdminUserItem {
+  id: string;
+  email: string;
+  name: string;
+  avatar: string;
+  role: 'user' | 'premium' | 'admin';
+  createdAt: string;
+  xp: number;
+  streak: number;
+  currentLevel: string;
+  aiQueriesCount: number;
 }
 

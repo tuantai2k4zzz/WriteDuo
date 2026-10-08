@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useLearningStore } from '../lib/store';
 import { playSound } from '../lib/audio';
-import { Flame, Zap, BookOpen, BookmarkCheck, Target, Sun, Moon, LogIn, LogOut } from 'lucide-react';
+import { Flame, Zap, BookOpen, BookmarkCheck, Target, Sun, Moon, LogIn, LogOut, Shield } from 'lucide-react';
+import { AdminDashboardModal } from './admin/AdminDashboardModal';
 
 export const Header: React.FC = () => {
   const {
@@ -17,6 +18,8 @@ export const Header: React.FC = () => {
     themeMode,
     toggleThemeMode,
   } = useLearningStore();
+
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
 
   if (activeLesson) {
     return null;
@@ -139,12 +142,28 @@ export const Header: React.FC = () => {
               </span>
             </div>
 
+            {/* Admin Management Button (Visible only to Admin users) */}
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => {
+                  playSound('click');
+                  setIsAdminModalOpen(true);
+                }}
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/40 text-purple-700 dark:text-purple-300 text-xs font-black transition active:scale-95 shadow-sm cursor-pointer"
+                title="Mở Bảng Điều Khiển Quản Trị Viên (Admin Panel)"
+              >
+                <Shield className="w-3.5 h-3.5 text-purple-500" />
+                <span className="hidden sm:inline">Quản Trị Users</span>
+                <span className="sm:hidden">Admin</span>
+              </button>
+            )}
+
             {/* User Session Profile / Login Button */}
             {user ? (
               <div className="flex items-center gap-1 sm:gap-1.5 pl-0.5">
                 <div
                   className="flex items-center gap-1.5 pl-1.5 pr-2 py-0.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 shadow-xs max-w-[110px]"
-                  title={`Đang đăng nhập: ${user.email}`}
+                  title={`Đang đăng nhập: ${user.email} (Role: ${user.role || 'user'})`}
                 >
                   <img
                     src={user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email}`}
@@ -229,6 +248,12 @@ export const Header: React.FC = () => {
           <span className="text-[10px]">Điểm Yếu</span>
         </button>
       </nav>
+
+      {/* Admin Management Dashboard Modal */}
+      <AdminDashboardModal
+        isOpen={isAdminModalOpen}
+        onClose={() => setIsAdminModalOpen(false)}
+      />
     </>
   );
 };
