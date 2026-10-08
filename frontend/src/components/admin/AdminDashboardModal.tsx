@@ -39,13 +39,20 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
     try {
       setLoading(true);
       const [statsData, usersData] = await Promise.all([
-        api.adminGetStats().catch(() => null),
-        api.adminGetUsers().catch(() => []),
+        api.adminGetStats().catch((err) => {
+          console.error('Failed to load stats:', err);
+          return null;
+        }),
+        api.adminGetUsers().catch((err) => {
+          console.error('Failed to load users:', err);
+          return [];
+        }),
       ]);
-      setStats(statsData);
-      setUsers(usersData);
+      setStats(statsData || null);
+      setUsers(Array.isArray(usersData) ? usersData : []);
     } catch (err: any) {
       console.error('Failed to load admin data:', err);
+      setUsers([]);
     } finally {
       setLoading(false);
     }
@@ -67,11 +74,11 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
 
       // Optimistic update local state
       setUsers((prev) =>
-        prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
+        (Array.isArray(prev) ? prev : []).map((u) => (u.id === userId ? { ...u, role: newRole } : u))
       );
 
       // Re-fetch stats
-      api.adminGetStats().then(setStats).catch(() => {});
+      api.adminGetStats().then((s) => s && setStats(s)).catch(() => {});
 
       const roleLabels: Record<string, string> = {
         user: 'Thường (50 câu)',
@@ -89,27 +96,34 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
     }
   };
 
-  // Filter users based on search & role
-  const filteredUsers = users.filter((u) => {
-    const matchesSearch =
-      u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      u.name.toLowerCase().includes(searchQuery.toLowerCase());
+  // Filter users based on search & role safely
+  const safeUsers = Array.isArray(users) ? users : [];
+  const query = (searchQuery || '').trim().toLowerCase();
+  const filteredUsers = safeUsers.filter((u) => {
+    if (!u) return false;
+    const name = (u.name || '').toLowerCase();
+    const email = (u.email || '').toLowerCase();
+    const matchesSearch = query === '' || name.includes(query) || email.includes(query);
     const matchesRole = filterRole === 'all' || u.role === filterRole;
     return matchesSearch && matchesRole;
   });
 
-  const formatDate = (isoString: string) => {
+  const formatDate = (isoString?: string) => {
     if (!isoString) return 'Chưa rõ';
-    const d = new Date(isoString);
-    if (isNaN(d.getTime())) return 'Chưa rõ';
-    return d.toLocaleString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
+    try {
+      const d = new Date(isoString);
+      if (isNaN(d.getTime())) return 'Chưa rõ';
+      return d.toLocaleString('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+    } catch {
+      return 'Chưa rõ';
+    }
   };
 
   return (
@@ -304,16 +318,16 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                           <td className="py-3.5 px-4">
                             <div className="flex items-center gap-2.5">
                               <img
-                                src={u.avatar}
-                                alt={u.name}
+                                src={u.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(u.email || u.id)}`}
+                                alt={u.name || 'User'}
                                 className="w-8 h-8 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shrink-0"
                               />
                               <div className="min-w-0">
                                 <div className="font-bold text-slate-900 dark:text-white truncate">
-                                  {u.name}
+                                  {u.name || 'Người dùng'}
                                 </div>
                                 <div className="text-[11px] text-slate-400 font-mono truncate">
-                                  {u.email}
+                                  {u.email || 'Không có email'}
                                 </div>
                               </div>
                             </div>
@@ -331,10 +345,10 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                           <td className="py-3.5 px-4">
                             <div className="flex items-center gap-2 font-mono">
                               <span className="font-bold text-amber-600 dark:text-amber-400">
-                                {u.xp} XP
+                                {u.xp ?? 0} XP
                               </span>
                               <span className="text-[10px] text-slate-400">
-                                ({u.streak} ngày)
+                                ({u.streak ?? 0} ngày)
                               </span>
                             </div>
                           </td>
@@ -342,7 +356,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                           {/* AI Queries Count */}
                           <td className="py-3.5 px-4 font-mono">
                             <span className="px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/60 text-indigo-600 dark:text-indigo-300 font-bold">
-                              {u.aiQueriesCount} lượt
+                              {u.aiQueriesCount ?? 0} lượt
                             </span>
                           </td>
 

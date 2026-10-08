@@ -393,17 +393,14 @@ export const api = {
 
   // Admin Endpoints
   async adminGetStats(): Promise<import('../types').AdminStats> {
-    const res = await fetchJson<{ success: boolean; data: import('../types').AdminStats }>(
-      `${API_BASE_URL}/admin/stats`,
-    );
-    return res.data;
+    const res = await fetchJson<any>(`${API_BASE_URL}/admin/stats`);
+    return (res?.data !== undefined ? res.data : res) as import('../types').AdminStats;
   },
 
   async adminGetUsers(): Promise<import('../types').AdminUserItem[]> {
-    const res = await fetchJson<{ success: boolean; data: import('../types').AdminUserItem[] }>(
-      `${API_BASE_URL}/admin/users`,
-    );
-    return res.data;
+    const res = await fetchJson<any>(`${API_BASE_URL}/admin/users`);
+    const data = res?.data !== undefined ? res.data : res;
+    return Array.isArray(data) ? data : [];
   },
 
   async adminUpdateUserRole(userId: string, role: string): Promise<any> {
