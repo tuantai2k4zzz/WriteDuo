@@ -7,6 +7,7 @@ import { api } from '../lib/api';
 import { telemetry } from '../lib/telemetry';
 import ExerciseSidebar from './ExerciseSidebar';
 import { SentenceReactor } from './learning/SentenceReactor';
+import { useTutorStore } from '../lib/tutorStore';
 import {
   Volume2,
   Turtle,
@@ -55,6 +56,9 @@ export const InteractiveSentence: React.FC = () => {
     toggleThemeMode,
   } = useLearningStore();
 
+  const { askAboutSelection, setSidebarTab } = useTutorStore();
+  const [highlightedText, setHighlightedText] = useState<string>('');
+
   const [isRecording, setIsRecording] = useState(false);
   const [speechError, setSpeechError] = useState<string | null>(null);
   const [interimTranscript, setInterimTranscript] = useState('');
@@ -63,6 +67,18 @@ export const InteractiveSentence: React.FC = () => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const recognitionRef = useRef<any>(null);
   const interimHolderRef = useRef<string>('');
+
+  const handleSelectionCheck = () => {
+    if (typeof window === 'undefined') return;
+    const sel = window.getSelection();
+    const text = sel ? sel.toString().trim() : '';
+    if (text.length >= 2 && text.length <= 80) {
+      setHighlightedText(text);
+    } else {
+      setHighlightedText('');
+    }
+  };
+
 
   const sentence = sentences[currentSentenceIndex];
   const isViToEn = exerciseMode === 'vi_to_en';
@@ -366,12 +382,16 @@ export const InteractiveSentence: React.FC = () => {
             {/* Mobile Sidebar Toggle Button */}
             <button
               type="button"
-              onClick={() => setSidebarMobileOpen(true)}
-              className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-50 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 text-xs font-black border border-cyan-200 dark:border-cyan-800"
+              onClick={() => {
+                setSidebarTab('tutor');
+                setSidebarMobileOpen(true);
+              }}
+              className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 text-indigo-700 dark:text-indigo-300 text-xs font-black border border-indigo-200 dark:border-indigo-800"
             >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Gia sư</span>
+              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+              <span>Gia sư AI</span>
             </button>
+
           </div>
         </div>
       </header>
@@ -445,13 +465,37 @@ export const InteractiveSentence: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 items-stretch">
                 {/* ── QUESTION CARD ── */}
                 <div
-                  className="relative flex flex-col justify-between rounded-3xl border border-slate-200/90 dark:border-cyan-500/30 bg-white dark:bg-slate-900/90 p-5 sm:p-6 shadow-sm backdrop-blur-xl h-full"
+                  onMouseUp={handleSelectionCheck}
+                  onTouchEnd={handleSelectionCheck}
+                  className="relative flex flex-col justify-between rounded-3xl border border-slate-200/90 dark:border-cyan-500/30 bg-white dark:bg-slate-900/90 p-5 sm:p-6 shadow-sm backdrop-blur-xl h-full select-text"
                 >
                   {/* Corner Accents */}
                   <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-3xl" />
                   <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-500/40 rounded-tr-3xl" />
 
                   <div>
+                    {/* Floating Selection Tooltip Action */}
+                    {highlightedText && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.95 }}
+                        className="mb-3"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => {
+                            askAboutSelection(highlightedText);
+                            setHighlightedText('');
+                          }}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold shadow-md shadow-indigo-500/25 transition-all cursor-pointer active:scale-95"
+                        >
+                          <Sparkles className="w-3.5 h-3.5 text-indigo-200" />
+                          <span>Hỏi Gia Sư về cụm: "{highlightedText.slice(0, 24)}{highlightedText.length > 24 ? '...' : ''}"</span>
+                        </button>
+                      </motion.div>
+                    )}
+
                     {/* Card Header: Mode Label & Audio Controls */}
                     <div className="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
                       <div className="flex items-center gap-1.5">
@@ -459,6 +503,7 @@ export const InteractiveSentence: React.FC = () => {
                           {isViToEn ? 'CÂU HỎI TIẾNG VIỆT' : 'CÂU HỎI TIẾNG ANH'}
                         </span>
                       </div>
+
 
                       <div className="flex items-center gap-1.5">
                         {/* Pronounce Button */}

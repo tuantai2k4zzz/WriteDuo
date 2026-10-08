@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sentence, Token, GrammarComponent } from '../../types';
 import { playSound, speakEnglish } from '../../lib/audio';
-import { Layers, Info, Lock, Unlock, Eye, EyeOff, Volume2 } from 'lucide-react';
+import { Layers, Info, Lock, Unlock, Eye, EyeOff, Volume2, Sparkles } from 'lucide-react';
+import { useTutorStore } from '../../lib/tutorStore';
 
 interface SentenceReactorProps {
   sentence: Sentence;
@@ -15,6 +16,7 @@ export const SentenceReactor: React.FC<SentenceReactorProps> = ({
   sentence,
   onTokenClick,
 }) => {
+  const { askAboutWord } = useTutorStore();
   const [activeComponent, setActiveComponent] = useState<GrammarComponent | null>(null);
   const [unlockedIndices, setUnlockedIndices] = useState<Set<number>>(new Set());
 
@@ -242,14 +244,31 @@ export const SentenceReactor: React.FC<SentenceReactorProps> = ({
                   VAI TRÒ: {activeComponent.role.toUpperCase()} ({activeComponent.text})
                 </span>
               </div>
-              <button
-                type="button"
-                onClick={() => speakEnglish(activeComponent.text)}
-                className="p-1 rounded-lg bg-cyan-100 dark:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-200 transition"
-                title="Nghe phát âm cụm từ này"
-              >
-                <Volume2 className="h-3.5 w-3.5" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() =>
+                    askAboutWord(
+                      activeComponent.text,
+                      `Vì sao cụm "${activeComponent.text}" đóng vai trò ${activeComponent.role} trong câu này?`
+                    )
+                  }
+                  className="px-2 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold transition flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
+                  title="Hỏi Gia Sư AI phân tích vai trò này"
+                >
+                  <Sparkles className="w-3 h-3 text-indigo-200" />
+                  <span>Hỏi AI</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => speakEnglish(activeComponent.text)}
+                  className="p-1 rounded-lg bg-cyan-100 dark:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-200 transition cursor-pointer"
+                  title="Nghe phát âm cụm từ này"
+                >
+                  <Volume2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+
             </div>
             <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 leading-relaxed">
               {activeComponent.noteVi ||

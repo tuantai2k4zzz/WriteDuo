@@ -1,3 +1,8 @@
+import * as dns from 'dns';
+if (process.platform === 'win32') {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+}
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -217,7 +222,149 @@ async function runTests() {
     }
   });
 
+  // 14. Test Mini AI Tutor: WHY question (take vs go)
+  await test('POST /ai/tutor/chat explains "Why use take? Why not go?" with pedagogical comparison', async () => {
+    const res = await fetch(`${baseUrl}/ai/tutor/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Why do we use take here? Why not go?',
+        context: {
+          sentenceId: firstSentenceId,
+          exerciseMode: 'vi_to_en',
+          sourceSentence: 'Tôi đưa Max đi dạo mỗi ngày sau giờ học.',
+          referenceAnswer: 'I take Max for a walk every day after school.',
+          grammarTopic: 'Present Simple',
+          tokens: [
+            { text: 'take', pos: 'verb', meaningVi: 'dắt, đưa đi' },
+            { text: 'walk', pos: 'noun', meaningVi: 'cuộc đi dạo' },
+          ],
+        },
+      }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.success || !json.data) throw new Error('Missing success or data');
+    if (!json.data.answer || !json.data.answer.includes('take')) {
+      throw new Error('Answer missing explanation about take');
+    }
+    if (!json.data.keyPoint) throw new Error('Missing keyPoint');
+  });
+
+  // 15. Test Mini AI Tutor: Preposition comparison (for vs since)
+  await test('POST /ai/tutor/chat explains "for vs since" with duration vs starting point', async () => {
+    const res = await fetch(`${baseUrl}/ai/tutor/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Tại sao dùng for mà không dùng since?',
+        context: {
+          sentenceId: firstSentenceId,
+          exerciseMode: 'en_to_vi',
+          sourceSentence: 'I have lived in Hanoi for 5 years.',
+          referenceAnswer: 'Tôi đã sống ở Hà Nội được 5 năm.',
+          grammarTopic: 'Present Perfect',
+          tokens: [{ text: 'for', pos: 'preposition', meaningVi: 'trong khoảng' }],
+        },
+      }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.data.answer || !json.data.answer.includes('for')) {
+      throw new Error('Answer missing explanation about for/since');
+    }
+  });
+
+  // 16. Test Mini AI Tutor: User mistake analysis
+  await test('POST /ai/tutor/chat analyzes user mistake pedagogically', async () => {
+    const res = await fetch(`${baseUrl}/ai/tutor/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Tại sao câu của tôi sai?',
+        context: {
+          sentenceId: firstSentenceId,
+          exerciseMode: 'vi_to_en',
+          sourceSentence: 'Tôi đưa Max đi dạo.',
+          referenceAnswer: 'I take Max for a walk.',
+          userAnswer: 'I go Max for a walk.',
+          mistakes: [
+            {
+              where: 'go Max',
+              whyIncorrect: 'go không nhận tân ngữ trực tiếp theo cách này',
+              howToFix: 'Dùng take someone for a walk',
+              fixedSnippet: 'take Max for a walk',
+            },
+          ],
+        },
+      }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.data.answer || json.data.explanationType !== 'mistake') {
+      throw new Error('Expected mistake explanationType');
+    }
+  });
+
+  // 17. Test Mini AI Tutor: Hint protection (does NOT leak reference answer)
+  await test('POST /ai/tutor/chat provides hints without revealing full answer', async () => {
+    const res = await fetch(`${baseUrl}/ai/tutor/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Gợi ý cho tôi cách viết câu này',
+        context: {
+          sentenceId: firstSentenceId,
+          exerciseMode: 'vi_to_en',
+          sourceSentence: 'Tôi đưa Max đi dạo mỗi ngày.',
+          referenceAnswer: 'I take Max for a walk every day.',
+          grammarTopic: 'Present Simple',
+          isAnswerRevealed: false,
+        },
+      }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.data.isHintOnly && json.data.explanationType !== 'hint') {
+      throw new Error('Expected hint explanationType');
+    }
+  });
+
+  // 18. Test Mini AI Tutor: Mini Quiz generation
+  await test('POST /ai/tutor/chat generates contextual Mini Quiz on request', async () => {
+    const res = await fetch(`${baseUrl}/ai/tutor/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Cho tôi một bài tập nhỏ để luyện tập',
+        context: {
+          sentenceId: firstSentenceId,
+          exerciseMode: 'vi_to_en',
+          sourceSentence: 'Tôi dắt chó đi dạo.',
+          referenceAnswer: 'I take my dog for a walk.',
+          grammarTopic: 'Present Simple',
+        },
+      }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.data.miniQuiz || !json.data.miniQuiz.options || !json.data.miniQuiz.correctOption) {
+      throw new Error('Missing miniQuiz structure');
+    }
+  });
+
+  // 19. Test Mini AI Tutor: Quota endpoint
+  await test('GET /ai/tutor/quota returns remaining quota', async () => {
+    const res = await fetch(`${baseUrl}/ai/tutor/quota`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (typeof json.data.remaining !== 'number' || typeof json.data.limitToday !== 'number') {
+      throw new Error('Invalid quota structure');
+    }
+  });
+
   await app.close();
+
   console.log(`\n=== TEST SUMMARY: ${passed} PASSED, ${failed} FAILED ===`);
   if (failed > 0) {
     process.exit(1);

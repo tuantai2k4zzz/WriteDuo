@@ -24,6 +24,8 @@ import {
 } from 'lucide-react';
 
 import { api } from '../lib/api';
+import { useTutorStore } from '../lib/tutorStore';
+import { TutorPanel } from './tutor/TutorPanel';
 
 interface ExerciseSidebarProps {
   sentence: Sentence;
@@ -46,6 +48,7 @@ export default function ExerciseSidebar({
   onCloseMobileDrawer,
 }: ExerciseSidebarProps) {
   const { isAnswerRevealed, revealAnswer, exerciseMode } = useLearningStore();
+  const { sidebarTab, setSidebarTab, askAboutWord } = useTutorStore();
   const isViToEn = exerciseMode === 'vi_to_en';
 
   // Accordion state: by default ALL collapsed per requirements!
@@ -198,8 +201,42 @@ export default function ExerciseSidebar({
         </div>
       )}
 
-      {/* Accordion List */}
-      <div className="space-y-2 flex-1 overflow-y-auto pr-0.5">
+      {/* ── SEGMENTED VIEW TOGGLE: MINI AI TUTOR vs 7-TAB REFERENCE ── */}
+      <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl mb-3 shrink-0 border border-slate-200/60 dark:border-slate-700/60">
+        <button
+
+          type="button"
+          onClick={() => setSidebarTab('tutor')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+            sidebarTab === 'tutor'
+              ? 'bg-white dark:bg-indigo-600 text-indigo-700 dark:text-white shadow-xs'
+              : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-200" />
+          <span>Gia Sư AI</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setSidebarTab('reference')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+            sidebarTab === 'reference'
+              ? 'bg-white dark:bg-indigo-600 text-indigo-700 dark:text-white shadow-xs'
+              : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+          }`}
+        >
+          <BookOpen className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+          <span>Tư Liệu Câu (7)</span>
+        </button>
+      </div>
+
+      {sidebarTab === 'tutor' ? (
+        <div className="flex-1 overflow-hidden flex flex-col">
+          <TutorPanel sentence={sentence} />
+        </div>
+      ) : (
+        /* Accordion List */
+        <div className="space-y-2 flex-1 overflow-y-auto pr-0.5">
         {tabsConfig.map((tab) => {
           const isOpen = activeTab === tab.key;
           return (
@@ -295,19 +332,28 @@ export default function ExerciseSidebar({
                             <div className="flex items-center gap-1.5">
                               <button
                                 onClick={() => speakEnglish(selectedToken.text, 0.9)}
-                                className="p-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-200 transition"
+                                className="p-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-200 transition cursor-pointer"
                                 title="Phát âm từ"
                               >
                                 <Volume2 className="w-4 h-4" />
                               </button>
                               <button
+                                onClick={() => askAboutWord(selectedToken.text)}
+                                className="px-2 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition flex items-center gap-1 text-[11px] font-bold shadow-xs cursor-pointer active:scale-95"
+                                title="Hỏi Gia Sư AI vì sao dùng từ này trong câu"
+                              >
+                                <Sparkles className="w-3.5 h-3.5" />
+                                <span>Hỏi AI</span>
+                              </button>
+                              <button
                                 onClick={() => handleSaveWord(selectedToken)}
-                                className="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 hover:bg-emerald-200 transition"
+                                className="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 hover:bg-emerald-200 transition cursor-pointer"
                                 title="Lưu vào sổ từ"
                               >
                                 <BookmarkPlus className="w-4 h-4" />
                               </button>
                             </div>
+
                           </div>
 
                           {savedWordSuccess === selectedToken.text && (
@@ -782,7 +828,9 @@ export default function ExerciseSidebar({
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
     </aside>
   );
 }
+

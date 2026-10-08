@@ -271,4 +271,124 @@ export const api = {
       `${API_BASE_URL}/review/smart-queue`
     );
   },
+
+  // ==========================================
+  // 🚀 CONTEXT-AWARE MINI AI TUTOR API
+  // ==========================================
+  async askTutor(dto: {
+    message: string;
+    context: import('../types').TutorContext;
+    conversationHistory?: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>;
+    depthMode?: 'quick' | 'normal' | 'deep';
+  }): Promise<import('../types').TutorChatResponse> {
+    return fetchJson<import('../types').TutorChatResponse>(`${API_BASE_URL}/ai/tutor/chat`, {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    });
+  },
+
+  async getTutorQuota(): Promise<{
+    success: boolean;
+    data: import('../types').TutorQuota;
+  }> {
+    return fetchJson<{ success: boolean; data: import('../types').TutorQuota }>(
+      `${API_BASE_URL}/ai/tutor/quota`
+    );
+  },
+
+  async streamTutor(
+    dto: {
+      message: string;
+      context: import('../types').TutorContext;
+      conversationHistory?: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>;
+      depthMode?: 'quick' | 'normal' | 'deep';
+    },
+    onChunk: (chunk: string) => void,
+    onComplete: (data: import('../types').TutorStructuredResponse, quota?: import('../types').TutorQuota) => void,
+    onError: (err: any) => void
+  ): Promise<void> {
+    const token = getStoredToken();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/ai/tutor/stream`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(dto),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: Không thể kết nối với AI Tutor.`);
+      }
+
+      if (!res.body) {
+        // Fallback to normal non-streaming response
+        const json = await api.askTutor(dto);
+        if (json.success) {
+          onComplete(json.data, json.quota);
+        } else {
+          onError(new Error(json.data.answer || 'Lỗi xử lý'));
+        }
+        return;
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let buffer = '';
+      let completedData: import('../types').TutorStructuredResponse | null = null;
+      let completedQuota: import('../types').TutorQuota | undefined = undefined;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (line.startsWith('data:')) {
+            const dataStr = line.slice(5).trim();
+            if (dataStr === '[DONE]') {
+              break;
+            }
+            try {
+              const parsed = JSON.parse(dataStr);
+              if (parsed.text) {
+                onChunk(parsed.text);
+              } else if (parsed.data) {
+                completedData = parsed.data;
+                completedQuota = parsed.quota;
+              }
+            } catch {
+              // Ignore non-json chunk
+            }
+          }
+        }
+      }
+
+      if (completedData) {
+        onComplete(completedData, completedQuota);
+      }
+    } catch (err: any) {
+      // Graceful fallback to non-streaming API
+      try {
+        const fallback = await api.askTutor(dto);
+        if (fallback.success) {
+          onComplete(fallback.data, fallback.quota);
+        } else {
+          onError(err);
+        }
+      } catch {
+        onError(err);
+      }
+    }
+  },
 };
+

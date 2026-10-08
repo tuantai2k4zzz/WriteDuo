@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLearningStore } from '../lib/store';
+import { useTutorStore } from '../lib/tutorStore';
 import { speakEnglish, playSound } from '../lib/audio';
 import { api } from '../lib/api';
 import { Token } from '../types';
@@ -19,6 +20,8 @@ export const WordModal: React.FC = () => {
     openAuthModal,
     refreshUserData,
   } = useLearningStore();
+
+  const { askAboutWord } = useTutorStore();
 
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -201,6 +204,19 @@ export const WordModal: React.FC = () => {
               </div>
             )}
           </div>
+
+          {/* AI Tutor Word Inquiry Button */}
+          <button
+            type="button"
+            onClick={() => {
+              closeWordModal();
+              askAboutWord(tokenToDisplay.text);
+            }}
+            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white py-3 px-4 text-xs font-black shadow-md shadow-indigo-500/25 transition-all active:scale-95 cursor-pointer"
+          >
+            <Sparkles className="h-4 w-4 text-indigo-200" />
+            <span>HỎI GIA SƯ AI: VÌ SAO DÙNG TỪ NÀY?</span>
+          </button>
 
           {/* Actions */}
           <div className="flex items-center gap-3 pt-1">

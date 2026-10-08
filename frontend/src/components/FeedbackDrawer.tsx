@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLearningStore } from '../lib/store';
+import { useTutorStore } from '../lib/tutorStore';
 import { playSound, speakEnglish, speakVietnamese } from '../lib/audio';
 import {
   CheckCircle2,
@@ -33,6 +34,8 @@ export const FeedbackDrawer: React.FC = () => {
     retryCurrentSentence,
     exerciseMode,
   } = useLearningStore();
+
+  const { askAboutUserMistake } = useTutorStore();
 
   const [showFullDetails, setShowFullDetails] = useState(false);
 
@@ -367,6 +370,20 @@ export const FeedbackDrawer: React.FC = () => {
                 </p>
               </div>
             </div>
+
+            {/* Ask AI Tutor why wrong button */}
+            {!isCorrect && (
+              <button
+                type="button"
+                onClick={() => {
+                  askAboutUserMistake();
+                }}
+                className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                <span>HỎI GIA SƯ AI: VÌ SAO CÂU CỦA TÔI SAI & CÁCH SỬA?</span>
+              </button>
+            )}
 
             {/* Toggle Full Deep Details */}
             <button
