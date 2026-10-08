@@ -141,6 +141,9 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     }
     try {
       const me = await api.getMe();
+      if (me.email === 'admin@writeduo.com' && !me.role) {
+        me.role = 'admin';
+      }
       set({
         user: me,
         userProgress: {
@@ -170,6 +173,9 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     if (!token) return;
     try {
       const me = await api.getMe();
+      if (me.email === 'admin@writeduo.com' && !me.role) {
+        me.role = 'admin';
+      }
       set({
         user: me,
         userProgress: {

@@ -143,16 +143,16 @@ export const Header: React.FC = () => {
             </div>
 
             {/* Admin Management Button (Visible only to Admin users) */}
-            {user?.role === 'admin' && (
+            {(user?.role === 'admin' || user?.email === 'admin@writeduo.com') && (
               <button
                 onClick={() => {
                   playSound('click');
                   setIsAdminModalOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/40 text-purple-700 dark:text-purple-300 text-xs font-black transition active:scale-95 shadow-sm cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600/30 via-indigo-600/30 to-purple-600/30 hover:from-purple-600/40 hover:to-indigo-600/40 border border-purple-500/50 text-purple-700 dark:text-purple-200 text-xs font-black transition active:scale-95 shadow-[0_0_15px_rgba(168,85,247,0.25)] hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] cursor-pointer"
                 title="Mở Bảng Điều Khiển Quản Trị Viên (Admin Panel)"
               >
-                <Shield className="w-3.5 h-3.5 text-purple-500" />
+                <Shield className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
                 <span className="hidden sm:inline">Quản Trị Users</span>
                 <span className="sm:hidden">Admin</span>
               </button>
@@ -162,17 +162,41 @@ export const Header: React.FC = () => {
             {user ? (
               <div className="flex items-center gap-1 sm:gap-1.5 pl-0.5">
                 <div
-                  className="flex items-center gap-1.5 pl-1.5 pr-2 py-0.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 shadow-xs max-w-[110px]"
-                  title={`Đang đăng nhập: ${user.email} (Role: ${user.role || 'user'})`}
+                  onClick={() => {
+                    if (user?.role === 'admin' || user?.email === 'admin@writeduo.com') {
+                      playSound('click');
+                      setIsAdminModalOpen(true);
+                    }
+                  }}
+                  className={`flex items-center gap-1.5 pl-1.5 pr-2 py-0.5 rounded-xl border shadow-xs max-w-[130px] ${
+                    user?.role === 'admin' || user?.email === 'admin@writeduo.com'
+                      ? 'bg-purple-500/15 border-purple-500/40 cursor-pointer hover:bg-purple-500/25'
+                      : user?.role === 'premium'
+                      ? 'bg-amber-500/15 border-amber-500/40'
+                      : 'bg-cyan-500/10 border-cyan-500/30'
+                  }`}
+                  title={`Đang đăng nhập: ${user.email} (Role: ${user.role || (user.email === 'admin@writeduo.com' ? 'admin' : 'user')})`}
                 >
                   <img
                     src={user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email}`}
                     alt={user.name}
                     className="h-5 w-5 sm:h-6 sm:w-6 rounded-lg bg-cyan-900/40 border border-cyan-400/40 flex-shrink-0"
                   />
-                  <span className="hidden sm:inline text-xs font-bold text-slate-800 dark:text-cyan-200 truncate">
-                    {user.name}
-                  </span>
+                  <div className="flex flex-col min-w-0">
+                    <span className="hidden sm:inline text-xs font-bold text-slate-800 dark:text-cyan-200 truncate leading-tight">
+                      {user.name}
+                    </span>
+                    {(user?.role === 'admin' || user?.email === 'admin@writeduo.com') && (
+                      <span className="text-[9px] font-black text-purple-600 dark:text-purple-300 uppercase tracking-widest leading-none">
+                        Admin 🛡️
+                      </span>
+                    )}
+                    {user?.role === 'premium' && (
+                      <span className="text-[9px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest leading-none">
+                        VIP 👑
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <button
