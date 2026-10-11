@@ -29,7 +29,7 @@ export const TutorContextBadge: React.FC<TutorContextBadgeProps> = ({
           Câu {sentenceIndex + 1}/{totalSentences}:
         </span>
         <span
-          className="text-slate-600 dark:text-slate-300 font-medium truncate max-w-[150px] sm:max-w-[220px]"
+          className="text-slate-600 dark:text-slate-300 font-medium truncate max-w-[150px] sm:max-w-[260px] lg:max-w-[360px] xl:max-w-[460px]"
           title={sentenceSnippet}
         >
           "{sentenceSnippet}"
@@ -39,7 +39,7 @@ export const TutorContextBadge: React.FC<TutorContextBadgeProps> = ({
       <div className="flex items-center gap-1.5 shrink-0">
         {tense && (
           <span
-            className="px-2 py-0.5 rounded-lg bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 font-bold text-xs border border-indigo-100 dark:border-indigo-800/80 shadow-2xs truncate max-w-[140px]"
+            className="px-2 py-0.5 rounded-lg bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 font-bold text-xs border border-indigo-100 dark:border-indigo-800/80 shadow-2xs truncate max-w-[140px] sm:max-w-[220px]"
             title={tense}
           >
             {tense}

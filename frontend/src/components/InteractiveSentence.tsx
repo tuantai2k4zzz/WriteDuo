@@ -56,7 +56,7 @@ export const InteractiveSentence: React.FC = () => {
     toggleThemeMode,
   } = useLearningStore();
 
-  const { askAboutSelection, setSidebarTab } = useTutorStore();
+  const { askAboutSelection, setSidebarTab, isExpandedWidth } = useTutorStore();
   const [highlightedText, setHighlightedText] = useState<string>('');
 
   const [isRecording, setIsRecording] = useState(false);
@@ -318,7 +318,7 @@ export const InteractiveSentence: React.FC = () => {
     <div className="flex min-h-screen flex-col bg-[#f8fafc] dark:bg-[#060a14] text-slate-800 dark:text-slate-100 transition-colors duration-300">
       {/* ── TOP HEADER HUD ── */}
       <header className="sticky top-0 z-30 border-b border-slate-200/80 dark:border-cyan-500/20 bg-white/90 dark:bg-[#070d1a]/90 px-4 py-3 backdrop-blur-xl shadow-xs">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <div className="mx-auto flex max-w-7xl xl:max-w-[1560px] 2xl:max-w-[1780px] items-center justify-between gap-4 transition-all duration-300">
           {/* Exit Button */}
           <button
             onClick={exitLesson}
@@ -397,11 +397,17 @@ export const InteractiveSentence: React.FC = () => {
       </header>
 
       {/* ── MAIN CONTENT ── */}
-      <div className="mx-auto flex-1 w-full max-w-7xl px-4 py-6 sm:px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="mx-auto flex-1 w-full max-w-7xl xl:max-w-[1560px] 2xl:max-w-[1780px] px-4 py-5 sm:px-6 lg:px-8 transition-all duration-300">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-start">
 
           {/* ── EXERCISE WORKSPACE (Left/Center) ── */}
-          <main className="lg:col-span-7 xl:col-span-8 flex flex-col max-w-2xl mx-auto w-full space-y-5">
+          <main
+            className={`${
+              isExpandedWidth
+                ? 'lg:col-span-6 xl:col-span-6 2xl:col-span-6'
+                : 'lg:col-span-7 xl:col-span-7 2xl:col-span-7'
+            } flex flex-col w-full space-y-5 transition-all duration-300`}
+          >
 
             {/* ── TWO-WAY MODE SWITCHER (Segmented HUD Bar) ── */}
             <div className="flex items-center justify-between gap-2 sm:gap-3 p-1.5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-cyan-500/20 shadow-sm backdrop-blur-md">
@@ -734,7 +740,13 @@ export const InteractiveSentence: React.FC = () => {
           </main>
 
           {/* ── DESKTOP RIGHT SIDEBAR ── */}
-          <div className="hidden lg:block lg:col-span-5 xl:col-span-4 sticky top-20">
+          <div
+            className={`hidden lg:block ${
+              isExpandedWidth
+                ? 'lg:col-span-6 xl:col-span-6 2xl:col-span-6'
+                : 'lg:col-span-5 xl:col-span-5 2xl:col-span-5'
+            } sticky top-20 transition-all duration-300`}
+          >
             <ExerciseSidebar sentence={sentence} />
           </div>
         </div>

@@ -59,7 +59,7 @@ export const TutorPanel: React.FC<TutorPanelProps> = ({ sentence }) => {
       />
 
       {/* 3. Conversation Area */}
-      <div className="flex-1 overflow-y-auto space-y-4 pr-1 max-h-[500px] sm:max-h-[620px] min-h-[260px]">
+      <div className="flex-1 overflow-y-auto ai-chat-scrollbar space-y-4 pr-1.5 max-h-[520px] sm:max-h-[600px] lg:max-h-[calc(100vh-270px)] xl:max-h-[calc(100vh-250px)] min-h-[300px]">
         {/* Welcoming Message if conversation is empty */}
         {messages.length === 0 && (
           <div className="p-4 sm:p-5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 text-center space-y-3.5 my-2">

@@ -160,7 +160,7 @@ export default function ExerciseSidebar({
   return (
     <aside
       className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm flex flex-col ${
-        isMobileDrawer ? 'w-full h-full max-h-[85vh] overflow-y-auto p-4' : 'w-full p-4 lg:p-5'
+        isMobileDrawer ? 'w-full h-full max-h-[85vh] overflow-y-auto ai-chat-scrollbar p-4' : 'w-full p-4 lg:p-5'
       }`}
     >
       {/* Mobile Drawer Header */}
@@ -236,7 +236,7 @@ export default function ExerciseSidebar({
         </div>
       ) : (
         /* Accordion List */
-        <div className="space-y-2 flex-1 overflow-y-auto pr-0.5">
+        <div className="space-y-2 flex-1 overflow-y-auto ai-chat-scrollbar pr-1">
         {tabsConfig.map((tab) => {
           const isOpen = activeTab === tab.key;
           return (

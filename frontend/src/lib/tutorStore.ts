@@ -34,6 +34,10 @@ interface TutorState {
   // Active Scoped Sentence ID
   currentSentenceId: string | null;
 
+  // Desktop width expansion mode
+  isExpandedWidth: boolean;
+  toggleExpandedWidth: () => void;
+
   // Actions
   syncSentenceContext: (sentence: Sentence, lesson: Lesson | null, mode: 'en_to_vi' | 'vi_to_en') => void;
   askTutor: (question: string, overrideContext?: Partial<TutorContext>) => Promise<void>;
@@ -57,6 +61,11 @@ export const useTutorStore = create<TutorState>((set, get) => ({
   streamingChunk: '',
   isStreaming: false,
   currentSentenceId: null,
+  isExpandedWidth: false,
+  toggleExpandedWidth: () => {
+    playSound('click');
+    set((state) => ({ isExpandedWidth: !state.isExpandedWidth }));
+  },
 
   // Load quota status from server
   loadQuota: async () => {
