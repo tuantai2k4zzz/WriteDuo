@@ -28,11 +28,14 @@ export const TutorPanel: React.FC<TutorPanelProps> = ({ sentence }) => {
   } = useTutorStore();
 
   const { activeLesson, currentSentenceIndex, sentences, exerciseMode } = useLearningStore();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const latestUserMessageRef = useRef<HTMLDivElement>(null);
+  const prevMessagesCountRef = useRef(messages.length);
 
   // Sync sentence context when sentence changes
   useEffect(() => {
     syncSentenceContext(sentence, activeLesson, exerciseMode);
+    chatContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   }, [sentence._id, syncSentenceContext, activeLesson, exerciseMode]);
 
   // Load quota on mount
@@ -40,10 +43,27 @@ export const TutorPanel: React.FC<TutorPanelProps> = ({ sentence }) => {
     loadQuota();
   }, [loadQuota]);
 
-  // Auto scroll to bottom when messages update
+  // Position viewport ONLY when user sends a new question - NEVER auto scroll when AI answers or finishes
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, streamingChunk, status]);
+    if (messages.length > prevMessagesCountRef.current) {
+      const lastMsg = messages[messages.length - 1];
+      // Only scroll within the chat container if USER asked a question
+      if (lastMsg && lastMsg.role === 'user') {
+        if (messages.length === 1) {
+          // First question: keep container at top
+          chatContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (latestUserMessageRef.current && chatContainerRef.current) {
+          // Subsequent questions: scroll chat container to position user question cleanly at top
+          const targetTop = latestUserMessageRef.current.offsetTop - 8;
+          chatContainerRef.current.scrollTo({
+            top: Math.max(0, targetTop),
+            behavior: 'smooth',
+          });
+        }
+      }
+    }
+    prevMessagesCountRef.current = messages.length;
+  }, [messages]);
 
   return (
     <div className="flex flex-col h-full space-y-3.5">
@@ -59,7 +79,10 @@ export const TutorPanel: React.FC<TutorPanelProps> = ({ sentence }) => {
       />
 
       {/* 3. Conversation Area */}
-      <div className="flex-1 overflow-y-auto ai-chat-scrollbar space-y-4 pr-1.5 max-h-[520px] sm:max-h-[600px] lg:max-h-[calc(100vh-270px)] xl:max-h-[calc(100vh-250px)] min-h-[300px]">
+      <div
+        ref={chatContainerRef}
+        className="relative flex-1 overflow-y-auto ai-chat-scrollbar space-y-4 pr-1.5 max-h-[520px] sm:max-h-[600px] lg:max-h-[calc(100vh-270px)] xl:max-h-[calc(100vh-250px)] min-h-[300px]"
+      >
         {/* Welcoming Message if conversation is empty */}
         {messages.length === 0 && (
           <div className="p-4 sm:p-5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 text-center space-y-3.5 my-2">
@@ -109,8 +132,13 @@ export const TutorPanel: React.FC<TutorPanelProps> = ({ sentence }) => {
         )}
 
         {/* Existing Messages */}
-        {messages.map((msg) => (
-          <TutorMessageItem key={msg.id} message={msg} />
+        {messages.map((msg, idx) => (
+          <div
+            key={msg.id}
+            ref={idx === messages.length - 1 && msg.role === 'user' ? latestUserMessageRef : undefined}
+          >
+            <TutorMessageItem message={msg} />
+          </div>
         ))}
 
         {/* Live Streaming Assistant Message */}
@@ -160,8 +188,6 @@ export const TutorPanel: React.FC<TutorPanelProps> = ({ sentence }) => {
             </div>
           </div>
         )}
-
-        <div ref={messagesEndRef} />
       </div>
 
       {/* 4. Quick Action Question Chips */}
