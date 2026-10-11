@@ -324,19 +324,19 @@ export default function Home() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="mb-8 rounded-2xl p-6 bg-white/95 dark:bg-[#0a071c]/95 border border-violet-200 dark:border-violet-500/35 shadow-sm dark:shadow-[0_0_30px_rgba(139,92,246,0.1)] backdrop-blur-xl"
+                className="mb-6 sm:mb-8 rounded-2xl p-4 sm:p-6 bg-white/95 dark:bg-[#0a071c]/95 border border-violet-200 dark:border-violet-500/35 shadow-sm dark:shadow-[0_0_30px_rgba(139,92,246,0.1)] backdrop-blur-xl"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex items-start gap-3.5">
-                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-500/50">
-                      <Brain className="h-6 w-6 text-violet-600 dark:text-violet-300" />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
+                  <div className="flex items-start gap-3 sm:gap-3.5">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-500/50">
+                      <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-violet-600 dark:text-violet-300" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-base font-black text-slate-900 dark:text-white tracking-tight">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight">
                           Neural SRS — Hồi Tưởng Chủ Động
                         </h3>
-                        <span className="rounded-full px-2.5 py-0.5 text-[10px] font-black font-mono bg-violet-100 dark:bg-violet-950/50 border border-violet-300 dark:border-violet-500/50 text-violet-700 dark:text-violet-300">
+                        <span className="rounded-full px-2 py-0.5 text-[9px] sm:text-[10px] font-black font-mono bg-violet-100 dark:bg-violet-950/50 border border-violet-300 dark:border-violet-500/50 text-violet-700 dark:text-violet-300">
                           {reviewItems.length} câu đến hạn
                         </span>
                       </div>
@@ -348,7 +348,7 @@ export default function Home() {
 
                   <button
                     onClick={handleStartSmartReview}
-                    className="flex items-center justify-center gap-2 rounded-xl py-3 px-6 text-sm font-black text-white dark:text-violet-200 flex-shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95 font-mono bg-violet-600 hover:bg-violet-500 dark:bg-violet-500/25 dark:border dark:border-violet-500/60 shadow-md shadow-violet-500/20"
+                    className="flex items-center justify-center gap-2 rounded-xl py-2.5 sm:py-3 px-4 sm:px-6 text-xs sm:text-sm font-black text-white dark:text-violet-200 w-full sm:w-auto flex-shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95 font-mono bg-violet-600 hover:bg-violet-500 dark:bg-violet-500/25 dark:border dark:border-violet-500/60 shadow-md shadow-violet-500/20"
                   >
                     <span>Ôn Ngay ({reviewItems.length})</span>
                     <ArrowRight className="h-4 w-4" />

@@ -21,7 +21,7 @@ export class VietQRPayOSProvider implements IPaymentProvider {
   constructor(private configService: ConfigService) {
     this.bankCode = this.configService.get<string>('VIETQR_BANK_CODE') || 'MB';
     this.bankName = this.configService.get<string>('VIETQR_BANK_NAME') || 'MB Bank (Ngân hàng Quân Đội)';
-    this.accountNumber = this.configService.get<string>('VIETQR_ACCOUNT_NUMBER') || '0983542830';
+    this.accountNumber = this.configService.get<string>('VIETQR_ACCOUNT_NUMBER') || '0865903707';
     this.accountName = this.configService.get<string>('VIETQR_ACCOUNT_NAME') || 'BUI TUAN TAI';
     this.checksumKey = this.configService.get<string>('VIETQR_CHECKSUM_KEY') || 'writeduo_secure_checksum_2026';
   }

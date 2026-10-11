@@ -198,7 +198,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                 </span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Quản lý người dùng, duyệt đơn chuyển khoản MB Bank (0983542830) và phân quyền AI Tutor.
+                Quản lý người dùng, duyệt đơn chuyển khoản MB Bank (0865903707) và phân quyền AI Tutor.
               </p>
             </div>
           </div>
@@ -243,7 +243,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
             <div className="flex items-center justify-between mb-3">
               <span className="text-[11px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>VIETQR NAPAS 24/7 (MB BANK: 0983542830 - BUI TUAN TAI)</span>
+                <span>VIETQR NAPAS 24/7 (MB BANK: 0865903707 - BUI TUAN TAI)</span>
               </span>
               <span className="text-[10px] text-slate-400 font-mono">Live Monetization Engine</span>
             </div>

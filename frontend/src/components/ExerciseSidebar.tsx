@@ -89,23 +89,16 @@ export default function ExerciseSidebar({
 
   const handleSaveWord = async (token: Token) => {
     try {
-      const res = await fetch('http://localhost:4000/api/v1/vocabulary/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          word: token.text,
-          meaningVi: token.meaningVi,
-          pos: token.pos,
-          ipa: token.ipa,
-          cefr: token.cefr || 'A1',
-          exampleEn: token.exampleEn || sentence.textEn,
-          exampleVi: token.exampleVi || sentence.primaryTranslationVi,
-        }),
+      await api.saveVocabulary({
+        word: token.text,
+        meaningVi: token.meaningVi,
+        pos: token.pos,
+        ipa: token.ipa,
+        cefr: token.cefr || 'A1',
+        exampleEn: token.exampleEn || sentence.textEn,
       });
-      if (res.ok) {
-        setSavedWordSuccess(token.text);
-        setTimeout(() => setSavedWordSuccess(null), 2500);
-      }
+      setSavedWordSuccess(token.text);
+      setTimeout(() => setSavedWordSuccess(null), 2500);
     } catch {
       // Offline or network error
     }

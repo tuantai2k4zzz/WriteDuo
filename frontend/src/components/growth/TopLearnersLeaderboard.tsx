@@ -70,15 +70,15 @@ export default function TopLearnersLeaderboard({ onOpenShareCard }: Props) {
   ];
 
   return (
-    <div className="rounded-3xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-6 mb-8">
+    <div className="rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-6 mb-6 sm:mb-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-400/40 flex items-center justify-center text-amber-500">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-400/40 flex items-center justify-center text-amber-500 shrink-0">
             <Trophy className="w-5 h-5 fill-amber-500" />
           </div>
           <div>
-            <h3 className="text-lg font-black text-slate-900 dark:text-white">
+            <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
               Bảng Vinh Danh Top Học Viên Tuần
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -99,14 +99,14 @@ export default function TopLearnersLeaderboard({ onOpenShareCard }: Props) {
       </div>
 
       {/* Leaderboard Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto no-scrollbar">
         <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
-          <thead className="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase font-semibold font-mono">
+          <thead className="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase font-semibold font-mono text-[10px] sm:text-xs">
             <tr>
-              <th className="pb-3 text-center w-12">Hạng</th>
+              <th className="pb-3 text-center w-10 sm:w-12">Hạng</th>
               <th className="pb-3">Học Viên</th>
-              <th className="pb-3 text-right">Từ Đã Thuộc</th>
-              <th className="pb-3 text-right">Bài Đã Học</th>
+              <th className="pb-3 text-right hidden sm:table-cell">Từ Đã Thuộc</th>
+              <th className="pb-3 text-right hidden sm:table-cell">Bài Đã Học</th>
               <th className="pb-3 text-right">Tổng XP</th>
             </tr>
           </thead>
@@ -120,17 +120,17 @@ export default function TopLearnersLeaderboard({ onOpenShareCard }: Props) {
                     : 'hover:bg-slate-50 dark:hover:bg-slate-800/40'
                 }`}
               >
-                <td className="py-3 text-center">
+                <td className="py-2.5 sm:py-3 text-center">
                   {learner.rank === 1 ? (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black shadow-sm">
+                    <span className="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-sm">
                       1
                     </span>
                   ) : learner.rank === 2 ? (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-300 text-slate-900 font-bold shadow-sm">
+                    <span className="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-300 text-slate-900 font-bold text-xs shadow-sm">
                       2
                     </span>
                   ) : learner.rank === 3 ? (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-700/80 text-white font-bold shadow-sm">
+                    <span className="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-700/80 text-white font-bold text-xs shadow-sm">
                       3
                     </span>
                   ) : (
@@ -138,31 +138,34 @@ export default function TopLearnersLeaderboard({ onOpenShareCard }: Props) {
                   )}
                 </td>
 
-                <td className="py-3">
-                  <div className="flex items-center gap-2.5">
+                <td className="py-2.5 sm:py-3">
+                  <div className="flex items-center gap-2 sm:gap-2.5">
                     <img
                       src={learner.avatar}
                       alt={learner.name}
-                      className="w-8 h-8 rounded-full border border-slate-300 dark:border-slate-700 bg-slate-200 dark:bg-slate-800"
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-300 dark:border-slate-700 bg-slate-200 dark:bg-slate-800 shrink-0"
                     />
-                    <div>
-                      <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                        <span>{learner.name}</span>
+                    <div className="min-w-0">
+                      <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5 truncate">
+                        <span className="truncate">{learner.name}</span>
                         {learner.isCurrentUser && (
-                          <span className="px-1.5 py-0.2 rounded bg-cyan-500 text-slate-950 text-[9px] font-black uppercase">
+                          <span className="px-1.5 py-0.2 rounded bg-cyan-500 text-slate-950 text-[9px] font-black uppercase shrink-0">
                             Bạn
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400">{learner.badge}</span>
+                      <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400">
+                        <span>{learner.badge}</span>
+                        <span className="sm:hidden font-mono font-medium">· {learner.wordsCount} từ · {learner.quizzes} bài</span>
+                      </div>
                     </div>
                   </div>
                 </td>
 
-                <td className="py-3 text-right font-mono font-semibold">{learner.wordsCount} từ</td>
-                <td className="py-3 text-right font-mono font-semibold">{learner.quizzes} bài</td>
-                <td className="py-3 text-right">
-                  <span className="font-mono font-black text-amber-600 dark:text-amber-400">
+                <td className="py-2.5 sm:py-3 text-right font-mono font-semibold hidden sm:table-cell">{learner.wordsCount} từ</td>
+                <td className="py-2.5 sm:py-3 text-right font-mono font-semibold hidden sm:table-cell">{learner.quizzes} bài</td>
+                <td className="py-2.5 sm:py-3 text-right">
+                  <span className="font-mono font-black text-amber-600 dark:text-amber-400 whitespace-nowrap text-xs sm:text-sm">
                     {learner.xp} XP
                   </span>
                 </td>

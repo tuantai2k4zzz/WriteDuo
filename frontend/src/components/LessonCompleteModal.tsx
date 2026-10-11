@@ -50,12 +50,12 @@ export const LessonCompleteModal: React.FC = () => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xl">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-4 backdrop-blur-xl">
         <motion.div
           initial={{ opacity: 0, scale: 0.8, y: 25 }}
           animate={{ opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 25 } }}
           exit={{ opacity: 0, scale: 0.85, y: 20 }}
-          className="relative w-full max-w-md overflow-hidden rounded-3xl p-8 text-center bg-white dark:bg-[#070e1c] border border-cyan-500/30 shadow-2xl shadow-cyan-500/10"
+          className="relative w-full max-w-md max-h-[92vh] overflow-y-auto rounded-3xl p-5 sm:p-8 text-center bg-white dark:bg-[#070e1c] border border-cyan-500/30 shadow-2xl shadow-cyan-500/10"
         >
           {/* Top Scan Bar */}
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />

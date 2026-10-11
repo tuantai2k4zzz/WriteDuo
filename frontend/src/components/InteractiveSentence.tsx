@@ -317,12 +317,12 @@ export const InteractiveSentence: React.FC = () => {
   return (
     <div className="flex min-h-screen flex-col bg-[#f8fafc] dark:bg-[#060a14] text-slate-800 dark:text-slate-100 transition-colors duration-300">
       {/* ── TOP HEADER HUD ── */}
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 dark:border-cyan-500/20 bg-white/90 dark:bg-[#070d1a]/90 px-4 py-3 backdrop-blur-xl shadow-xs">
-        <div className="mx-auto flex max-w-7xl xl:max-w-[1560px] 2xl:max-w-[1780px] items-center justify-between gap-4 transition-all duration-300">
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 dark:border-cyan-500/20 bg-white/90 dark:bg-[#070d1a]/90 px-3 sm:px-4 py-2 sm:py-3 backdrop-blur-xl shadow-xs">
+        <div className="mx-auto flex max-w-7xl xl:max-w-[1560px] 2xl:max-w-[1780px] items-center justify-between gap-2.5 sm:gap-4 transition-all duration-300">
           {/* Exit Button */}
           <button
             onClick={exitLesson}
-            className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/80 hover:text-slate-700 dark:hover:text-white transition-all active:scale-95"
+            className="flex items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl px-2 sm:px-2.5 py-1 sm:py-1.5 text-xs font-bold text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/80 hover:text-slate-700 dark:hover:text-white transition-all active:scale-95 shrink-0"
             title="Thoát bài học"
           >
             <X className="h-4 w-4" />
@@ -330,14 +330,14 @@ export const InteractiveSentence: React.FC = () => {
           </button>
 
           {/* Progress Bar with Cyan Arc Pulse */}
-          <div className="flex-1 max-w-xl">
-            <div className="flex items-center justify-between text-[11px] font-mono font-bold mb-1 text-slate-400">
-              <span>TIẾN ĐỘ BÀI HỌC</span>
-              <span className="text-cyan-600 dark:text-cyan-400">
+          <div className="flex-1 max-w-xl min-w-0">
+            <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono font-bold mb-1 text-slate-400">
+              <span className="truncate">TIẾN ĐỘ <span className="hidden sm:inline">BÀI HỌC</span></span>
+              <span className="text-cyan-600 dark:text-cyan-400 shrink-0 ml-1">
                 {currentSentenceIndex + 1}/{sentences.length} ({progressPercent}%)
               </span>
             </div>
-            <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800/80 border border-slate-300/40 dark:border-cyan-500/20 p-0.5">
+            <div className="h-2 sm:h-2.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800/80 border border-slate-300/40 dark:border-cyan-500/20 p-0.5">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercent}%` }}
@@ -505,15 +505,14 @@ export const InteractiveSentence: React.FC = () => {
                     )}
 
                     {/* Card Header: Mode Label & Audio Controls */}
-                    <div className="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 mb-3 sm:mb-4 pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 font-mono">
+                        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 font-mono">
                           {isViToEn ? 'CÂU HỎI TIẾNG VIỆT' : 'CÂU HỎI TIẾNG ANH'}
                         </span>
                       </div>
 
-
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1 sm:gap-1.5 ml-auto sm:ml-0">
                         {/* Pronounce Button */}
                         <button
                           type="button"
@@ -522,7 +521,7 @@ export const InteractiveSentence: React.FC = () => {
                               ? speakVietnamese(sentence.primaryTranslationVi || '')
                               : speakEnglish(sentence.textEn || '', 0.95)
                           }
-                          className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan-500 text-white shadow-sm hover:bg-cyan-400 active:scale-95 transition-all cursor-pointer"
+                          className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg sm:rounded-xl bg-cyan-500 text-white shadow-sm hover:bg-cyan-400 active:scale-95 transition-all cursor-pointer"
                           title="Nghe phát âm chuẩn (1.0x)"
                         >
                           <Volume2 className="h-3.5 w-3.5" />
@@ -532,7 +531,7 @@ export const InteractiveSentence: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => speakEnglish(sentence.textEn || '', 0.65)}
-                            className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 active:scale-95 transition-all cursor-pointer"
+                            className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg sm:rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 active:scale-95 transition-all cursor-pointer"
                             title="Nghe tốc độ chậm (0.65x)"
                           >
                             <Turtle className="h-3.5 w-3.5 text-amber-500" />
@@ -543,7 +542,7 @@ export const InteractiveSentence: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setShowHint(!showHint)}
-                          className={`flex h-8 px-2 items-center gap-1 rounded-xl text-[11px] font-bold border transition-all active:scale-95 cursor-pointer ${
+                          className={`flex h-7 sm:h-8 px-1.5 sm:px-2 items-center gap-1 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] font-bold border transition-all active:scale-95 cursor-pointer ${
                             showHint
                               ? 'bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-300'
                               : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
@@ -560,7 +559,7 @@ export const InteractiveSentence: React.FC = () => {
                     {isViToEn ? (
                       /* VI -> EN Prompt */
                       <div className="space-y-3">
-                        <p className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-relaxed">
+                        <p className="text-base sm:text-xl font-black text-slate-900 dark:text-white leading-relaxed">
                           {sentence.primaryTranslationVi}
                         </p>
                         {showHint && (

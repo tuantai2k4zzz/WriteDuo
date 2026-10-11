@@ -51,19 +51,19 @@ export const Header: React.FC = () => {
         <div className="mx-auto flex h-14 sm:h-16 max-w-6xl items-center justify-between px-3 sm:px-6 gap-2">
           {/* Brand Logo with Stark Arc Reactor Glow */}
           <div
-            className="flex items-center gap-2 cursor-pointer group flex-shrink-0"
+            className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group flex-shrink-0"
             onClick={() => handleTabChange('learn')}
           >
             <div className="relative flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl sm:rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-white shadow-md shadow-cyan-500/30 group-hover:shadow-[0_0_20px_rgba(0,242,254,0.6)] transition-all">
-              <span className="text-base sm:text-xl font-black">W</span>
+              <span className="text-sm sm:text-xl font-black">W</span>
               <div className="absolute inset-0 rounded-xl sm:rounded-2xl border border-cyan-300/40 animate-pulse" />
             </div>
             <div>
               <div className="flex items-center gap-1">
-                <span className="font-extrabold tracking-tight text-slate-900 dark:text-white text-base sm:text-lg">
+                <span className="font-extrabold tracking-tight text-slate-900 dark:text-white text-sm sm:text-lg">
                   Write
                 </span>
-                <span className="rounded-md bg-cyan-500/15 border border-cyan-500/40 px-1.5 py-0.2 text-[9px] font-black font-mono uppercase text-cyan-600 dark:text-cyan-300">
+                <span className="rounded-md bg-cyan-500/15 border border-cyan-500/40 px-1 py-0.2 text-[8px] sm:text-[9px] font-black font-mono uppercase text-cyan-600 dark:text-cyan-300">
                   OS
                 </span>
               </div>
@@ -113,11 +113,11 @@ export const Header: React.FC = () => {
           </nav>
 
           {/* Gamification Stats & User Session Control */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             {/* Theme Mode Toggle (Stark Dark vs Clean Light) */}
             <button
               onClick={handleThemeChange}
-              className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-xl border border-cyan-500/30 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-cyan-300 hover:shadow-[0_0_15px_rgba(0,242,254,0.3)] transition-all active:scale-95 cursor-pointer"
+              className="flex items-center justify-center h-7 w-7 sm:h-9 sm:w-9 rounded-lg sm:rounded-xl border border-cyan-500/30 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-cyan-300 hover:shadow-[0_0_15px_rgba(0,242,254,0.3)] transition-all active:scale-95 cursor-pointer"
               title="Đổi giao diện Sáng / Tối (Stark Tech)"
             >
               {themeMode === 'dark' ? (
@@ -129,23 +129,23 @@ export const Header: React.FC = () => {
 
             {/* Streak */}
             <div
-              className="flex items-center gap-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 px-2 sm:px-2.5 py-1 border border-amber-200 dark:border-amber-900/60 text-amber-700 dark:text-amber-300 shadow-xs"
+              className="flex items-center gap-1 rounded-lg sm:rounded-xl bg-amber-50 dark:bg-amber-950/40 px-1.5 sm:px-2.5 py-0.5 sm:py-1 border border-amber-200 dark:border-amber-900/60 text-amber-700 dark:text-amber-300 shadow-xs"
               title="Chuỗi ngày liên tiếp của bạn"
             >
-              <Flame className="h-3.5 w-3.5 fill-amber-500 text-amber-500 animate-pulse flex-shrink-0" />
-              <span className="text-[11px] sm:text-xs font-black font-mono">
+              <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 fill-amber-500 text-amber-500 animate-pulse flex-shrink-0" />
+              <span className="text-[10px] sm:text-xs font-black font-mono">
                 {streak}<span className="hidden sm:inline"> ngày</span>
               </span>
             </div>
 
             {/* XP */}
             <div
-              className="flex items-center gap-1 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 px-2 sm:px-2.5 py-1 border border-cyan-200 dark:border-cyan-900/60 text-cyan-700 dark:text-cyan-300 shadow-xs"
+              className="flex items-center gap-1 rounded-lg sm:rounded-xl bg-cyan-50 dark:bg-cyan-950/40 px-1.5 sm:px-2.5 py-0.5 sm:py-1 border border-cyan-200 dark:border-cyan-900/60 text-cyan-700 dark:text-cyan-300 shadow-xs"
               title="Kinh nghiệm tích luỹ của bạn"
             >
-              <Zap className="h-3.5 w-3.5 fill-cyan-500 text-cyan-500 flex-shrink-0" />
-              <span className="text-[11px] sm:text-xs font-black font-mono">
-                {xp} <span className="text-[10px] hidden sm:inline">XP</span>
+              <Zap className="h-3 w-3 sm:h-3.5 sm:w-3.5 fill-cyan-500 text-cyan-500 flex-shrink-0" />
+              <span className="text-[10px] sm:text-xs font-black font-mono">
+                {xp}<span className="text-[10px] hidden sm:inline"> XP</span>
               </span>
             </div>
 
@@ -171,11 +171,12 @@ export const Header: React.FC = () => {
                   playSound('click');
                   openBillingHistoryModal();
                 }}
-                className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-400/40 text-amber-600 dark:text-amber-300 text-xs font-bold transition active:scale-95 shadow-xs cursor-pointer"
+                className="flex items-center gap-1 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-400/40 text-amber-600 dark:text-amber-300 text-[10px] sm:text-xs font-bold transition active:scale-95 shadow-xs cursor-pointer"
                 title="Quản lý gói WriteDuo Pro & Lịch sử thanh toán"
               >
-                <Crown className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                <Crown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-500 fill-amber-500" />
                 <span className="hidden sm:inline">Pro VIP</span>
+                <span className="sm:hidden font-mono">VIP</span>
               </button>
             ) : (
               <button
@@ -183,10 +184,10 @@ export const Header: React.FC = () => {
                   playSound('click');
                   openPricingModal();
                 }}
-                className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-xl bg-gradient-to-r from-cyan-500/20 via-sky-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-400/40 text-cyan-600 dark:text-cyan-300 text-xs font-bold transition active:scale-95 shadow-[0_0_12px_rgba(0,242,254,0.15)] cursor-pointer"
+                className="flex items-center gap-1 px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-gradient-to-r from-cyan-500/20 via-sky-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-400/40 text-cyan-600 dark:text-cyan-300 text-[10px] sm:text-xs font-bold transition active:scale-95 shadow-[0_0_12px_rgba(0,242,254,0.15)] cursor-pointer"
                 title="Nâng cấp WriteDuo Pro mở khóa 100 câu hỏi AI/ngày & toàn bộ bài học"
               >
-                <Sparkles className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+                <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-500 dark:text-cyan-400" />
                 <span className="hidden sm:inline">Nâng Cấp Pro</span>
                 <span className="sm:hidden">Pro</span>
               </button>
@@ -199,10 +200,10 @@ export const Header: React.FC = () => {
                   playSound('click');
                   setIsAdminModalOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600/30 via-indigo-600/30 to-purple-600/30 hover:from-purple-600/40 hover:to-indigo-600/40 border border-purple-500/50 text-purple-700 dark:text-purple-200 text-xs font-black transition active:scale-95 shadow-[0_0_15px_rgba(168,85,247,0.25)] hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] cursor-pointer"
+                className="flex items-center gap-1 px-1.5 sm:px-3 py-0.5 sm:py-1.5 rounded-lg sm:rounded-xl bg-gradient-to-r from-purple-600/30 via-indigo-600/30 to-purple-600/30 hover:from-purple-600/40 hover:to-indigo-600/40 border border-purple-500/50 text-purple-700 dark:text-purple-200 text-[10px] sm:text-xs font-black transition active:scale-95 shadow-[0_0_15px_rgba(168,85,247,0.25)] cursor-pointer"
                 title="Mở Bảng Điều Khiển Quản Trị Viên (Admin Panel)"
               >
-                <Shield className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+                <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-400 animate-pulse" />
                 <span className="hidden sm:inline">Quản Trị Users</span>
                 <span className="sm:hidden">Admin</span>
               </button>
@@ -210,7 +211,7 @@ export const Header: React.FC = () => {
 
             {/* User Session Profile / Login Button */}
             {user ? (
-              <div className="flex items-center gap-1 sm:gap-1.5 pl-0.5">
+              <div className="flex items-center gap-1 pl-0.5">
                 <div
                   onClick={() => {
                     if (user?.role === 'admin' || user?.email === 'admin@writeduo.com') {
@@ -218,22 +219,22 @@ export const Header: React.FC = () => {
                       setIsAdminModalOpen(true);
                     }
                   }}
-                  className={`flex items-center gap-1.5 pl-1.5 pr-2 py-0.5 rounded-xl border shadow-xs max-w-[130px] ${
+                  className={`flex items-center gap-1 sm:gap-1.5 p-0.5 sm:pl-1.5 sm:pr-2 sm:py-0.5 rounded-lg sm:rounded-xl border shadow-xs max-w-[130px] ${
                     user?.role === 'admin' || user?.email === 'admin@writeduo.com'
                       ? 'bg-purple-500/15 border-purple-500/40 cursor-pointer hover:bg-purple-500/25'
                       : user?.role === 'premium'
                       ? 'bg-amber-500/15 border-amber-500/40'
                       : 'bg-cyan-500/10 border-cyan-500/30'
                   }`}
-                  title={`Đang đăng nhập: ${user.email} (Role: ${user.role || (user.email === 'admin@writeduo.com' ? 'admin' : 'user')})`}
+                  title={`Đang đăng nhập: ${user.email}`}
                 >
                   <img
                     src={user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email}`}
                     alt={user.name}
-                    className="h-5 w-5 sm:h-6 sm:w-6 rounded-lg bg-cyan-900/40 border border-cyan-400/40 flex-shrink-0"
+                    className="h-5 w-5 sm:h-6 sm:w-6 rounded-md sm:rounded-lg bg-cyan-900/40 border border-cyan-400/40 flex-shrink-0"
                   />
-                  <div className="flex flex-col min-w-0">
-                    <span className="hidden sm:inline text-xs font-bold text-slate-800 dark:text-cyan-200 truncate leading-tight">
+                  <div className="hidden sm:flex flex-col min-w-0">
+                    <span className="text-xs font-bold text-slate-800 dark:text-cyan-200 truncate leading-tight">
                       {user.name}
                     </span>
                     {(user?.role === 'admin' || user?.email === 'admin@writeduo.com') && (
@@ -254,10 +255,10 @@ export const Header: React.FC = () => {
                     playSound('click');
                     logout();
                   }}
-                  className="flex items-center justify-center h-8 w-8 sm:h-auto sm:w-auto sm:px-2.5 sm:py-1 rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold transition-all cursor-pointer"
+                  className="flex items-center justify-center h-7 w-7 sm:h-auto sm:w-auto p-1 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold transition-all cursor-pointer"
                   title="Đăng xuất tài khoản này"
                 >
-                  <LogOut className="h-3.5 w-3.5" />
+                  <LogOut className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   <span className="hidden sm:inline sm:ml-1">Thoát</span>
                 </button>
               </div>
@@ -267,19 +268,19 @@ export const Header: React.FC = () => {
                   playSound('click');
                   openAuthModal('login');
                 }}
-                className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-2.5 sm:px-3.5 py-1.5 text-xs font-black text-white shadow-md shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:from-cyan-400 hover:to-blue-500 active:scale-95 transition-all cursor-pointer flex-shrink-0"
+                className="flex items-center gap-1 rounded-lg sm:rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-2 sm:px-3.5 py-1 sm:py-1.5 text-xs font-black text-white shadow-md shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:from-cyan-400 hover:to-blue-500 active:scale-95 transition-all cursor-pointer flex-shrink-0"
                 title="Đăng nhập tài khoản"
               >
-                <LogIn className="h-3.5 w-3.5" />
-                <span className="text-[11px] sm:text-xs">Đăng nhập</span>
+                <LogIn className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span className="text-[10px] sm:text-xs">Đăng nhập</span>
               </button>
             )}
           </div>
         </div>
       </header>
 
-      {/* Mobile Bottom Navigation Dock (Visible on mobile only, perfect for thumb interaction) */}
-      <nav className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-[#070d1a]/95 backdrop-blur-2xl border-t border-cyan-500/20 px-3 py-1.5 shadow-[0_-4px_25px_rgba(0,0,0,0.15)] flex items-center justify-around">
+      {/* Mobile Bottom Navigation Dock (Visible on mobile only, perfect for thumb interaction with safe area) */}
+      <nav className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-[#070d1a]/95 backdrop-blur-2xl border-t border-cyan-500/20 px-3 pt-1 pb-[calc(0.4rem+env(safe-area-inset-bottom,0px))] shadow-[0_-4px_25px_rgba(0,0,0,0.15)] flex items-center justify-around">
         <button
           onClick={() => handleTabChange('learn')}
           className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-all cursor-pointer ${

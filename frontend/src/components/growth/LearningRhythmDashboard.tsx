@@ -29,34 +29,34 @@ export default function LearningRhythmDashboard({
   const targetPct = Math.min(100, Math.round((todayXp / Math.max(1, goalXp)) * 100));
 
   return (
-    <div className="space-y-6 mb-8">
+    <div className="space-y-5 sm:space-y-6 mb-6 sm:mb-8">
       {/* ── 1. IELTS PATH TO 8.0 BAND HERO BANNER (Inspired by Reference Image 3) ── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-800 p-6 sm:p-8 text-white shadow-xl shadow-indigo-500/15 border border-indigo-400/30">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-800 p-4 sm:p-6 md:p-8 text-white shadow-xl shadow-indigo-500/15 border border-indigo-400/30">
         {/* Futuristic Background Circuit Grid */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="max-w-xl space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-xs font-bold tracking-wide uppercase">
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
+          <div className="max-w-xl space-y-2.5 sm:space-y-3">
+            <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-[11px] sm:text-xs font-bold tracking-wide uppercase">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>Lộ Trình Học Cá Nhân Hóa 2026</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
               Master English: Lộ Trình Hướng Tới 8.0 IELTS
             </h1>
 
-            <p className="text-sm sm:text-base text-indigo-100/90 font-medium">
+            <p className="text-xs sm:text-sm md:text-base text-indigo-100/90 font-medium leading-relaxed">
               Rèn luyện phản xạ ngữ pháp, dịch song ngữ hai chiều và mở rộng hơn 2,500 cấu trúc tự nhiên với sự hỗ trợ của Gia Sư AI.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-1 sm:pt-2">
               <button
                 onClick={() => {
                   playSound('click');
                   if (onStartLesson) onStartLesson();
                 }}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-indigo-900 font-bold text-sm shadow-lg shadow-black/10 hover:bg-indigo-50 transition active:scale-95 cursor-pointer"
+                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-white text-indigo-900 font-bold text-xs sm:text-sm shadow-lg shadow-black/10 hover:bg-indigo-50 transition active:scale-95 cursor-pointer"
               >
                 <span>Học Tiếp Ngay</span>
                 <ArrowRight className="w-4 h-4" />
@@ -68,7 +68,7 @@ export default function LearningRhythmDashboard({
                     playSound('click');
                     onOpenShareCard();
                   }}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-white font-bold text-sm transition active:scale-95 cursor-pointer"
+                  className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-white font-bold text-xs sm:text-sm transition active:scale-95 cursor-pointer"
                   title="Chia sẻ thành tích lên mạng xã hội"
                 >
                   <Share2 className="w-4 h-4" />
@@ -79,14 +79,14 @@ export default function LearningRhythmDashboard({
           </div>
 
           {/* Progress Capsule Widget (Right) */}
-          <div className="lg:w-72 rounded-2xl bg-black/25 backdrop-blur-md p-4 sm:p-5 border border-white/15 space-y-3 shrink-0">
+          <div className="w-full lg:w-72 rounded-2xl bg-black/25 backdrop-blur-md p-3.5 sm:p-5 border border-white/15 space-y-2.5 sm:space-y-3 shrink-0">
             <div className="flex items-center justify-between text-xs text-indigo-200">
-              <span className="font-semibold uppercase tracking-wider">Tiến Độ Tích Lũy</span>
+              <span className="font-semibold uppercase tracking-wider text-[11px] sm:text-xs">Tiến Độ Tích Lũy</span>
               <span className="font-bold text-amber-300">Level {Math.max(1, Math.floor(xp / 100) + 1)}</span>
             </div>
 
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-white">{xp}</span>
+              <span className="text-2xl sm:text-3xl font-black text-white">{xp}</span>
               <span className="text-xs text-indigo-200 font-mono">XP</span>
             </div>
 
@@ -100,10 +100,10 @@ export default function LearningRhythmDashboard({
 
             <div className="flex items-center justify-between pt-1 text-xs text-indigo-100">
               <div className="flex items-center gap-1">
-                <Flame className="w-4 h-4 text-amber-400 fill-amber-400" />
-                <span className="font-bold">{streak} Ngày</span>
+                <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 fill-amber-400" />
+                <span className="font-bold text-[11px] sm:text-xs">{streak} Ngày</span>
               </div>
-              <div className="flex items-center gap-1 text-emerald-300 font-semibold">
+              <div className="flex items-center gap-1 text-emerald-300 font-semibold text-[11px] sm:text-xs">
                 <span>+18% Độ Chính Xác</span>
               </div>
             </div>
@@ -115,10 +115,10 @@ export default function LearningRhythmDashboard({
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+            <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
               DAILY LEARNING OVERVIEW
             </span>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Nhịp điệu học tập của bạn, sẵn sàng tiếp tục.
             </h2>
           </div>
@@ -129,7 +129,7 @@ export default function LearningRhythmDashboard({
                 playSound('click');
                 openPricingModal();
               }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/15 to-blue-500/15 border border-cyan-400/40 text-cyan-700 dark:text-cyan-300 text-xs font-bold hover:bg-cyan-500/25 transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/15 to-blue-500/15 border border-cyan-400/40 text-cyan-700 dark:text-cyan-300 text-xs font-bold hover:bg-cyan-500/25 transition cursor-pointer self-start sm:self-auto"
             >
               <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
               <span>Nâng Cấp Pro Mở Khóa AI</span>
@@ -138,77 +138,77 @@ export default function LearningRhythmDashboard({
         </div>
 
         {/* 4 Metrics Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
           {/* Study Time */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-2">
-              <Clock className="w-4 h-4 text-cyan-500" />
-              <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 uppercase">
+          <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-500" />
+              <span className="text-[9px] sm:text-[10px] font-bold font-mono px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 uppercase">
                 STUDY TIME
               </span>
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+              <div className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
                 {Math.max(15, completedLessons * 8 + streak * 5)}
               </div>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">PHÚT ĐÃ LUYỆN</span>
+              <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate block">PHÚT ĐÃ LUYỆN</span>
             </div>
           </div>
 
           {/* Streak */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-2">
-              <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
-              <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 uppercase">
+          <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 fill-amber-500" />
+              <span className="text-[9px] sm:text-[10px] font-bold font-mono px-1.5 sm:px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 uppercase">
                 STREAK
               </span>
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400">
+              <div className="text-xl sm:text-2xl md:text-3xl font-black text-amber-600 dark:text-amber-400">
                 {streak}
               </div>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">NGÀY LIÊN TIẾP</span>
+              <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate block">NGÀY LIÊN TIẾP</span>
             </div>
           </div>
 
           {/* Lessons Completed */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 uppercase">
+          <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500" />
+              <span className="text-[9px] sm:text-[10px] font-bold font-mono px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 uppercase">
                 COMPLETED
               </span>
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">
+              <div className="text-xl sm:text-2xl md:text-3xl font-black text-emerald-600 dark:text-emerald-400">
                 {completedLessons}
               </div>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">BÀI ĐÃ HOÀN THÀNH</span>
+              <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate block">BÀI ĐÃ HOÀN THÀNH</span>
             </div>
           </div>
 
           {/* Quiz Accuracy */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-2">
-              <Award className="w-4 h-4 text-purple-500" />
-              <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 uppercase">
+          <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-500" />
+              <span className="text-[9px] sm:text-[10px] font-bold font-mono px-1.5 sm:px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 uppercase">
                 ACCURACY
               </span>
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black text-purple-600 dark:text-purple-400">
+              <div className="text-xl sm:text-2xl md:text-3xl font-black text-purple-600 dark:text-purple-400">
                 89%
               </div>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">ĐỘ CHÍNH XÁC DỊCH</span>
+              <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate block">ĐỘ CHÍNH XÁC DỊCH</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* ── 3. THREE SPECIALIZED MODULE PILLARS (Inspired by Reference Image 3) ── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
         {/* Card 1: Grammar Precision */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-emerald-500/30 hover:border-emerald-500/60 transition-all flex flex-col justify-between group shadow-sm">
+        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-emerald-500/30 hover:border-emerald-500/60 transition-all flex flex-col justify-between group shadow-sm">
           <div>
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] font-bold font-mono text-emerald-600 dark:text-emerald-400 uppercase">

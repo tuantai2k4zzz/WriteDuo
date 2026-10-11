@@ -113,12 +113,12 @@ export default function CheckoutModal() {
   const accountNo =
     order?.bankInfo?.accountNo ||
     order?.bankInfo?.accountNumber ||
-    '0983542830';
+    '0865903707';
   const accountName = order?.bankInfo?.accountName || 'BUI TUAN TAI';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl bg-slate-900 border border-cyan-500/40 rounded-2xl shadow-2xl shadow-cyan-500/20 text-white p-6 md:p-8 max-h-[95vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-xl bg-slate-900 border border-cyan-500/40 rounded-2xl shadow-2xl shadow-cyan-500/20 text-white p-4 sm:p-6 md:p-8 max-h-[92vh] overflow-y-auto">
         {/* Close Button */}
         <button
           onClick={closeCheckoutModal}
@@ -282,12 +282,12 @@ export default function CheckoutModal() {
               <div className="flex items-center justify-between pt-2 text-[11px] text-slate-400 border-t border-slate-800">
                 <span>Cần hỗ trợ gấp?</span>
                 <a
-                  href="https://zalo.me/0983542830"
+                  href="https://zalo.me/0865903707"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-cyan-400 hover:underline flex items-center gap-1 font-semibold"
                 >
-                  <span>Nhắn Zalo Admin (0983542830)</span>
+                  <span>Nhắn Zalo Admin (0865903707)</span>
                   <span>↗</span>
                 </a>
               </div>

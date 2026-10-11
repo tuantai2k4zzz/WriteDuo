@@ -130,15 +130,15 @@ export const FeedbackDrawer: React.FC = () => {
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-        className="fixed inset-x-0 bottom-0 z-50 max-h-[88vh] overflow-y-auto border-t-2 border-slate-200 dark:border-cyan-500/30 bg-white/95 dark:bg-[#070d1a]/95 backdrop-blur-2xl shadow-2xl"
+        className="fixed inset-x-0 bottom-0 z-50 max-h-[88vh] overflow-y-auto border-t-2 border-slate-200 dark:border-cyan-500/30 bg-white/95 dark:bg-[#070d1a]/95 backdrop-blur-2xl shadow-2xl pb-[calc(1rem+env(safe-area-inset-bottom,0px))]"
       >
-        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 space-y-5">
+        <div className="mx-auto max-w-4xl px-3 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-5">
 
           {/* ── TOP HEADER: SCORE & STATUS ── */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
-            <div className="flex items-center gap-3.5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex items-center gap-3">
               <div
-                className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl shadow-md ${badgePill}`}
+                className={`flex h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0 items-center justify-center rounded-2xl shadow-md ${badgePill}`}
               >
                 {isCorrect || isExactMatch || isEquivalent ? (
                   <CheckCircle2 className="h-7 w-7" />

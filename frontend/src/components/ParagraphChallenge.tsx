@@ -353,36 +353,36 @@ export const ParagraphChallenge: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#060a14] text-slate-800 dark:text-slate-100 flex flex-col justify-between p-4 sm:p-6 transition-colors duration-300">
-      <div className="mx-auto w-full max-w-5xl space-y-6">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#060a14] text-slate-800 dark:text-slate-100 flex flex-col justify-between p-3 sm:p-6 transition-colors duration-300">
+      <div className="mx-auto w-full max-w-5xl space-y-4 sm:space-y-6">
 
         {/* ── TOP HUD HEADER ── */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 dark:border-cyan-500/20 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-slate-200 dark:border-cyan-500/20 pb-3 sm:pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-500 shadow-sm">
-              <Trophy className="h-6 w-6 animate-pulse" />
+            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-500 shadow-sm shrink-0">
+              <Trophy className="h-5 w-5 sm:h-6 sm:w-6 animate-pulse" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 font-mono">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 font-mono">
                   BOSS CHALLENGE · 2026
                 </span>
-                <span className="text-xs font-semibold text-slate-400">
+                <span className="text-xs font-semibold text-slate-400 truncate max-w-[180px] sm:max-w-none">
                   {activeLesson.title}
                 </span>
               </div>
-              <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white">
+              <h1 className="text-base sm:text-xl font-black tracking-tight text-slate-900 dark:text-white">
                 Thử Thách: Dịch Ngược Cả Đoạn Văn
               </h1>
             </div>
           </div>
 
           {/* Mode Switcher, AI Tutor & Exit */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
             <button
               type="button"
               onClick={openParagraphTutor}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10 hover:from-indigo-500/20 hover:to-cyan-500/20 border border-indigo-400/40 text-indigo-700 dark:text-indigo-300 shadow-xs active:scale-95 cursor-pointer"
+              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10 hover:from-indigo-500/20 hover:to-cyan-500/20 border border-indigo-400/40 text-indigo-700 dark:text-indigo-300 shadow-xs active:scale-95 cursor-pointer"
               title="Mở Gia Sư AI hỗ trợ dịch cả bài"
             >
               <Sparkles className="h-3.5 w-3.5 text-indigo-500 animate-pulse" />
@@ -391,7 +391,7 @@ export const ParagraphChallenge: React.FC = () => {
 
             <button
               onClick={handleModeSwitch}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all bg-white dark:bg-slate-900 border border-slate-200 dark:border-cyan-500/30 text-cyan-700 dark:text-cyan-300 shadow-xs hover:border-cyan-500 active:scale-95"
+              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-xs font-black transition-all bg-white dark:bg-slate-900 border border-slate-200 dark:border-cyan-500/30 text-cyan-700 dark:text-cyan-300 shadow-xs hover:border-cyan-500 active:scale-95"
               title="Đổi chế độ dịch"
             >
               <ArrowLeftRight className="h-3.5 w-3.5 text-cyan-500" />
@@ -400,7 +400,7 @@ export const ParagraphChallenge: React.FC = () => {
 
             <button
               onClick={exitParagraphChallenge}
-              className="px-3 py-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+              className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
             >
               Bỏ qua
             </button>
