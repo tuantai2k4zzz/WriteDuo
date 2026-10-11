@@ -632,6 +632,9 @@ export interface PaymentOrder {
     bankId: string;
     accountNo: string;
     accountName: string;
+    bankName?: string;
+    bankCode?: string;
+    accountNumber?: string;
   };
   expiresAt: string;
   createdAt: string;

@@ -142,20 +142,23 @@ async function runBillingTests() {
       if (res.ok) throw new Error('Server should return 400 for invalid signature');
     });
 
-    // 8. Sandbox Verified Payment Simulation
-    await test('POST /billing/simulate-payment activates Pro subscription on database', async () => {
-      const res = await fetch(`${baseUrl}/billing/simulate-payment`, {
+    // 8. Real Banking Webhook Activation
+    await test('POST /billing/webhook with real MBBank transfer content activates Pro subscription', async () => {
+      const res = await fetch(`${baseUrl}/billing/webhook`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${userToken}`,
         },
-        body: JSON.stringify({ orderId: orderCode }),
+        body: JSON.stringify({
+          content: `Chuyen khoan WriteDuo ${orderCode}`,
+          transferAmount: 99000,
+          referenceCode: `MB-TXN-${Date.now()}`,
+        }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
-      if (!json.success) throw new Error('Payment simulation failed');
-      const subId = json.data?.subscriptionId || json.subscriptionId;
+      if (!json.success) throw new Error('Real webhook activation failed');
+      const subId = json.subscriptionId || json.data?.subscriptionId;
       if (!subId) {
         throw new Error('Subscription ID was not returned');
       }
@@ -173,15 +176,18 @@ async function runBillingTests() {
       if (!json.data.canAccessAllLevels) throw new Error('Pro user must have canAccessAllLevels');
     });
 
-    // 10. Test Idempotency (replay payment simulation)
+    // 10. Test Idempotency (replay webhook)
     await test('Replaying activation on completed order does not duplicate subscription', async () => {
-      const res = await fetch(`${baseUrl}/billing/simulate-payment`, {
+      const res = await fetch(`${baseUrl}/billing/webhook`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${userToken}`,
         },
-        body: JSON.stringify({ orderId: orderCode }),
+        body: JSON.stringify({
+          content: `Chuyen khoan WriteDuo ${orderCode}`,
+          transferAmount: 99000,
+          referenceCode: `MB-TXN-${Date.now()}`,
+        }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();

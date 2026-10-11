@@ -17,6 +17,8 @@ export interface PaymentOrderResult {
     bankCode: string;
     accountNumber: string;
     accountName: string;
+    bankId?: string;
+    accountNo?: string;
   };
   checkoutUrl?: string;
 }

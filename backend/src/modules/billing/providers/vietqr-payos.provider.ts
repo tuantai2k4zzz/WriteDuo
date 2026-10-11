@@ -21,8 +21,8 @@ export class VietQRPayOSProvider implements IPaymentProvider {
   constructor(private configService: ConfigService) {
     this.bankCode = this.configService.get<string>('VIETQR_BANK_CODE') || 'MB';
     this.bankName = this.configService.get<string>('VIETQR_BANK_NAME') || 'MB Bank (Ngân hàng Quân Đội)';
-    this.accountNumber = this.configService.get<string>('VIETQR_ACCOUNT_NUMBER') || '0988668899';
-    this.accountName = this.configService.get<string>('VIETQR_ACCOUNT_NAME') || 'CONG TY WRITEDUO TECH';
+    this.accountNumber = this.configService.get<string>('VIETQR_ACCOUNT_NUMBER') || '0983542830';
+    this.accountName = this.configService.get<string>('VIETQR_ACCOUNT_NAME') || 'BUI TUAN TAI';
     this.checksumKey = this.configService.get<string>('VIETQR_CHECKSUM_KEY') || 'writeduo_secure_checksum_2026';
   }
 
@@ -35,7 +35,7 @@ export class VietQRPayOSProvider implements IPaymentProvider {
     const encodedDesc = encodeURIComponent(transferContent);
     const qrCodeUrl = `https://img.vietqr.io/image/${this.bankCode}-${this.accountNumber}-compact2.png?amount=${params.amountVnd}&addInfo=${encodedDesc}&accountName=${encodedAccountName}`;
 
-    this.logger.log(`Generated VietQR order: ${params.orderCode} for amount: ${params.amountVnd} VND`);
+    this.logger.log(`Generated real VietQR order: ${params.orderCode} for amount: ${params.amountVnd} VND (MB: ${this.accountNumber})`);
 
     return {
       orderCode: params.orderCode,
@@ -45,7 +45,9 @@ export class VietQRPayOSProvider implements IPaymentProvider {
       bankInfo: {
         bankName: this.bankName,
         bankCode: this.bankCode,
+        bankId: this.bankName,
         accountNumber: this.accountNumber,
+        accountNo: this.accountNumber,
         accountName: this.accountName,
       },
     };
@@ -56,10 +58,39 @@ export class VietQRPayOSProvider implements IPaymentProvider {
       return { isValid: false, error: 'Empty payload' };
     }
 
-    // Support PayOS / Banking Webhook standard format
-    const orderCode = payload.orderCode || payload.data?.orderCode || payload.code;
-    const amount = Number(payload.amount || payload.data?.amount || 0);
-    const transactionId = payload.reference || payload.data?.reference || payload.transactionId || `TXN-${Date.now()}`;
+    // Support PayOS / Banking Webhook / SePay / Casso / Bank SMS Forwarder format
+    let item = payload;
+    if (Array.isArray(payload?.data) && payload.data.length > 0) {
+      item = payload.data[0];
+    } else if (payload.data && typeof payload.data === 'object' && !Array.isArray(payload.data)) {
+      item = payload.data;
+    }
+
+    // Extract text from all potential description / content fields
+    const contentString = `${payload.content || ''} ${payload.description || ''} ${item.content || ''} ${item.description || ''} ${payload.orderCode || ''} ${item.orderCode || ''} ${payload.code || ''}`;
+    
+    // Find WD followed by 6 digits (e.g. WD492817)
+    const codeMatch = contentString.match(/WD\d{6}/i);
+    const orderCode = codeMatch ? codeMatch[0].toUpperCase() : (item.orderCode || payload.orderCode || payload.code);
+
+    const amount = Number(
+      item.transferAmount ||
+      payload.transferAmount ||
+      item.amount ||
+      payload.amount ||
+      0
+    );
+
+    const transactionId =
+      item.referenceCode ||
+      payload.referenceCode ||
+      item.reference ||
+      payload.reference ||
+      item.id ||
+      payload.id ||
+      item.transactionId ||
+      payload.transactionId ||
+      `MB-${Date.now()}`;
 
     // If HMAC signature is provided, verify checksum
     if (signature && this.checksumKey) {
@@ -71,8 +102,7 @@ export class VietQRPayOSProvider implements IPaymentProvider {
           .digest('hex');
 
         if (computedSignature !== signature) {
-          this.logger.warn(`Invalid webhook signature for order ${orderCode}`);
-          // In development or simulation allow flexible validation if checksum matches
+          this.logger.warn(`Webhook signature mismatch for order ${orderCode}`);
         }
       } catch (err: any) {
         this.logger.error(`Signature verification failed: ${err.message}`);
@@ -80,14 +110,14 @@ export class VietQRPayOSProvider implements IPaymentProvider {
     }
 
     if (!orderCode) {
-      return { isValid: false, error: 'Missing orderCode in webhook' };
+      return { isValid: false, error: 'Không tìm thấy mã đơn hàng WDxxxxxx trong dữ liệu chuyển khoản' };
     }
 
     return {
       isValid: true,
       orderCode: String(orderCode),
       amountVnd: amount,
-      providerTransactionId: transactionId,
+      providerTransactionId: String(transactionId),
       rawPayload: payload,
     };
   }

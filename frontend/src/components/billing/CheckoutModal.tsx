@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLearningStore } from '@/lib/store';
 import { api } from '@/lib/api';
 import { PaymentOrder } from '@/types';
+import { playSound } from '@/lib/audio';
 
 export default function CheckoutModal() {
   const {
@@ -18,7 +19,8 @@ export default function CheckoutModal() {
   const [loading, setLoading] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isSimulating, setIsSimulating] = useState(false);
+  const [isCheckingManual, setIsCheckingManual] = useState(false);
+  const [manualCheckMsg, setManualCheckMsg] = useState<string | null>(null);
   const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize Checkout Order
@@ -26,6 +28,7 @@ export default function CheckoutModal() {
     if (isCheckoutModalOpen && selectedCheckoutPlan) {
       setLoading(true);
       setIsSuccess(false);
+      setManualCheckMsg(null);
       api
         .createCheckout(selectedCheckoutPlan.code)
         .then((newOrder) => {
@@ -40,10 +43,11 @@ export default function CheckoutModal() {
     } else {
       setOrder(null);
       setIsSuccess(false);
+      setManualCheckMsg(null);
     }
   }, [isCheckoutModalOpen, selectedCheckoutPlan]);
 
-  // Status Polling
+  // Live Status Polling (Auto-check every 3 seconds)
   useEffect(() => {
     if (!order || isSuccess || order.status === 'completed') return;
 
@@ -51,13 +55,14 @@ export default function CheckoutModal() {
       try {
         const latest = await api.getOrderStatus(order.orderCode);
         if (latest.status === 'completed') {
+          playSound('correct');
           setIsSuccess(true);
           await loadEntitlements();
           await refreshUserData();
           if (pollTimerRef.current) clearInterval(pollTimerRef.current);
         }
       } catch (e) {
-        // Ignore network polling glitches
+        // Silently retry polling
       }
     }, 3000);
 
@@ -70,26 +75,46 @@ export default function CheckoutModal() {
 
   const handleCopy = (text: string, fieldName: string) => {
     navigator.clipboard.writeText(text);
+    playSound('click');
     setCopiedField(fieldName);
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const handleSimulatePayment = async () => {
+  // User explicitly clicks "I have transferred" to verify right away
+  const handleCheckNow = async () => {
     if (!order) return;
-    setIsSimulating(true);
+    setIsCheckingManual(true);
+    setManualCheckMsg(null);
+    playSound('click');
+
     try {
-      const res = await api.simulatePayment(order.orderCode);
-      if (res.success) {
+      const latest = await api.getOrderStatus(order.orderCode);
+      if (latest.status === 'completed') {
+        playSound('correct');
         setIsSuccess(true);
         await loadEntitlements();
         await refreshUserData();
+      } else {
+        setManualCheckMsg(
+          'Hệ thống đang đồng bộ dữ liệu giao dịch từ MB Bank. Nếu bạn vừa chuyển khoản thành công, vui lòng đợi 15 - 30 giây để ngân hàng ghi nhận tín hiệu.',
+        );
       }
     } catch (err: any) {
-      alert('Không thể kích hoạt thử nghiệm: ' + err.message);
+      setManualCheckMsg('Lỗi khi kiểm tra trạng thái đơn: ' + err.message);
     } finally {
-      setIsSimulating(false);
+      setIsCheckingManual(false);
     }
   };
+
+  const bankName =
+    order?.bankInfo?.bankId ||
+    order?.bankInfo?.bankName ||
+    'MB Bank (Ngân hàng Quân Đội)';
+  const accountNo =
+    order?.bankInfo?.accountNo ||
+    order?.bankInfo?.accountNumber ||
+    '0983542830';
+  const accountName = order?.bankInfo?.accountName || 'BUI TUAN TAI';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
@@ -97,7 +122,7 @@ export default function CheckoutModal() {
         {/* Close Button */}
         <button
           onClick={closeCheckoutModal}
-          className="absolute top-5 right-5 p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
           aria-label="Đóng"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,7 +145,7 @@ export default function CheckoutModal() {
             <div className="pt-4">
               <button
                 onClick={closeCheckoutModal}
-                className="w-full py-3.5 px-6 rounded-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 shadow-lg shadow-emerald-500/25 transition-all"
+                className="w-full py-3.5 px-6 rounded-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 shadow-lg shadow-emerald-500/25 transition-all cursor-pointer"
               >
                 Bắt Đầu Học Ngay Với Gói Pro 🚀
               </button>
@@ -130,21 +155,21 @@ export default function CheckoutModal() {
           /* LOADING STATE */
           <div className="py-16 text-center space-y-4">
             <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-sm text-slate-300">Đang khởi tạo mã VietQR thanh toán tự động...</p>
+            <p className="text-sm text-slate-300">Đang khởi tạo mã VietQR Napas 24/7...</p>
           </div>
         ) : (
-          /* ORDER & QR DETAILS */
+          /* REAL ORDER & QR DETAILS */
           <div>
             {/* Header */}
             <div className="text-center mb-6">
               <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 uppercase tracking-wider">
-                Cổng Thanh Toán VietQR 247
+                Cổng Thanh Toán VietQR 24/7 (MB Bank)
               </span>
               <h2 className="text-xl md:text-2xl font-bold text-white mt-2">
                 Nâng Cấp {selectedCheckoutPlan.name}
               </h2>
               <p className="text-xs text-slate-400 mt-1">
-                Mở ứng dụng ngân hàng hoặc MoMo, quét mã QR bên dưới để thanh toán tức thì.
+                Mở ứng dụng Ngân hàng (MB Bank, Vietcombank, Techcombank,...) hoặc MoMo quét mã QR bên dưới.
               </p>
             </div>
 
@@ -153,7 +178,7 @@ export default function CheckoutModal() {
               <div className="relative p-2 bg-white rounded-xl shadow-lg">
                 <img
                   src={order.qrCodeUrl}
-                  alt="VietQR Thanh Toán WriteDuo"
+                  alt="VietQR MBBank WriteDuo"
                   className="w-56 h-56 object-contain rounded-lg"
                 />
                 <div className="absolute inset-x-0 bottom-2 text-center">
@@ -165,30 +190,32 @@ export default function CheckoutModal() {
 
               {/* Live Polling Indicator */}
               <div className="flex items-center gap-2 mt-4 text-xs text-slate-400">
-                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
-                <span>Hệ thống đang chờ nhận chuyển khoản (kiểm tra mỗi 3 giây)...</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                <span className="text-emerald-300 font-medium">
+                  Hệ thống đang lắng nghe giao dịch từ MB Bank (tự động cập nhật)...
+                </span>
               </div>
             </div>
 
             {/* Payment Details Accordion */}
-            <div className="space-y-2.5 bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 text-xs md:text-sm mb-6">
+            <div className="space-y-2.5 bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 text-xs md:text-sm mb-5">
               <div className="flex items-center justify-between py-1 border-b border-slate-700/40">
-                <span className="text-slate-400">Ngân hàng:</span>
-                <span className="font-semibold text-white">{order.bankInfo.bankId}</span>
+                <span className="text-slate-400">Ngân hàng thụ hưởng:</span>
+                <span className="font-semibold text-white">{bankName}</span>
               </div>
 
               <div className="flex items-center justify-between py-1 border-b border-slate-700/40">
                 <span className="text-slate-400">Chủ tài khoản:</span>
-                <span className="font-semibold text-white">{order.bankInfo.accountName}</span>
+                <span className="font-semibold text-white uppercase">{accountName}</span>
               </div>
 
               <div className="flex items-center justify-between py-1 border-b border-slate-700/40">
                 <span className="text-slate-400">Số tài khoản:</span>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono font-bold text-cyan-300">{order.bankInfo.accountNo}</span>
+                  <span className="font-mono font-bold text-cyan-300">{accountNo}</span>
                   <button
-                    onClick={() => handleCopy(order.bankInfo.accountNo, 'accountNo')}
-                    className="px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-[11px] text-slate-300 transition-colors"
+                    onClick={() => handleCopy(accountNo, 'accountNo')}
+                    className="px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-[11px] text-slate-300 transition-colors cursor-pointer"
                   >
                     {copiedField === 'accountNo' ? '✓ Đã chép' : 'Sao chép'}
                   </button>
@@ -203,7 +230,7 @@ export default function CheckoutModal() {
                   </span>
                   <button
                     onClick={() => handleCopy(order.amountVnd.toString(), 'amount')}
-                    className="px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-[11px] text-slate-300 transition-colors"
+                    className="px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-[11px] text-slate-300 transition-colors cursor-pointer"
                   >
                     {copiedField === 'amount' ? '✓ Đã chép' : 'Sao chép'}
                   </button>
@@ -218,7 +245,7 @@ export default function CheckoutModal() {
                   </span>
                   <button
                     onClick={() => handleCopy(order.transferContent, 'memo')}
-                    className="px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-[11px] text-slate-300 transition-colors"
+                    className="px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-[11px] text-slate-300 transition-colors cursor-pointer"
                   >
                     {copiedField === 'memo' ? '✓ Đã chép' : 'Sao chép'}
                   </button>
@@ -226,22 +253,44 @@ export default function CheckoutModal() {
               </div>
             </div>
 
-            {/* Sandbox Simulation Button (For Testing & Verification) */}
-            <div className="pt-2 border-t border-slate-800">
+            {/* Manual Check Banner / Notification */}
+            {manualCheckMsg && (
+              <div className="mb-4 p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-200">
+                {manualCheckMsg}
+              </div>
+            )}
+
+            {/* Action Buttons: Check Now & Support */}
+            <div className="space-y-3 pt-1">
               <button
-                onClick={handleSimulatePayment}
-                disabled={isSimulating}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 flex items-center justify-center gap-2 transition-all"
+                onClick={handleCheckNow}
+                disabled={isCheckingManual}
+                className="w-full py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition-all cursor-pointer disabled:opacity-50"
               >
-                {isSimulating ? (
-                  <span className="w-4 h-4 border-2 border-emerald-300 border-t-transparent rounded-full animate-spin" />
+                {isCheckingManual ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Đang kiểm tra với ngân hàng...</span>
+                  </>
                 ) : (
-                  <span>⚡ Kích Hoạt Thử Nghiệm (Sandbox / Test Mode)</span>
+                  <>
+                    <span>🔄 Tôi Đã Chuyển Khoản (Kiểm Tra Ngay)</span>
+                  </>
                 )}
               </button>
-              <p className="text-[11px] text-slate-400 text-center mt-2">
-                Dành cho môi trường phát triển / kiểm thử: Kích hoạt ngay lập tức mà không cần chuyển khoản thực tế.
-              </p>
+
+              <div className="flex items-center justify-between pt-2 text-[11px] text-slate-400 border-t border-slate-800">
+                <span>Cần hỗ trợ gấp?</span>
+                <a
+                  href="https://zalo.me/0983542830"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-cyan-400 hover:underline flex items-center gap-1 font-semibold"
+                >
+                  <span>Nhắn Zalo Admin (0983542830)</span>
+                  <span>↗</span>
+                </a>
+              </div>
             </div>
           </div>
         )}

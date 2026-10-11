@@ -298,31 +298,11 @@ export class BillingService implements OnModuleInit {
     return this.verifyAndActivateOrder(verified.orderCode, verified);
   }
 
-  // Simulate sandbox payment for testing / demo
-  async simulateSandboxPayment(orderId: string, userId: string) {
-    let order: PaymentOrderDocument | null = null;
-    if (Types.ObjectId.isValid(orderId)) {
-      order = await this.orderModel.findById(orderId);
-    }
-    if (!order) {
-      order = await this.orderModel.findOne({ orderCode: orderId });
-    }
-
-    if (!order) {
-      throw new NotFoundException('Không tìm thấy đơn hàng cần thanh toán.');
-    }
-
-    if (order.userId.toString() !== userId) {
-      const user = await this.userModel.findById(userId).select('role').lean();
-      if (user?.role !== 'admin') {
-        throw new BadRequestException('Bạn không sở hữu đơn hàng này.');
-      }
-    }
-
-    return this.verifyAndActivateOrder(order.orderCode, {
-      providerTransactionId: `SANDBOX-TX-${Date.now()}`,
-      rawPayload: { simulated: true, byUserId: userId },
-    });
+  // Sandbox payment disabled for production
+  async simulateSandboxPayment(_orderId: string, _userId: string) {
+    throw new BadRequestException(
+      'Hệ thống đang hoạt động ở chế độ sản xuất thực tế (Production). Tính năng Sandbox Test đã được tắt hoàn toàn. Vui lòng thanh toán qua VietQR MB Bank.',
+    );
   }
 
   // Get active user subscription details
@@ -477,4 +457,44 @@ export class BillingService implements OnModuleInit {
       estimatedMarginVnd,
     };
   }
+
+  // Get orders list for Admin inspection & manual verification
+  async getAdminOrders(status?: string) {
+    const filter: any = {};
+    if (status && status !== 'all') {
+      filter.status = status;
+    }
+
+    const orders = await this.orderModel
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .limit(100)
+      .populate('userId', 'name email avatar role')
+      .lean();
+
+    return orders.map((o: any) => ({
+      id: o._id.toString(),
+      orderCode: o.orderCode,
+      amountVnd: o.amountVnd,
+      planCode: o.planCode,
+      planName: o.metadata?.planName || o.planCode,
+      status: o.status,
+      createdAt: o.createdAt,
+      paidAt: o.paidAt,
+      paymentMethod: o.paymentMethod,
+      transferContent: o.transferContent,
+      qrCodeUrl: o.qrCodeUrl,
+      bankInfo: o.bankInfo,
+      user: o.userId
+        ? {
+            id: o.userId._id ? o.userId._id.toString() : String(o.userId),
+            name: o.userId.name || 'Người dùng',
+            email: o.userId.email || '',
+            avatar: o.userId.avatar || '',
+            role: o.userId.role || 'user',
+          }
+        : null,
+    }));
+  }
 }
+

@@ -5,6 +5,7 @@ import {
   Body,
   Param,
   Headers,
+  Query,
   UseGuards,
   Req,
 } from '@nestjs/common';
@@ -111,21 +112,7 @@ export class BillingController {
     return this.billingService.handlePaymentWebhook(payload, signature);
   }
 
-  // 9. Sandbox / Demo Simulated Payment (Instant local test verification)
-  @Post('simulate-payment')
-  @UseGuards(JwtAuthGuard)
-  async simulatePayment(
-    @CurrentUser('userId') userId: string,
-    @Body('orderId') orderId: string,
-  ) {
-    const result = await this.billingService.simulateSandboxPayment(orderId, userId);
-    return {
-      success: true,
-      data: result,
-    };
-  }
-
-  // 10. Admin Monetization Stats
+  // 9. Admin Monetization Stats
   @Get('admin/stats')
   @UseGuards(AdminGuard)
   async getMonetizationStats() {
@@ -136,7 +123,18 @@ export class BillingController {
     };
   }
 
-  // 11. Admin Manual Verification of Order
+  // 10. Admin List Recent Orders (for verification & revenue tracking)
+  @Get('admin/orders')
+  @UseGuards(AdminGuard)
+  async getAdminOrders(@Query('status') status?: string) {
+    const orders = await this.billingService.getAdminOrders(status);
+    return {
+      success: true,
+      data: orders,
+    };
+  }
+
+  // 11. Admin Manual Verification of Order (Activate Pro instantly)
   @Post('admin/verify-order/:orderCode')
   @UseGuards(AdminGuard)
   async adminVerifyOrder(
@@ -153,3 +151,4 @@ export class BillingController {
     };
   }
 }
+
