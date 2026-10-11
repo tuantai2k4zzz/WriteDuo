@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTutorStore } from '../../lib/tutorStore';
 import { useLearningStore } from '../../lib/store';
 import { playSound } from '../../lib/audio';
-import { Send, Sparkles, Loader2, Lock } from 'lucide-react';
+import { Send, Loader2 } from 'lucide-react';
 
 export const TutorInput: React.FC = () => {
   const { askTutor, status } = useTutorStore();
@@ -52,7 +52,7 @@ export const TutorInput: React.FC = () => {
 
   return (
     <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-      <div className="relative flex items-end gap-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-2 transition-all focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20">
+      <div className="relative flex items-end gap-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-2.5 transition-all focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20">
         <textarea
           ref={textareaRef}
           value={text}
@@ -61,14 +61,14 @@ export const TutorInput: React.FC = () => {
           disabled={isBusy}
           placeholder="Hỏi tôi vì sao câu này dùng như vậy..."
           rows={1}
-          className="w-full bg-transparent resize-none border-none outline-hidden text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 max-h-[120px] min-h-[36px] py-2 px-1 leading-relaxed"
+          className="w-full bg-transparent resize-none border-none outline-hidden text-sm sm:text-[15px] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 max-h-[120px] min-h-[40px] py-2 px-1.5 leading-relaxed"
         />
 
         <button
           type="button"
           onClick={handleSend}
           disabled={!text.trim() || isBusy}
-          className={`shrink-0 p-2.5 rounded-xl transition-all flex items-center justify-center ${
+          className={`shrink-0 p-3 rounded-xl transition-all flex items-center justify-center ${
             text.trim() && !isBusy
               ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm cursor-pointer active:scale-95'
               : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'
@@ -83,7 +83,7 @@ export const TutorInput: React.FC = () => {
         </button>
       </div>
 
-      <div className="flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 px-1 pt-1.5 font-mono">
+      <div className="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 px-1 pt-1.5 font-medium">
         <span>Enter: Gửi câu hỏi</span>
         <span>Shift + Enter: Xuống dòng</span>
       </div>

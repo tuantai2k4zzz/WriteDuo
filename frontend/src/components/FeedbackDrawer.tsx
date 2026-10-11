@@ -320,7 +320,7 @@ export const FeedbackDrawer: React.FC = () => {
                       <span className="flex-shrink-0 px-2 py-0.5 rounded text-[10px] font-black uppercase font-mono bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300">
                         WHY
                       </span>
-                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 leading-relaxed">
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-200 leading-relaxed">
                         {mistake.whyIncorrect}
                       </p>
                     </div>
@@ -349,13 +349,13 @@ export const FeedbackDrawer: React.FC = () => {
               </h4>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-[13px]">
               {/* Ý đúng */}
               <div className="rounded-xl p-3 bg-white/80 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/60">
                 <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400 font-mono block mb-1">
                   ✓ ĐIỂM LÀM TỐT
                 </span>
-                <p className="font-semibold text-slate-700 dark:text-slate-200">
+                <p className="font-semibold text-slate-800 dark:text-slate-100 leading-relaxed">
                   {whatYouGotRight.length > 0
                     ? whatYouGotRight[0]
                     : 'Nắm được tinh thần và cấu trúc câu'}
@@ -367,7 +367,7 @@ export const FeedbackDrawer: React.FC = () => {
                 <span className="text-[10px] font-black uppercase text-cyan-600 dark:text-cyan-400 font-mono block mb-1">
                   📐 NGỮ PHÁP TRỌNG TÂM
                 </span>
-                <p className="font-semibold text-slate-700 dark:text-slate-200">
+                <p className="font-semibold text-slate-800 dark:text-slate-100 leading-relaxed">
                   {grammarInsight?.relevantRule || grammarAnalysis?.tense || 'Cấu trúc câu hoàn chỉnh'}
                 </p>
               </div>
