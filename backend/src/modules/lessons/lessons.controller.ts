@@ -22,8 +22,12 @@ export class LessonsController {
   }
 
   @Get(':id')
-  async getLesson(@Param('id') id: string) {
-    const result = await this.lessonsService.getLessonById(id);
+  @UseGuards(OptionalJwtAuthGuard)
+  async getLesson(
+    @Param('id') id: string,
+    @CurrentUser('userId') userId?: string,
+  ) {
+    const result = await this.lessonsService.getLessonById(id, userId);
     return {
       success: true,
       data: result,

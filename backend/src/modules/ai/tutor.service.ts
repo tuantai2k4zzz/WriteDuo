@@ -10,6 +10,7 @@ import {
 } from './tutor.interface';
 import { buildTutorPrompt } from './prompts/tutor.prompt';
 import { LocalTutorGenerator } from './providers/local-tutor-generator';
+import { EntitlementService } from '../billing/entitlement.service';
 
 interface UsageRecord {
   count: number;
@@ -29,6 +30,7 @@ export class TutorService {
   constructor(
     private configService: ConfigService,
     @Optional() @InjectModel(User.name) private userModel?: Model<UserDocument>,
+    @Optional() private entitlementService?: EntitlementService,
   ) {
     this.apiKey = this.configService.get<string>('GEMINI_API_KEY') || '';
   }
@@ -58,6 +60,33 @@ export class TutorService {
         limit: 0,
         isUnlimited: false,
         role: 'guest',
+      };
+    }
+
+    // 2. Sử dụng EntitlementService nếu khả dụng
+    if (this.entitlementService) {
+      const allowance = await this.entitlementService.checkAIAllowance(userId, 'tutor_chat');
+      const entitlements = await this.entitlementService.getEntitlements(userId);
+      const role = entitlements.isAdmin ? 'admin' : entitlements.isPro ? 'premium' : 'user';
+
+      if (!allowance.allowed) {
+        return {
+          allowed: false,
+          requiresAuth: false,
+          used: entitlements.usedToday,
+          limit: entitlements.dailyAiLimit,
+          isUnlimited: entitlements.isAdmin,
+          role,
+        };
+      }
+
+      return {
+        allowed: true,
+        requiresAuth: false,
+        used: entitlements.usedToday,
+        limit: entitlements.dailyAiLimit,
+        isUnlimited: entitlements.isAdmin,
+        role,
       };
     }
 
@@ -120,6 +149,22 @@ export class TutorService {
         isUnlimited: false,
         requiresAuth: true,
         role: 'guest',
+      };
+    }
+
+    if (this.entitlementService) {
+      const entitlements = await this.entitlementService.getEntitlements(userId);
+      const role = entitlements.isAdmin ? 'admin' : entitlements.isPro ? 'premium' : 'user';
+      return {
+        usedToday: entitlements.usedToday,
+        limitToday: entitlements.dailyAiLimit,
+        remaining: entitlements.remainingToday,
+        isUnlimited: entitlements.isAdmin,
+        requiresAuth: false,
+        role,
+        planCode: entitlements.planCode,
+        planName: entitlements.planName,
+        isPro: entitlements.isPro,
       };
     }
 
@@ -228,6 +273,14 @@ export class TutorService {
         const responseData = await this.queryGemini(request);
         if (responseData) {
           this.responseCache.set(cacheKey, { data: responseData, timestamp: Date.now() });
+          if (this.entitlementService && effectiveUserId) {
+            this.entitlementService.recordAIUsage(effectiveUserId, 'tutor_chat', {
+              message: request.message?.slice(0, 80),
+              depthMode: request.depthMode,
+              isParagraphMode: request.context?.isParagraphMode,
+              source: 'gemini',
+            }).catch(() => {});
+          }
           return {
             success: true,
             data: responseData,
@@ -246,6 +299,14 @@ export class TutorService {
       request.depthMode || 'normal',
     );
     this.responseCache.set(cacheKey, { data: fallbackData, timestamp: Date.now() });
+    if (this.entitlementService && effectiveUserId) {
+      this.entitlementService.recordAIUsage(effectiveUserId, 'tutor_chat', {
+        message: request.message?.slice(0, 80),
+        depthMode: request.depthMode,
+        isParagraphMode: request.context?.isParagraphMode,
+        source: 'local_generator',
+      }).catch(() => {});
+    }
     return {
       success: true,
       data: fallbackData,

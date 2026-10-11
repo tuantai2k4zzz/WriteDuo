@@ -4,8 +4,11 @@ import { LessonsController, SentencesController, PronunciationController } from 
 import { LessonsService } from './lessons.service';
 import { Reading, ReadingSchema, Sentence, SentenceSchema, UserProgress, UserProgressSchema } from '../../schemas';
 
+import { BillingModule } from '../billing/billing.module';
+
 @Module({
   imports: [
+    BillingModule,
     MongooseModule.forFeature([
       { name: Reading.name, schema: ReadingSchema },
       { name: Sentence.name, schema: SentenceSchema },

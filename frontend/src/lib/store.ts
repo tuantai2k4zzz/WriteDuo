@@ -38,6 +38,25 @@ interface LearningState {
   refreshUserData: () => Promise<void>;
   logout: () => void;
 
+  // Billing & Pro Monetization
+  entitlements: import('../types').UserEntitlements | null;
+  setEntitlements: (ent: import('../types').UserEntitlements | null) => void;
+  loadEntitlements: () => Promise<import('../types').UserEntitlements | null>;
+  isPricingModalOpen: boolean;
+  openPricingModal: () => void;
+  closePricingModal: () => void;
+  isCheckoutModalOpen: boolean;
+  selectedCheckoutPlan: import('../types').Plan | null;
+  openCheckoutModal: (plan: import('../types').Plan) => void;
+  closeCheckoutModal: () => void;
+  isUpgradeModalOpen: boolean;
+  upgradeReason: string;
+  openUpgradeModal: (reason?: string) => void;
+  closeUpgradeModal: () => void;
+  isBillingHistoryModalOpen: boolean;
+  openBillingHistoryModal: () => void;
+  closeBillingHistoryModal: () => void;
+
   // Active Lesson
   activeLesson: Lesson | null;
   sentences: Sentence[];
@@ -137,6 +156,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     const token = getStoredToken();
     if (!token) {
       set({ user: null, userProgress: null });
+      get().loadEntitlements().catch(() => {});
       return null;
     }
     try {
@@ -159,11 +179,13 @@ export const useLearningStore = create<LearningState>((set, get) => ({
           completedSentencesCount: me.completedSentencesCount || 0,
         },
       });
+      get().loadEntitlements().catch(() => {});
       return me;
     } catch (err) {
       console.warn('Authentication token invalid or expired:', err);
       api.logout();
       set({ user: null, userProgress: null });
+      get().loadEntitlements().catch(() => {});
       return null;
     }
   },
@@ -191,8 +213,40 @@ export const useLearningStore = create<LearningState>((set, get) => ({
           completedSentencesCount: me.completedSentencesCount || 0,
         },
       });
+      get().loadEntitlements().catch(() => {});
     } catch {}
   },
+
+  // Billing & Pro Monetization
+  entitlements: null,
+  setEntitlements: (entitlements) => set({ entitlements }),
+  loadEntitlements: async () => {
+    try {
+      const ent = await api.getEntitlements();
+      set({ entitlements: ent });
+      return ent;
+    } catch {
+      return null;
+    }
+  },
+  isPricingModalOpen: false,
+  openPricingModal: () => set({ isPricingModalOpen: true }),
+  closePricingModal: () => set({ isPricingModalOpen: false }),
+
+  isCheckoutModalOpen: false,
+  selectedCheckoutPlan: null,
+  openCheckoutModal: (plan) => set({ isCheckoutModalOpen: true, selectedCheckoutPlan: plan, isPricingModalOpen: false, isUpgradeModalOpen: false }),
+  closeCheckoutModal: () => set({ isCheckoutModalOpen: false, selectedCheckoutPlan: null }),
+
+  isUpgradeModalOpen: false,
+  upgradeReason: '',
+  openUpgradeModal: (reason = 'Tính năng này yêu cầu nâng cấp gói WriteDuo Pro.') =>
+    set({ isUpgradeModalOpen: true, upgradeReason: reason }),
+  closeUpgradeModal: () => set({ isUpgradeModalOpen: false }),
+
+  isBillingHistoryModalOpen: false,
+  openBillingHistoryModal: () => set({ isBillingHistoryModalOpen: true }),
+  closeBillingHistoryModal: () => set({ isBillingHistoryModalOpen: false }),
 
   logout: () => {
     api.logout();
@@ -201,6 +255,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
       userProgress: null,
       activeLesson: null,
       currentTab: 'learn',
+      entitlements: null,
     });
   },
 

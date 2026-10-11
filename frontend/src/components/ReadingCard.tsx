@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Lesson } from '../types';
-import { BookOpen, CheckCircle, ArrowRight, Layers, Zap } from 'lucide-react';
+import { BookOpen, CheckCircle, ArrowRight, Layers, Zap, Lock, Crown } from 'lucide-react';
 import { DepthCard } from './motion/DepthCard';
 
 interface Props {
@@ -28,12 +28,13 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
 
   const config = getLevelConfig(lesson.level);
   const isCompleted = lesson.isCompleted;
+  const isLocked = lesson.isLocked;
 
   return (
     <DepthCard
-      glowColor={isCompleted ? 'emerald' : 'cyan'}
+      glowColor={isLocked ? 'cyan' : isCompleted ? 'emerald' : 'cyan'}
       onClick={() => onSelect(lesson)}
-      className="p-5 flex flex-col justify-between h-full cursor-pointer"
+      className="p-5 flex flex-col justify-between h-full cursor-pointer relative"
     >
       {/* Scan line top */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -49,9 +50,17 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
           <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-cyan-600 dark:text-cyan-400/70 font-mono">
             {lesson.topic}
           </span>
-          <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-black tracking-widest font-mono ${config.badge}`}>
-            {lesson.level}
-          </span>
+          <div className="flex items-center gap-1.5">
+            {isLocked && (
+              <span className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-[9px] font-black tracking-wider font-mono border-amber-400/50 text-amber-600 dark:text-amber-300 bg-amber-500/15">
+                <Crown className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
+                <span>PRO</span>
+              </span>
+            )}
+            <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-black tracking-widest font-mono ${config.badge}`}>
+              {lesson.level}
+            </span>
+          </div>
         </div>
 
         {/* Title */}
@@ -81,7 +90,9 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
         }}
         disabled={isLoading}
         className={`w-full flex items-center justify-center gap-2 rounded-xl py-2.5 px-4 text-xs font-black tracking-wider uppercase transition-all duration-200 active:scale-95 disabled:opacity-60 font-mono cursor-pointer
-          ${isCompleted
+          ${isLocked
+            ? 'bg-amber-50 dark:bg-amber-500/15 border border-amber-300 dark:border-amber-500/40 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-500/25'
+            : isCompleted
             ? 'bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-300 dark:border-emerald-500/50 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-500/30'
             : 'bg-cyan-50 dark:bg-cyan-500/15 border border-cyan-300 dark:border-cyan-500/40 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-500/25 hover:border-cyan-400'
           }`}
@@ -90,6 +101,11 @@ export const ReadingCard: React.FC<Props> = ({ lesson, onSelect, isLoading }) =>
           <>
             <Zap className="h-3.5 w-3.5 animate-pulse" />
             <span>Đang Tải...</span>
+          </>
+        ) : isLocked ? (
+          <>
+            <Lock className="h-3.5 w-3.5 text-amber-500" />
+            <span>Mở Khóa Pro</span>
           </>
         ) : isCompleted ? (
           <>

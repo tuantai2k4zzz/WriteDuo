@@ -28,6 +28,7 @@ interface AdminDashboardModalProps {
 
 export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen, onClose }) => {
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const [monetizationStats, setMonetizationStats] = useState<import('../../types').AdminMonetizationStats | null>(null);
   const [users, setUsers] = useState<AdminUserItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -38,7 +39,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [statsData, usersData] = await Promise.all([
+      const [statsData, usersData, moneyData] = await Promise.all([
         api.adminGetStats().catch((err) => {
           console.error('Failed to load stats:', err);
           return null;
@@ -47,9 +48,14 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
           console.error('Failed to load users:', err);
           return [];
         }),
+        api.getMonetizationStats().catch((err) => {
+          console.error('Failed to load monetization stats:', err);
+          return null;
+        }),
       ]);
       setStats(statsData || null);
       setUsers(Array.isArray(usersData) ? usersData : []);
+      setMonetizationStats(moneyData || null);
     } catch (err: any) {
       console.error('Failed to load admin data:', err);
       setUsers([]);
@@ -189,8 +195,53 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
         </AnimatePresence>
 
         {/* Content Body */}
-        <div className="p-4 sm:p-6 overflow-y-auto space-y-5 flex-1">
-          {/* Stats Grid */}
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1">
+          {/* SAAS MONETIZATION & REVENUE KPI METRICS (Section 11) */}
+          <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-cyan-950/30 to-indigo-950/40 border border-emerald-500/30">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>SAAS MONETIZATION &amp; GROWTH ENGINE 2026</span>
+              </span>
+              <span className="text-[10px] text-slate-400 font-mono">VietQR Napas 247 Live Analytics</span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="p-3.5 rounded-xl bg-slate-900/80 border border-emerald-500/20">
+                <span className="text-[10px] text-slate-400 font-mono font-semibold uppercase">MRR (Doanh Thu Tháng)</span>
+                <div className="text-xl sm:text-2xl font-black text-emerald-400 font-mono mt-1">
+                  {(monetizationStats?.mrrVnd ?? 0).toLocaleString('vi-VN')}₫
+                </div>
+                <div className="text-[10px] text-emerald-300/80 mt-0.5">Thuê bao Pro đang hoạt động</div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-900/80 border border-cyan-500/20">
+                <span className="text-[10px] text-slate-400 font-mono font-semibold uppercase">Tổng Doanh Thu VietQR</span>
+                <div className="text-xl sm:text-2xl font-black text-cyan-400 font-mono mt-1">
+                  {(monetizationStats?.totalRevenueVnd ?? 0).toLocaleString('vi-VN')}₫
+                </div>
+                <div className="text-[10px] text-cyan-300/80 mt-0.5">Thanh toán đã xác thực</div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-900/80 border border-indigo-500/20">
+                <span className="text-[10px] text-slate-400 font-mono font-semibold uppercase">Tỷ Lệ Chuyển Đổi</span>
+                <div className="text-xl sm:text-2xl font-black text-indigo-400 font-mono mt-1">
+                  {monetizationStats?.freeToProConversionRate ?? 0}%
+                </div>
+                <div className="text-[10px] text-indigo-300/80 mt-0.5">Free-to-Pro Conversion</div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-900/80 border border-purple-500/20">
+                <span className="text-[10px] text-slate-400 font-mono font-semibold uppercase">Chi Phí AI Ước Tính</span>
+                <div className="text-xl sm:text-2xl font-black text-purple-400 font-mono mt-1">
+                  {(monetizationStats?.estimatedAiCostVnd ?? 0).toLocaleString('vi-VN')}₫
+                </div>
+                <div className="text-[10px] text-emerald-400 mt-0.5 font-bold">Biên lợi nhuận gộp &gt; 85%</div>
+              </div>
+            </div>
+          </div>
+
+          {/* User Count Stats Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {/* Total Users */}
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">

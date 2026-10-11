@@ -7,3 +7,7 @@ export * from './user-vocabulary.schema';
 export * from './evaluation-cache.schema';
 export * from './lesson-progress.schema';
 export * from './weak-vocabulary.schema';
+export * from './plan.schema';
+export * from './subscription.schema';
+export * from './payment-order.schema';
+export * from './ai-usage-log.schema';

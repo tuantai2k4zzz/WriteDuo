@@ -7,6 +7,11 @@ import {
   SavedWord,
   AuthUser,
   WeakVocabularyItem,
+  Plan,
+  UserSubscription,
+  PaymentOrder,
+  UserEntitlements,
+  AdminMonetizationStats,
 } from '../types';
 
 const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://write-duo-ye5x-peach.vercel.app/api/v1';
@@ -123,8 +128,8 @@ export const api = {
     return fetchJson<Lesson[]>(url);
   },
 
-  async getLesson(slugOrId: string): Promise<{ lesson: Lesson; sentences: Sentence[]; totalCount: number }> {
-    return fetchJson<{ lesson: Lesson; sentences: Sentence[]; totalCount: number }>(
+  async getLesson(slugOrId: string): Promise<{ lesson: Lesson; sentences: Sentence[]; totalCount: number; isLocked?: boolean; isProOnly?: boolean }> {
+    return fetchJson<{ lesson: Lesson; sentences: Sentence[]; totalCount: number; isLocked?: boolean; isProOnly?: boolean }>(
       `${API_BASE_URL}/lessons/${encodeURIComponent(slugOrId)}`
     );
   },
@@ -408,6 +413,63 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ role }),
     });
+  },
+
+  // Billing & Subscriptions
+  async getPlans(): Promise<Plan[]> {
+    const res = await fetchJson<any>(`${API_BASE_URL}/billing/plans`);
+    return Array.isArray(res) ? res : (res?.data || []);
+  },
+
+  async getEntitlements(): Promise<UserEntitlements> {
+    const res = await fetchJson<any>(`${API_BASE_URL}/billing/entitlements`);
+    return res?.data !== undefined ? res.data : res;
+  },
+
+  async getSubscription(): Promise<UserSubscription | null> {
+    try {
+      const res = await fetchJson<any>(`${API_BASE_URL}/billing/subscription`);
+      return res?.data !== undefined ? res.data : res;
+    } catch {
+      return null;
+    }
+  },
+
+  async createCheckout(planCode: string): Promise<PaymentOrder> {
+    const res = await fetchJson<any>(`${API_BASE_URL}/billing/checkout`, {
+      method: 'POST',
+      body: JSON.stringify({ planCode }),
+    });
+    return res?.data !== undefined ? res.data : res;
+  },
+
+  async getOrderStatus(orderIdOrCode: string): Promise<PaymentOrder> {
+    const res = await fetchJson<any>(`${API_BASE_URL}/billing/orders/${encodeURIComponent(orderIdOrCode)}`);
+    return res?.data !== undefined ? res.data : res;
+  },
+
+  async simulatePayment(orderId: string): Promise<{ success: boolean; message: string; subscription?: UserSubscription }> {
+    return fetchJson(`${API_BASE_URL}/billing/simulate-payment`, {
+      method: 'POST',
+      body: JSON.stringify({ orderId }),
+    });
+  },
+
+  async cancelSubscription(reason?: string): Promise<{ success: boolean; message: string }> {
+    return fetchJson(`${API_BASE_URL}/billing/subscription/cancel`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    });
+  },
+
+  async getBillingHistory(): Promise<{ subscription: UserSubscription | null; orders: PaymentOrder[] }> {
+    const res = await fetchJson<any>(`${API_BASE_URL}/billing/history`);
+    return res?.data !== undefined ? res.data : res;
+  },
+
+  async getMonetizationStats(): Promise<AdminMonetizationStats> {
+    const res = await fetchJson<any>(`${API_BASE_URL}/billing/admin/stats`);
+    return res?.data !== undefined ? res.data : res;
   },
 };
 

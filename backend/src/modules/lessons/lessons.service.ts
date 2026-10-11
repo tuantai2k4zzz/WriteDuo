@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Optional } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Reading, ReadingDocument, Sentence, SentenceDocument, UserProgress, UserProgressDocument } from '../../schemas';
 import { lookupLocalDictionary } from '../vocabulary/dictionary.data';
+import { EntitlementService } from '../billing/entitlement.service';
 
 @Injectable()
 export class LessonsService {
@@ -10,6 +11,7 @@ export class LessonsService {
     @InjectModel(Reading.name) private readingModel: Model<ReadingDocument>,
     @InjectModel(Sentence.name) private sentenceModel: Model<SentenceDocument>,
     @InjectModel(UserProgress.name) private progressModel: Model<UserProgressDocument>,
+    @Optional() private entitlementService?: EntitlementService,
   ) {}
 
   async getAllLessons(level?: string, userId?: string) {
@@ -25,6 +27,7 @@ export class LessonsService {
       .lean();
 
     let completedSet = new Set<string>();
+    let isProUser = false;
 
     if (userId && Types.ObjectId.isValid(userId)) {
       const progress = await this.progressModel
@@ -33,15 +36,27 @@ export class LessonsService {
       completedSet = new Set(
         (progress?.completedReadings || []).map((id) => id.toString()),
       );
+
+      if (this.entitlementService) {
+        try {
+          const ent = await this.entitlementService.getEntitlements(userId);
+          isProUser = ent.isPro || ent.isAdmin;
+        } catch {}
+      }
     }
 
-    return readings.map((r) => ({
-      ...r,
-      isCompleted: completedSet.has(r._id.toString()),
-    }));
+    return readings.map((r) => {
+      const isProOnly = !['A1', 'A2', 'B1'].includes((r.level || '').toUpperCase());
+      return {
+        ...r,
+        isCompleted: completedSet.has(r._id.toString()),
+        isProOnly,
+        isLocked: isProOnly && !isProUser,
+      };
+    });
   }
 
-  async getLessonById(idOrSlug: string) {
+  async getLessonById(idOrSlug: string, userId?: string) {
     let reading: ReadingDocument | null = null;
 
     if (Types.ObjectId.isValid(idOrSlug)) {
@@ -55,6 +70,17 @@ export class LessonsService {
       throw new NotFoundException(`Lesson not found: ${idOrSlug}`);
     }
 
+    let isProUser = false;
+    if (userId && Types.ObjectId.isValid(userId) && this.entitlementService) {
+      try {
+        const ent = await this.entitlementService.getEntitlements(userId);
+        isProUser = ent.isPro || ent.isAdmin;
+      } catch {}
+    }
+
+    const isProOnly = !['A1', 'A2', 'B1'].includes((reading.level || '').toUpperCase());
+    const isLocked = isProOnly && !isProUser;
+
     const sentences = await this.sentenceModel
       .find({ readingId: reading._id })
       .sort({ paragraphIndex: 1, sentenceIndex: 1 })
@@ -66,6 +92,8 @@ export class LessonsService {
       lesson: reading,
       sentences: enrichedSentences,
       totalCount: enrichedSentences.length,
+      isProOnly,
+      isLocked,
     };
   }
 

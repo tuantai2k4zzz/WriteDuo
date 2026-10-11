@@ -33,6 +33,7 @@ import { ReviewModule } from './modules/review/review.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { BillingModule } from './modules/billing/billing.module';
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import { AdminModule } from './modules/admin/admin.module';
     ProgressModule,
     VocabularyModule,
     ReviewModule,
+    BillingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

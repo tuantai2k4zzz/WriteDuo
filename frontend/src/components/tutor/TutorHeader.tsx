@@ -3,6 +3,7 @@
 import React from 'react';
 import { useTutorStore, DepthMode, TutorStatus } from '../../lib/tutorStore';
 import { useLearningStore } from '../../lib/store';
+import { playSound } from '../../lib/audio';
 import { RotateCcw, Crown, Lock, Maximize2, Minimize2 } from 'lucide-react';
 
 export const TutorHeader: React.FC = () => {
@@ -16,7 +17,7 @@ export const TutorHeader: React.FC = () => {
     isExpandedWidth,
     toggleExpandedWidth,
   } = useTutorStore();
-  const { user, openAuthModal } = useLearningStore();
+  const { user, openAuthModal, entitlements, openPricingModal } = useLearningStore();
 
   const getStatusBadge = (s: TutorStatus) => {
     switch (s) {
@@ -177,29 +178,47 @@ export const TutorHeader: React.FC = () => {
             Đăng nhập để hỏi AI →
           </button>
         </div>
-      ) : isUnlimited ? (
-        /* Tài khoản Premium hoặc Admin: Vô hạn AI */
-        <div className="flex items-center justify-between text-xs py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 border border-amber-400/40 text-amber-800 dark:text-amber-200 font-bold shadow-xs">
+      ) : entitlements?.isAdmin ? (
+        /* Tài khoản Admin: Vô hạn AI */
+        <div className="flex items-center justify-between text-xs py-1.5 px-3 rounded-xl bg-purple-500/15 border border-purple-400/40 text-purple-800 dark:text-purple-200 font-bold shadow-xs">
           <span className="flex items-center gap-1.5">
-            <Crown className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0" />
-            <span>{user?.role === 'admin' ? '🛡️ ADMIN ĐẶC QUYỀN' : '👑 GÓI PREMIUM'}</span>
+            <Crown className="w-4 h-4 text-purple-500 fill-purple-500 shrink-0" />
+            <span>🛡️ ADMIN ĐẶC QUYỀN</span>
           </span>
-          <span className="text-[11px] font-mono font-black uppercase text-amber-600 dark:text-amber-400">
+          <span className="text-[11px] font-mono font-black uppercase text-purple-600 dark:text-purple-400">
             Vô hạn câu hỏi AI (∞)
           </span>
         </div>
+      ) : entitlements?.isPro ? (
+        /* Tài khoản Pro: 100 câu/ngày */
+        <div className="flex items-center justify-between text-xs py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-amber-500/15 border border-amber-400/40 text-amber-800 dark:text-amber-200 font-bold shadow-xs">
+          <span className="flex items-center gap-1.5">
+            <Crown className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0" />
+            <span>👑 GÓI PRO VIP</span>
+          </span>
+          <span className="text-[11px] font-mono font-bold text-amber-600 dark:text-amber-300">
+            Còn {entitlements.remainingToday}/{entitlements.dailyAiLimit} câu hôm nay
+          </span>
+        </div>
       ) : (
-        /* Tài khoản Thường: Giới hạn 50 câu/ngày */
-        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-0.5 font-mono">
-          <span className="flex items-center gap-1 font-semibold">
-            <span>Hạn mức hôm nay:</span>
-            <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold">
-              Tài khoản thường
+        /* Tài khoản Miễn Phí: 10 câu/ngày */
+        <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 text-slate-700 dark:text-slate-300 font-mono">
+          <span className="flex items-center gap-1">
+            <span className="text-[11px] text-slate-500">Miễn phí:</span>
+            <span className="font-bold text-cyan-600 dark:text-cyan-400">
+              {entitlements ? `${entitlements.remainingToday}/${entitlements.dailyAiLimit}` : '10/10'} câu
             </span>
           </span>
-          <span className="font-bold text-slate-700 dark:text-slate-200">
-            {quota ? `${quota.usedToday}/50 câu` : '0/50 câu'} ({quota ? Math.max(0, 50 - quota.usedToday) : 50} còn lại)
-          </span>
+          <button
+            type="button"
+            onClick={() => {
+              playSound('click');
+              openPricingModal();
+            }}
+            className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/40 text-cyan-600 dark:text-cyan-300 text-[10px] font-bold uppercase transition cursor-pointer"
+          >
+            <span>Lên Pro (100 câu) →</span>
+          </button>
         </div>
       )}
     </div>

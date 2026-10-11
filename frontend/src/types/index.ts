@@ -89,6 +89,8 @@ export interface Lesson {
   paragraphs?: string[];
   order: number;
   isCompleted?: boolean;
+  isLocked?: boolean;
+  isProOnly?: boolean;
 }
 
 export interface SpecificMistake {
@@ -589,5 +591,91 @@ export interface AdminUserItem {
   streak: number;
   currentLevel: string;
   aiQueriesCount: number;
+}
+
+export interface Plan {
+  code: string;
+  name: string;
+  description: string;
+  priceVnd: number;
+  originalPriceVnd: number;
+  billingCycle: 'monthly' | 'annual' | 'lifetime';
+  badge?: string;
+  dailyAiLimit: number;
+  features: string[];
+  isPopular?: boolean;
+}
+
+export interface UserSubscription {
+  id?: string;
+  userId: string;
+  planCode: string;
+  status: 'active' | 'free' | 'expired' | 'canceled';
+  startDate: string;
+  currentPeriodEnd: string;
+  autoRenew: boolean;
+  priceVnd: number;
+  paymentProvider?: string;
+}
+
+export interface PaymentOrder {
+  _id?: string;
+  orderCode: string;
+  userId: string;
+  planCode: string;
+  amountVnd: number;
+  currency: string;
+  status: 'pending' | 'completed' | 'failed' | 'expired' | 'refunded';
+  qrCodeUrl: string;
+  transferContent: string;
+  bankInfo: {
+    bankId: string;
+    accountNo: string;
+    accountName: string;
+  };
+  expiresAt: string;
+  createdAt: string;
+}
+
+export interface UserEntitlements {
+  planCode: string;
+  planName: string;
+  isPro: boolean;
+  isAdmin: boolean;
+  status: 'active' | 'free' | 'expired' | 'canceled';
+  expiresAt: string | null;
+  dailyAiLimit: number;
+  usedToday: number;
+  remainingToday: number;
+  canAccessAllLevels: boolean;
+  canUseFullReverseTranslation: boolean;
+  canUseDeepGrammar: boolean;
+  canUseSpacedRepetitionHub: boolean;
+  features: string[];
+}
+
+export interface BillingHistoryItem {
+  orderCode: string;
+  planCode: string;
+  amountVnd: number;
+  status: string;
+  paymentMethod: string;
+  createdAt: string;
+  completedAt?: string;
+}
+
+export interface AdminMonetizationStats {
+  mrrVnd: number;
+  arrVnd: number;
+  totalRevenueVnd: number;
+  activeSubscriptionsCount: number;
+  freeToProConversionRate: number;
+  estimatedAiCostVnd: number;
+  planBreakdown: {
+    monthly: number;
+    annual: number;
+    free: number;
+  };
+  recentOrders: PaymentOrder[];
 }
 

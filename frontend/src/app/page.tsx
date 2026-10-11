@@ -20,6 +20,9 @@ import { DailyMission } from '../components/dashboard/DailyMission';
 import { PersonalLearningProfile } from '../components/dashboard/PersonalLearningProfile';
 import { PageTransition } from '../components/motion/PageTransition';
 import { computeSkillVector, getAdaptiveRecommendation } from '../lib/adaptive';
+import LearningRhythmDashboard from '../components/growth/LearningRhythmDashboard';
+import TopLearnersLeaderboard from '../components/growth/TopLearnersLeaderboard';
+import ShareableAchievementCard from '../components/growth/ShareableAchievementCard';
 import { Sparkles, Compass, Brain, ArrowRight, ShieldCheck, Zap, Radio, Target } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -37,6 +40,7 @@ export default function Home() {
     user,
     loadUser,
     initTheme,
+    openUpgradeModal,
   } = useLearningStore();
 
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -45,6 +49,7 @@ export default function Home() {
   const [learningProfile, setLearningProfile] = useState<import('../types').PersonalLearningProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectingLessonId, setSelectingLessonId] = useState<string | null>(null);
+  const [isShareCardOpen, setIsShareCardOpen] = useState(false);
 
   // Initialize theme mode and load user session on mount
   useEffect(() => {
@@ -80,9 +85,23 @@ export default function Home() {
   const recommendation = getAdaptiveRecommendation(skillVector, reviewItems.length);
 
   const handleSelectLesson = async (lesson: Lesson) => {
+    if (lesson.isLocked) {
+      openUpgradeModal(
+        `Bài học "${lesson.title}" thuộc cấp độ nâng cao ${lesson.level} (chỉ dành cho hội viên Pro). Hãy nâng cấp để làm chủ toàn bộ kho tài liệu chuyên sâu!`
+      );
+      return;
+    }
+
     try {
       setSelectingLessonId(lesson._id);
       const fullLesson = await api.getLesson(lesson.slug);
+
+      if (fullLesson.isLocked) {
+        openUpgradeModal(
+          `Bài học "${fullLesson.lesson.title}" thuộc cấp độ nâng cao ${fullLesson.lesson.level}. Hãy nâng cấp gói Pro để truy cập đầy đủ bài học này!`
+        );
+        return;
+      }
 
       // PROACTIVE INTERLEAVING: If there are review items due, inject 1 review sentence
       // right into the middle of the lesson to surprise-test retention!
@@ -229,6 +248,14 @@ export default function Home() {
                 <TuantaidzBrandPlate />
               </div>
 
+              {/* ── 2026 SAAS RETENTION: LEARNING RHYTHM & IELTS PATH (Inspired by Reference Images 1 & 3) ── */}
+              <LearningRhythmDashboard
+                onStartLesson={() => lessons.length > 0 && handleSelectLesson(lessons[0])}
+                onOpenVocab={() => setCurrentTab('vocab')}
+                onOpenWeakness={() => setCurrentTab('weakness')}
+                onOpenShareCard={() => setIsShareCardOpen(true)}
+              />
+
               {/* ── PERSONAL LEARNING PROFILE (COMMAND CENTER 2026 - Desktop/Laptop only) ── */}
               <div className="hidden md:block">
                 <PersonalLearningProfile
@@ -330,6 +357,9 @@ export default function Home() {
               </motion.div>
             )}
 
+            {/* ── TOP LEARNERS LEADERBOARD & MASTERY (Inspired by Reference Image 2) ── */}
+            <TopLearnersLeaderboard onOpenShareCard={() => setIsShareCardOpen(true)} />
+
             {/* ── LEVEL FILTER BAR ── */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
               <div className="flex items-center gap-2">
@@ -390,6 +420,12 @@ export default function Home() {
 
       {/* Global Auth Modal for Multi-User Login & Registration */}
       <AuthModal />
+
+      {/* Shareable Achievement Card Modal (Viral Growth) */}
+      <ShareableAchievementCard
+        isOpen={isShareCardOpen}
+        onClose={() => setIsShareCardOpen(false)}
+      />
     </div>
     </PageTransition>
   );

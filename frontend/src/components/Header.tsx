@@ -3,8 +3,12 @@
 import React, { useState } from 'react';
 import { useLearningStore } from '../lib/store';
 import { playSound } from '../lib/audio';
-import { Flame, Zap, BookOpen, BookmarkCheck, Target, Sun, Moon, LogIn, LogOut, Shield } from 'lucide-react';
+import { Flame, Zap, BookOpen, BookmarkCheck, Target, Sun, Moon, LogIn, LogOut, Shield, Crown, Sparkles } from 'lucide-react';
 import { AdminDashboardModal } from './admin/AdminDashboardModal';
+import PricingModal from './billing/PricingModal';
+import CheckoutModal from './billing/CheckoutModal';
+import UpgradeModal from './billing/UpgradeModal';
+import BillingHistoryModal from './billing/BillingHistoryModal';
 
 export const Header: React.FC = () => {
   const {
@@ -17,6 +21,9 @@ export const Header: React.FC = () => {
     activeLesson,
     themeMode,
     toggleThemeMode,
+    entitlements,
+    openPricingModal,
+    openBillingHistoryModal,
   } = useLearningStore();
 
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
@@ -141,6 +148,49 @@ export const Header: React.FC = () => {
                 {xp} <span className="text-[10px] hidden sm:inline">XP</span>
               </span>
             </div>
+
+            {/* AI Daily Allowance Pill */}
+            {entitlements && (
+              <div
+                onClick={() => {
+                  playSound('click');
+                  openPricingModal();
+                }}
+                className="hidden lg:flex items-center gap-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 border border-slate-300 dark:border-slate-700/60 text-slate-700 dark:text-slate-300 text-[11px] font-mono font-medium cursor-pointer hover:border-cyan-500/40 transition-colors shadow-xs"
+                title={`Hạn mức Gia Sư AI: Còn ${entitlements.remainingToday}/${entitlements.dailyAiLimit} câu hôm nay (Nhấp để xem gói)`}
+              >
+                <span className={`w-2 h-2 rounded-full ${entitlements.remainingToday > 0 ? 'bg-cyan-400' : 'bg-rose-400'} animate-pulse`} />
+                <span>AI: <strong className="text-cyan-600 dark:text-cyan-400">{entitlements.remainingToday}</strong>/{entitlements.dailyAiLimit}</span>
+              </div>
+            )}
+
+            {/* Pro Status or Upgrade Button */}
+            {entitlements?.isPro ? (
+              <button
+                onClick={() => {
+                  playSound('click');
+                  openBillingHistoryModal();
+                }}
+                className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-400/40 text-amber-600 dark:text-amber-300 text-xs font-bold transition active:scale-95 shadow-xs cursor-pointer"
+                title="Quản lý gói WriteDuo Pro & Lịch sử thanh toán"
+              >
+                <Crown className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                <span className="hidden sm:inline">Pro VIP</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  playSound('click');
+                  openPricingModal();
+                }}
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-xl bg-gradient-to-r from-cyan-500/20 via-sky-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-400/40 text-cyan-600 dark:text-cyan-300 text-xs font-bold transition active:scale-95 shadow-[0_0_12px_rgba(0,242,254,0.15)] cursor-pointer"
+                title="Nâng cấp WriteDuo Pro mở khóa 100 câu hỏi AI/ngày & toàn bộ bài học"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+                <span className="hidden sm:inline">Nâng Cấp Pro</span>
+                <span className="sm:hidden">Pro</span>
+              </button>
+            )}
 
             {/* Admin Management Button (Visible only to Admin users) */}
             {(user?.role === 'admin' || user?.email === 'admin@writeduo.com') && (
@@ -278,6 +328,12 @@ export const Header: React.FC = () => {
         isOpen={isAdminModalOpen}
         onClose={() => setIsAdminModalOpen(false)}
       />
+
+      {/* Monetization & Billing Modals */}
+      <PricingModal />
+      <CheckoutModal />
+      <UpgradeModal />
+      <BillingHistoryModal />
     </>
   );
 };

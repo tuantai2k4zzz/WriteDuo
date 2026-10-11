@@ -9,9 +9,12 @@ import { MockAIProvider } from './providers/mock.provider';
 import { TutorService } from './tutor.service';
 import { TutorController } from './tutor.controller';
 
+import { BillingModule } from '../billing/billing.module';
+
 @Module({
   imports: [
     ConfigModule,
+    BillingModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [TutorController],
