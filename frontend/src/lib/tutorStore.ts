@@ -38,14 +38,35 @@ interface TutorState {
   isExpandedWidth: boolean;
   toggleExpandedWidth: () => void;
 
+  // Paragraph Challenge Tutor Modal/Drawer state
+  isParagraphTutorOpen: boolean;
+  setIsParagraphTutorOpen: (open: boolean) => void;
+  openParagraphTutor: () => void;
+  closeParagraphTutor: () => void;
+  activeParagraphContext: Partial<TutorContext> | null;
+  setActiveParagraphContext: (ctx: Partial<TutorContext> | null) => void;
+
   // Actions
   syncSentenceContext: (sentence: Sentence, lesson: Lesson | null, mode: 'en_to_vi' | 'vi_to_en') => void;
+  syncParagraphContext: (lessonId: string, mode: string) => void;
   askTutor: (question: string, overrideContext?: Partial<TutorContext>) => Promise<void>;
   resetConversation: () => void;
   loadQuota: () => Promise<void>;
   askAboutWord: (word: string, customQuestion?: string) => Promise<void>;
   askAboutSelection: (selectedText: string) => Promise<void>;
   askAboutUserMistake: () => Promise<void>;
+  askAboutParagraph: (question: string, contextOverrides?: Partial<TutorContext>) => Promise<void>;
+  askAboutParagraphSentence: (
+    sentIndex: number,
+    userText: string,
+    refText: string,
+    feedback?: string,
+    contextOverrides?: Partial<TutorContext>
+  ) => Promise<void>;
+  askAboutParagraphMistakes: (
+    paragraphEvaluation: any,
+    contextOverrides?: Partial<TutorContext>
+  ) => Promise<void>;
 }
 
 export const useTutorStore = create<TutorState>((set, get) => ({
@@ -67,6 +88,14 @@ export const useTutorStore = create<TutorState>((set, get) => ({
     set((state) => ({ isExpandedWidth: !state.isExpandedWidth }));
   },
 
+  // Paragraph Challenge Tutor state
+  isParagraphTutorOpen: false,
+  setIsParagraphTutorOpen: (open) => set({ isParagraphTutorOpen: open }),
+  openParagraphTutor: () => set({ isParagraphTutorOpen: true }),
+  closeParagraphTutor: () => set({ isParagraphTutorOpen: false }),
+  activeParagraphContext: null,
+  setActiveParagraphContext: (ctx) => set({ activeParagraphContext: ctx }),
+
   // Load quota status from server
   loadQuota: async () => {
     try {
@@ -85,6 +114,22 @@ export const useTutorStore = create<TutorState>((set, get) => ({
     if (prevId !== sentence._id) {
       set({
         currentSentenceId: sentence._id,
+        messages: [],
+        status: 'idle',
+        error: null,
+        streamingChunk: '',
+        isStreaming: false,
+      });
+    }
+  },
+
+  // Sync paragraph context: resets conversation when switching to paragraph challenge
+  syncParagraphContext: (lessonId, mode) => {
+    const key = `paragraph-${lessonId}-${mode}`;
+    const prevId = get().currentSentenceId;
+    if (prevId !== key) {
+      set({
+        currentSentenceId: key,
         messages: [],
         status: 'idle',
         error: null,
@@ -126,11 +171,12 @@ export const useTutorStore = create<TutorState>((set, get) => ({
 
     playSound('click');
 
+    const isParagraph = !!overrideContext?.isParagraphMode || !!get().activeParagraphContext?.isParagraphMode;
     const sentence = learningState.sentences[learningState.currentSentenceIndex];
     const lesson = learningState.activeLesson;
     const isViToEn = learningState.exerciseMode === 'vi_to_en';
 
-    if (!sentence) return;
+    if (!sentence && !isParagraph) return;
 
     // Build rich structured context
     const fullContext: TutorContext = {
@@ -139,24 +185,28 @@ export const useTutorStore = create<TutorState>((set, get) => ({
       lessonTitle: lesson?.title,
       lessonTopic: lesson?.topic,
       lessonLevel: lesson?.level,
-      sentenceId: sentence._id,
+      sentenceId: sentence?._id || 'paragraph',
       exerciseMode: learningState.exerciseMode,
-      sourceSentence: isViToEn ? sentence.primaryTranslationVi : sentence.textEn,
+      sourceSentence: isViToEn
+        ? (sentence ? sentence.primaryTranslationVi : '')
+        : (sentence ? sentence.textEn : ''),
       sourceLanguage: isViToEn ? 'vi' : 'en',
       targetLanguage: isViToEn ? 'en' : 'vi',
-      referenceAnswer: isViToEn ? sentence.textEn : sentence.primaryTranslationVi,
+      referenceAnswer: isViToEn
+        ? (sentence ? sentence.textEn : '')
+        : (sentence ? sentence.primaryTranslationVi : ''),
       userAnswer: learningState.userAnswerInput || undefined,
-      grammarTopic: sentence.grammarAnalysis?.tense || 'Cấu trúc câu tự nhiên',
-      grammarExplanation: sentence.grammarAnalysis?.tenseExplanationVi,
-      sentenceStructure: sentence.grammarAnalysis?.components,
-      tokens: sentence.tokens?.map((t) => ({
+      grammarTopic: sentence?.grammarAnalysis?.tense || (isParagraph ? 'Cấu trúc & liên kết toàn bài' : 'Cấu trúc câu tự nhiên'),
+      grammarExplanation: sentence?.grammarAnalysis?.tenseExplanationVi,
+      sentenceStructure: sentence?.grammarAnalysis?.components,
+      tokens: sentence?.tokens?.map((t) => ({
         text: t.text,
         lemma: t.lemma,
         pos: t.pos,
         ipa: t.ipa,
         meaningVi: t.meaningVi,
       })),
-      pronunciationData: sentence.pronunciationGuide,
+      pronunciationData: sentence?.pronunciationGuide,
       previousEvaluation: learningState.evaluationResponse
         ? {
             score: learningState.evaluationResponse.evaluation.score,
@@ -168,6 +218,7 @@ export const useTutorStore = create<TutorState>((set, get) => ({
       mistakes: learningState.evaluationResponse?.evaluation.specificMistakes || [],
       isAnswerRevealed: learningState.isAnswerRevealed,
       depthMode: get().depthMode,
+      ...(get().activeParagraphContext || {}),
       ...overrideContext,
     };
 
@@ -274,5 +325,32 @@ export const useTutorStore = create<TutorState>((set, get) => ({
     set({ sidebarTab: 'tutor' });
     useLearningStore.getState().setSidebarMobileOpen(true);
     await get().askTutor(q);
+  },
+
+  // Paragraph Challenge Specialized Helpers
+  askAboutParagraph: async (question: string, contextOverrides?: Partial<TutorContext>) => {
+    set({ isParagraphTutorOpen: true });
+    await get().askTutor(question, { isParagraphMode: true, ...contextOverrides });
+  },
+
+  askAboutParagraphSentence: async (
+    sentIndex: number,
+    userText: string,
+    refText: string,
+    feedback?: string,
+    contextOverrides?: Partial<TutorContext>
+  ) => {
+    const q = `Gia sư hãy giải thích giúp mình câu ${sentIndex}: Bản dịch của mình là "${userText || '(chưa dịch)'}", đáp án chuẩn là "${refText}". Vì sao câu của mình chưa chuẩn và cách sửa như thế nào?`;
+    set({ isParagraphTutorOpen: true });
+    await get().askTutor(q, { isParagraphMode: true, ...contextOverrides });
+  },
+
+  askAboutParagraphMistakes: async (
+    paragraphEvaluation: any,
+    contextOverrides?: Partial<TutorContext>
+  ) => {
+    const q = `Gia sư hãy phân tích toàn bộ bài dịch của mình (đạt ${paragraphEvaluation?.score || 0}%), giải thích các điểm cần cải thiện và gợi ý cách diễn đạt tự nhiên nhất nhé!`;
+    set({ isParagraphTutorOpen: true });
+    await get().askTutor(q, { isParagraphMode: true, paragraphEvaluation, ...contextOverrides });
   },
 }));

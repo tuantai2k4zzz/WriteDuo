@@ -151,7 +151,9 @@ export class TutorService {
   }
 
   private getCacheKey(req: TutorChatRequest): string {
-    const sId = req.context.sentenceId || req.context.sourceSentence || 'unknown';
+    const sId = req.context.isParagraphMode
+      ? `paragraph:${req.context.lessonId || req.context.exerciseMode}`
+      : req.context.sentenceId || req.context.sourceSentence || 'unknown';
     const q = req.message.trim().toLowerCase();
     const depth = req.depthMode || 'normal';
     const userAns = req.context.userAnswer ? req.context.userAnswer.trim().toLowerCase() : '';

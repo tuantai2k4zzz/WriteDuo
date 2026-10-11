@@ -34,6 +34,74 @@ export class LocalTutorGenerator {
       };
     }
 
+    // 1.5. PARAGRAPH CHALLENGE DEDICATED RESPONSES
+    if (context.isParagraphMode) {
+      // User asks about a specific sentence in the paragraph (e.g. "câu 1", "câu 2", "câu 3")
+      const sentMatch = msg.match(/câu\s*(\d+)/i);
+      if (sentMatch && context.sentenceResults && context.sentenceResults.length > 0) {
+        const sIndex = parseInt(sentMatch[1], 10);
+        const sentItem = context.sentenceResults.find((s) => s.sentenceIndex === sIndex);
+        if (sentItem) {
+          return {
+            answer: `### Phân tích Câu ${sIndex}\n- **Bản dịch của bạn:** "${sentItem.userText || '(chưa dịch)'}"\n- **Bản dịch chuẩn:** "${sentItem.referenceText}"\n- **Đánh giá:** ${sentItem.score}% · ${sentItem.status === 'correct' ? 'Chuẩn xác' : 'Cần cải thiện'}\n\n### Góp ý sư phạm\n${sentItem.feedback || 'Hãy chú ý đối chiếu từ vựng, thì động từ và trật tự từ để câu tự nhiên hơn.'}`,
+            keyPoint: `Câu ${sIndex}: ${sentItem.feedback || 'Đối chiếu với bản dịch chuẩn.'}`,
+            explanationType: 'mistake',
+            examples: [{ en: sentItem.referenceText, vi: sentItem.userText || sentItem.referenceText }],
+            followUpSuggestions: [
+              `Làm sao để sửa câu ${sIndex} tự nhiên hơn?`,
+              'Phân tích toàn bài dịch của tôi',
+              'Gợi ý cách liên kết các câu',
+            ],
+          };
+        }
+      }
+
+      // User asks for hints before submitting
+      if (
+        msg.includes('gợi ý') ||
+        msg.includes('hint') ||
+        msg.includes('dàn ý') ||
+        msg.includes('bắt đầu') ||
+        msg.includes('liên từ')
+      ) {
+        return {
+          answer: `### 💡 Gợi ý bố cục bài dịch toàn đoạn\n- **Xác định thì chủ đạo:** Đoạn văn chủ yếu kể lại hoặc mô tả một câu chuyện/sự việc, hãy giữ sự đồng nhất về thì trong suốt bài.\n- **Liên từ kết nối câu (Cohesion):** Dùng các từ nối tự nhiên như *First*, *Then*, *However*, *Therefore*, *Meanwhile*, *In the end* để các câu không bị rời rạc.\n- **Không dịch từng từ (Word-by-word):** Hãy nắm trọn ý của từng câu rồi chuyển sang cấu trúc S-V-O tự nhiên nhất.\n\n*Bạn hãy bắt đầu bằng câu mở đầu, sau đó kết nối mạch lạc tới các câu tiếp theo nhé!*`,
+          keyPoint: 'Giữ đồng nhất thì động từ và dùng liên từ tự nhiên để gắn kết các câu.',
+          explanationType: 'hint',
+          isHintOnly: true,
+          followUpSuggestions: [
+            'Từ vựng quan trọng trong đoạn là gì?',
+            'Gợi ý câu mở đầu của đoạn',
+            'Cách dùng các liên từ nối câu',
+          ],
+        };
+      }
+
+      // User asks why their score is low / why they made mistakes after submitting
+      if (
+        msg.includes('sai') ||
+        msg.includes('lỗi') ||
+        msg.includes('điểm') ||
+        msg.includes('tại sao') ||
+        msg.includes('phân tích') ||
+        msg.includes('cải thiện')
+      ) {
+        const evalData = context.paragraphEvaluation;
+        const score = evalData?.score ?? 70;
+        const imps = evalData?.improvements || [];
+        return {
+          answer: `### Đánh giá chuyên sâu bài dịch toàn đoạn\n- **Tổng điểm bài dịch:** ${score}/100\n- **Nhận xét:** ${evalData?.overview || 'Bạn đã nắm được nội dung cơ bản của bài.'}\n\n### Điểm cần hoàn thiện\n${imps.length > 0 ? imps.map((imp) => `- ${imp}`).join('\n') : '- Chú ý sự kết nối mượt mà giữa các câu trong đoạn.\n- Chọn từ vựng mang sắc thái tự nhiên theo ngữ cảnh bài học.'}\n\n### Lời khuyên của Gia sư\nHãy bấm vào từng câu bên dưới để nghe đọc mẫu và luyện viết lại câu đó để củng cố phản xạ nhé!`,
+          keyPoint: `Tổng thể đạt ${score}%. Tập trung khắc phục các câu chưa đạt để bài văn mạch lạc hơn.`,
+          explanationType: 'mistake',
+          followUpSuggestions: [
+            'Xem chi tiết câu bị trừ điểm nhiều nhất',
+            'Giải thích bản dịch mẫu toàn bài',
+            'Cho tôi bài tập củng cố ngữ pháp bài này',
+          ],
+        };
+      }
+    }
+
     // 2. Mini Quiz request
     if (
       msg.includes('bài tập') ||

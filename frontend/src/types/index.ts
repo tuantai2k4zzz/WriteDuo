@@ -468,6 +468,32 @@ export interface TutorContext {
   isAnswerRevealed?: boolean;
   depthMode?: 'quick' | 'normal' | 'deep';
   weaknesses?: string[];
+  // Paragraph Translation Context
+  isParagraphMode?: boolean;
+  fullParagraphEn?: string;
+  fullParagraphVi?: string;
+  paragraphEvaluation?: {
+    score?: number;
+    status?: string;
+    overview?: string;
+    strengths?: string[];
+    improvements?: string[];
+    metrics?: {
+      meaning?: number;
+      grammar?: number;
+      vocabulary?: number;
+      naturalness?: number;
+      completeness?: number;
+    };
+  };
+  sentenceResults?: Array<{
+    sentenceIndex: number;
+    userText: string;
+    referenceText: string;
+    score: number;
+    status: string;
+    feedback?: string;
+  }>;
 }
 
 export interface TutorExample {
